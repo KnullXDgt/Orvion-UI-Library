@@ -185,27 +185,12 @@ local Themes = {
 }
 
 -- ==========================================
--- DPI-AWARE SCALING (PC/Mobile optimization)
+-- CONSTANTS (Hardcoded for consistency)
 -- ==========================================
-local function GetScaledTextSize(baseSize)
-    local viewport = workspace.CurrentCamera.ViewportSize.Y
-    local scale = viewport / 1080
-    return math.floor(baseSize * scale)
-end
-
-local function GetScaledSize(baseSize)
-    local viewport = workspace.CurrentCamera.ViewportSize.Y
-    local scale = viewport / 1080
-    return math.floor(baseSize * scale)
-end
-
--- ==========================================
--- CONSTANTS (Scaled dynamically)
--- ==========================================
-local FONT_SECTION = GetScaledTextSize(14)
-local FONT_GENERAL = GetScaledTextSize(13)
-local FONT_SMALL = GetScaledTextSize(12)
-local ELEMENT_HEIGHT = GetScaledSize(48)
+local FONT_SECTION = 14
+local FONT_GENERAL = 13
+local FONT_SMALL = 12
+local ELEMENT_HEIGHT = 48
 local SIDEBAR_WIDTH = 150
 local SEARCH_ICON = "rbxassetid://117201889911802"
 
@@ -423,7 +408,9 @@ function Orvion:CreateWindow(config)
     config = config or {}
     local title = config.Title or "Orvion UI"
     local theme = config.Theme or "Dark"
-    local size = config.Size or UDim2.fromOffset(470, 600)
+    
+    -- Hardcoded size (original Orvion dimensions)
+    local size = UDim2.fromOffset(470, 270)
     
     local Window = {}
     Window.Theme = Themes[theme] or Themes["Dark"]
