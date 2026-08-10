@@ -178,7 +178,7 @@ None yet. If you find bugs, open an issue.
 
 ## Credits
 
-Made by KnullXDgt. Inspired by Kairo UI but rebuilt from scratch.
+Made by KnullXDgt. Inspired by [Kairo UI Library](https://github.com/Itzzavi335/Kairo-Ui-Library) but rebuilt from scratch.
 
 MIT License - do whatever you want with it.
 
