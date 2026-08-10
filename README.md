@@ -18,7 +18,7 @@ Because most Roblox UI libraries are either ugly, slow, or missing features you 
 Load it like any other script:
 
 ```lua
-local Orvion = loadstring(game:HttpGet("https://raw.githubusercontent.com/KnullXDgt/Orvion-UI-Library/main/orvion_source.luau"))()
+local Orvion = loadstring(game:HttpGet("https://raw.githubusercontent.com/KnullXDgt/Orvion-UI-Library/main/source.luau"))()
 ```
 
 Create a window:
@@ -112,18 +112,18 @@ They stack in the bottom-right and auto-dismiss. No more spam.
 
 ## Real Example
 
-Check `orvion_example.luau` for a complete working script. It shows every element and feature.
+Check `example.luau` for a complete working script. It shows every element and feature.
 
 ## File Structure
 
 ```
-orvion_source.luau   - Main library (~1600 lines)
-orvion_config.luau   - Save/load system
-orvion_themes.luau   - Color definitions
-orvion_example.luau  - Working example
+source.luau   - Main library (~1,760 lines, standalone)
+config.luau   - Config system (reference)
+themes.luau   - Theme definitions (reference)  
+example.luau  - Working example
 ```
 
-You only need to load `orvion_source.luau`. It handles the rest.
+You only need to load `source.luau`. It's completely standalone with everything embedded.
 
 ## API Quick Reference
 
