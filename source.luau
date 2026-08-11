@@ -12,7 +12,7 @@ local TextService = game:GetService("TextService")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 
-local CONFIG_FONT_SECTION  = 14
+local CONFIG_FONT_SECTION  = 15
 local CONFIG_FONT_GENERAL  = 13
 local CONFIG_FONT_DROPDOWN = 12
 local CONFIG_ELEMENT_HEIGHT = 48
@@ -84,12 +84,10 @@ function ThemeSystem:UpdateAll(color)
             local fc = toggle:FindFirstChild("FeatureFrame")
             local tc = toggle:FindFirstChild("ToggleCircle")
             local fs = fc and fc:FindFirstChild("UIStroke")
-            local tt = toggle:FindFirstChild("ToggleTitle")
             if tc and tc.Position == UDim2.new(0, 15, 0, 0) then
                 tc.BackgroundColor3 = color
                 if fs then fs.Color = color end
                 if fc then fc.BackgroundColor3 = color end
-                if tt then tt.TextColor3 = color end
             end
         end
     end
@@ -250,7 +248,7 @@ local function MakeNotify(NotifyConfig)
     NotifyConfig.Title = NotifyConfig.Title or "Notification"
     NotifyConfig.Description = NotifyConfig.Description or "Description"
     NotifyConfig.Content = NotifyConfig.Content or "Content"
-    NotifyConfig.Color = NotifyConfig.Color or Color3.fromRGB(255, 0, 255)
+    NotifyConfig.Color = NotifyConfig.Color or Color3.fromRGB(255, 255, 255)
     NotifyConfig.Time = NotifyConfig.Time or 0.5
     NotifyConfig.Delay = NotifyConfig.Delay or 5
 
@@ -441,11 +439,12 @@ function OrvionLib:Notify(title, text, duration)
         Title = title or "Notification",
         Description = "Notification",
         Content = text or "",
-        Color = ThemeSystem.ThemeColors[ThemeSystem.CurrentTheme],
+        Color = Color3.fromRGB(255, 255, 255),
         Delay = duration,
         Time = 0.5
     })
 end
+
 -- ==========================================
 -- CREATE WINDOW
 -- ==========================================
@@ -532,16 +531,6 @@ function OrvionLib:CreateWindow(config)
     Top.Name = "Top"
     Top.Parent = Main
 
-    -- DecideFrame separator line
-    local DecideFrame = Instance.new("Frame", Main)
-    DecideFrame.Name = "DecideFrame"
-    DecideFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    DecideFrame.BackgroundTransparency = 0.85
-    DecideFrame.Position = UDim2.new(0, 0, 0, 38)
-    DecideFrame.Size = UDim2.new(1, 0, 0, 1)
-    DecideFrame.BorderSizePixel = 0
-    DecideFrame.ZIndex = 2
-
     local TitleLabel = Instance.new("TextLabel")
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.Text = Title
@@ -583,15 +572,14 @@ function OrvionLib:CreateWindow(config)
         Badge.Text = badgeText
         Badge.TextColor3 = Color3.fromRGB(255, 255, 255)
         Badge.TextSize = 10
-        Badge.BackgroundColor3 = ThemeSystem.ThemeColors[ThemeSystem.CurrentTheme]
-        Badge.BackgroundTransparency = 0.3
+        Badge.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        Badge.BackgroundTransparency = 0.8
         Badge.BorderSizePixel = 0
         Badge.Size = UDim2.new(0, TextService:GetTextSize(badgeText, 10, Enum.Font.GothamBold, Vector2.new(999, 999)).X + 10, 0, 18)
         local BadgeCorner = Instance.new("UICorner")
         BadgeCorner.CornerRadius = UDim.new(0, 4)
         BadgeCorner.Parent = Badge
         Badge.Parent = BadgeContainer
-        table.insert(ThemeSystem.BadgeElements, {Update = function(color) Badge.BackgroundColor3 = color end})
     end
 
     -- Close button
@@ -710,44 +698,45 @@ function OrvionLib:CreateWindow(config)
     TabFrame.BackgroundTransparency = 0.55
     TabFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
     TabFrame.BorderSizePixel = 0
-    TabFrame.Position = UDim2.new(0, 0, 0, 39)
-    TabFrame.Size = UDim2.new(0, 120, 1, -39)
+    TabFrame.Position = UDim2.new(0, 0, 0, 38)
+    TabFrame.Size = UDim2.new(0, 120, 1, -38)
     TabFrame.Name = "TabFrame"
-    TabFrame.ZIndex = 2
+    TabFrame.ZIndex = 1
     TabFrame.Parent = Main
 
     local TabCorner = Instance.new("UICorner")
     TabCorner.CornerRadius = UDim.new(0, 8)
     TabCorner.Parent = TabFrame
 
-    local TabFrameTopCover = Instance.new("Frame", TabFrame)
-    TabFrameTopCover.Size = UDim2.new(1, 0, 0, 10)
-    TabFrameTopCover.BackgroundColor3 = Color3.fromRGB(13, 13, 20)
-    TabFrameTopCover.BackgroundTransparency = 0.55
-    TabFrameTopCover.BorderSizePixel = 0
-    TabFrameTopCover.ZIndex = 2
-
     -- Search bar
     local SearchBarFrame = Instance.new("Frame", TabFrame)
     SearchBarFrame.Name = "SearchBarFrame"
     SearchBarFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 36)
     SearchBarFrame.BackgroundTransparency = 0
-    SearchBarFrame.Position = UDim2.new(0, 12, 0, 14)
-    SearchBarFrame.Size = UDim2.new(1, -24, 0, 26)
+    SearchBarFrame.Position = UDim2.new(0, 12, 0, 10)
+    SearchBarFrame.Size = UDim2.new(1, -24, 0, 22)
     SearchBarFrame.BorderSizePixel = 0
     local sc = Instance.new("UICorner", SearchBarFrame) sc.CornerRadius = UDim.new(0, 4)
     local sbs = Instance.new("UIStroke", SearchBarFrame) sbs.Color = Color3.fromRGB(60, 60, 75) sbs.Thickness = 1
 
+    local SearchIcon = Instance.new("ImageLabel", SearchBarFrame)
+    SearchIcon.BackgroundTransparency = 1
+    SearchIcon.AnchorPoint = Vector2.new(0, 0.5)
+    SearchIcon.Position = UDim2.new(0, 4, 0.5, 0)
+    SearchIcon.Size = UDim2.new(0, 14, 0, 14)
+    SearchIcon.Image = "rbxassetid://117201889911802"
+    SearchIcon.ScaleType = Enum.ScaleType.Fit
+
     local SearchInput = Instance.new("TextBox", SearchBarFrame)
     SearchInput.BackgroundTransparency = 1
-    SearchInput.Size = UDim2.new(1, 0, 1, 0)
-    SearchInput.Position = UDim2.new(0, 0, 0, 0)
+    SearchInput.Position = UDim2.new(0, 22, 0, 0)
+    SearchInput.Size = UDim2.new(1, -26, 1, 0)
     SearchInput.Font = Enum.Font.Gotham
     SearchInput.PlaceholderText = "Search..."
     SearchInput.Text = ""
     SearchInput.TextColor3 = COLOR_WHITE
-    SearchInput.TextSize = 12
-    SearchInput.TextXAlignment = Enum.TextXAlignment.Center
+    SearchInput.TextSize = 11
+    SearchInput.TextXAlignment = Enum.TextXAlignment.Left
 
     -- Tab scroll
     local TabScroll = Instance.new("ScrollingFrame", TabFrame)
@@ -756,8 +745,8 @@ function OrvionLib:CreateWindow(config)
     TabScroll.Active = true
     TabScroll.BackgroundTransparency = 1
     TabScroll.BorderSizePixel = 0
-    TabScroll.Position = UDim2.new(0, 6, 0, 46)
-    TabScroll.Size = UDim2.new(1, -12, 1, -90)
+    TabScroll.Position = UDim2.new(0, 6, 0, 38)
+    TabScroll.Size = UDim2.new(1, -12, 1, -82)
     TabScroll.Name = "TabScroll"
 
     local TabLayout = Instance.new("UIListLayout")
@@ -814,7 +803,7 @@ function OrvionLib:CreateWindow(config)
         WelcomeLabel.Text = "Welcome, " .. maskedName
     end)
 
-    -- Content frame
+    -- Content frame (no title label)
     local ContentFrame = Instance.new("Frame")
     ContentFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ContentFrame.BackgroundTransparency = 0.999
@@ -823,28 +812,8 @@ function OrvionLib:CreateWindow(config)
     ContentFrame.Position = UDim2.new(0, 128, 0, 42)
     ContentFrame.Size = UDim2.new(0, 330, 0, 205)
     ContentFrame.Name = "ContentFrame"
-    ContentFrame.ZIndex = 2
+    ContentFrame.ZIndex = 1
     ContentFrame.Parent = Main
-
-    local ContentCorner = Instance.new("UICorner")
-    ContentCorner.CornerRadius = UDim.new(0, 2)
-    ContentCorner.Parent = ContentFrame
-
-    local ContentTitle = Instance.new("TextLabel")
-    ContentTitle.Font = Enum.Font.GothamBold
-    ContentTitle.Text = "Main"
-    ContentTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    ContentTitle.TextSize = 24
-    ContentTitle.TextWrapped = true
-    ContentTitle.TextXAlignment = Enum.TextXAlignment.Left
-    ContentTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    ContentTitle.BackgroundTransparency = 0.999
-    ContentTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    ContentTitle.BorderSizePixel = 0
-    ContentTitle.Size = UDim2.new(1, 0, 0, 30)
-    ContentTitle.Position = UDim2.new(0, 10, 0, 0)
-    ContentTitle.Name = "ContentTitle"
-    ContentTitle.Parent = ContentFrame
 
     local ContentScroll = Instance.new("ScrollingFrame")
     ContentScroll.ScrollBarImageColor3 = Color3.fromRGB(80, 80, 80)
@@ -855,8 +824,8 @@ function OrvionLib:CreateWindow(config)
     ContentScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ContentScroll.BorderSizePixel = 0
     ContentScroll.ClipsDescendants = true
-    ContentScroll.Position = UDim2.new(0, 10, 0, 35)
-    ContentScroll.Size = UDim2.new(1, -20, 1, -35)
+    ContentScroll.Position = UDim2.new(0, 0, 0, 0)
+    ContentScroll.Size = UDim2.new(1, 0, 1, 0)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
@@ -877,8 +846,15 @@ function OrvionLib:CreateWindow(config)
     Min.Activated:Connect(function()
         CircleClick(Min, Mouse.X, Mouse.Y)
         minimized = not minimized
-        local targetSize = minimized and UDim2.new(0, 470, 0, 38) or UDim2.new(0, Size.X.Offset, 0, Size.Y.Offset)
-        DropShadowHolder:TweenSize(targetSize, "Out", "Quart", 0.3, true)
+        if minimized then
+            DropShadowHolder:TweenSize(UDim2.new(0, Size.X.Offset, 0, 38), "Out", "Quart", 0.3, true)
+            TabFrame.Visible = false
+            ContentFrame.Visible = false
+        else
+            DropShadowHolder:TweenSize(UDim2.new(0, Size.X.Offset, 0, Size.Y.Offset), "Out", "Quart", 0.3, true)
+            TabFrame.Visible = true
+            ContentFrame.Visible = true
+        end
     end)
 
     local OldPos = DropShadowHolder.Position
@@ -925,7 +901,7 @@ function OrvionLib:CreateWindow(config)
         ButtonCorner.Parent = MobileMinimizeButton
 
         local ButtonStroke = Instance.new("UIStroke")
-        ButtonStroke.Color = ThemeSystem.ThemeColors[ThemeSystem.CurrentTheme]
+        ButtonStroke.Color = Color3.fromRGB(255, 255, 255)
         ButtonStroke.Thickness = 0
         ButtonStroke.Parent = MobileMinimizeButton
 
@@ -959,8 +935,6 @@ function OrvionLib:CreateWindow(config)
                 TweenService:Create(MobileMinimizeButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 50, 0, 50)}):Play()
             end
         end)
-
-        table.insert(ThemeSystem.ThemeElements, {Update = function(color) ButtonStroke.Color = color end})
     end
 
     -- Tab and content management
@@ -1012,7 +986,7 @@ function OrvionLib:CreateWindow(config)
         tabCorner.CornerRadius = UDim.new(0, 4)
 
         local Indicator = Instance.new("Frame", TabButton)
-        Indicator.BackgroundColor3 = ThemeSystem.ThemeColors[ThemeSystem.CurrentTheme]
+        Indicator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         Indicator.Size = UDim2.new(0, 5, 0.7, 0)
         Indicator.AnchorPoint = Vector2.new(0, 0.5)
         Indicator.Position = UDim2.new(0, 0, 0.5, 0)
@@ -1026,7 +1000,7 @@ function OrvionLib:CreateWindow(config)
         TabContent.BackgroundTransparency = 1
         TabContent.Size = UDim2.new(1, 0, 1, 0)
         TabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
-        TabContent.ScrollBarThickness = 2
+        TabContent.ScrollBarThickness = 0
         TabContent.Visible = false
 
         TabContent:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
@@ -1049,10 +1023,11 @@ function OrvionLib:CreateWindow(config)
 
         if firstTab then
             TabContent.Visible = true
+            CurrentTab = TabContent
+            TabContents[TabContent] = TabContent
             TabButton.BackgroundTransparency = 0.4
             TabButton.TextColor3 = COLOR_WHITE
             Indicator.Visible = true
-            ContentTitle.Text = tabName
             firstTab = false
         end
 
@@ -1066,14 +1041,26 @@ function OrvionLib:CreateWindow(config)
                 t.Indicator.Visible = false
             end
             TabContent.Visible = true
+            CurrentTab = TabContent
             TabButton.BackgroundTransparency = 0.4
             TabButton.TextColor3 = COLOR_WHITE
             Indicator.Visible = true
-            ContentTitle.Text = tabName
         end)
 
         table.insert(tabs, {Button = TabButton, Indicator = Indicator, Content = TabContent})
-        table.insert(ThemeSystem.TabElements, TabButton)
+
+        -- Search functionality
+        SearchInput:GetPropertyChangedSignal("Text"):Connect(function()
+            local query = SearchInput.Text:lower()
+            for _, t in pairs(tabs) do
+                if query == "" then
+                    t.Button.Visible = true
+                else
+                    t.Button.Visible = t.Button.Text:lower():find(query) ~= nil
+                end
+            end
+            UpdateTabSize()
+        end)
 
         local TabAPI = {}
 
@@ -1226,7 +1213,6 @@ function OrvionLib:CreateWindow(config)
                 ToggleFrame.BackgroundTransparency = 0.4
                 ToggleFrame.Size = UDim2.new(1, 0, 0, CONFIG_ELEMENT_HEIGHT)
                 ToggleFrame.BorderSizePixel = 0
-                ToggleFrame.Name = "Toggle"
                 local tfc = Instance.new("UICorner", ToggleFrame) tfc.CornerRadius = UDim.new(0, 6)
                 local tfcs = Instance.new("UIStroke", ToggleFrame) tfcs.Color = Color3.fromRGB(60, 60, 75) tfcs.Thickness = 1 tfcs.Transparency = 0.5
 
@@ -1239,65 +1225,52 @@ function OrvionLib:CreateWindow(config)
                 Title.TextColor3 = COLOR_WHITE
                 Title.TextSize = CONFIG_FONT_GENERAL
                 Title.TextXAlignment = Enum.TextXAlignment.Left
-                Title.Name = "ToggleTitle"
 
-                local FeatureFrame = Instance.new("Frame", ToggleFrame)
-                FeatureFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 75)
-                FeatureFrame.BackgroundTransparency = 0.2
-                FeatureFrame.BorderSizePixel = 0
-                FeatureFrame.Position = UDim2.new(1, -38, 0.5, -9)
-                FeatureFrame.Size = UDim2.new(0, 32, 0, 18)
-                FeatureFrame.Name = "FeatureFrame"
-                local FrameCorner = Instance.new("UICorner", FeatureFrame)
-                FrameCorner.CornerRadius = UDim.new(1, 0)
-                local FrameStroke = Instance.new("UIStroke", FeatureFrame)
-                FrameStroke.Color = Color3.fromRGB(100, 100, 100)
-                FrameStroke.Thickness = 1.5
+                local SwitchBg = Instance.new("Frame", ToggleFrame)
+                SwitchBg.BackgroundColor3 = Color3.fromRGB(60, 60, 75)
+                SwitchBg.Position = UDim2.new(1, -38, 0.5, -9)
+                SwitchBg.Size = UDim2.new(0, 32, 0, 18)
+                local sbc = Instance.new("UICorner", SwitchBg) sbc.CornerRadius = UDim.new(1, 0)
 
-                local ToggleCircle = Instance.new("Frame", FeatureFrame)
-                ToggleCircle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
-                ToggleCircle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-                ToggleCircle.BorderSizePixel = 0
-                ToggleCircle.Position = cfg.Default and UDim2.new(0, 15, 0, 0) or UDim2.new(0, 0, 0, 0)
-                ToggleCircle.Size = UDim2.new(0, 14, 0, 14)
-                ToggleCircle.Name = "ToggleCircle"
-                local CircleCorner = Instance.new("UICorner", ToggleCircle)
-                CircleCorner.CornerRadius = UDim.new(0, 15)
-
-                table.insert(ThemeSystem.ToggleElements, ToggleFrame)
+                local Knob = Instance.new("Frame", SwitchBg)
+                Knob.BackgroundColor3 = COLOR_WHITE
+                Knob.Position = UDim2.new(0, 2, 0.5, -7)
+                Knob.Size = UDim2.new(0, 14, 0, 14)
+                local kc = Instance.new("UICorner", Knob) kc.CornerRadius = UDim.new(1, 0)
 
                 local state = cfg.Default == true
-                local function SetState(value)
-                    state = value
-                    local themeColor = ThemeSystem.ThemeColors[ThemeSystem.CurrentTheme]
-                    if value then
-                        TweenService:Create(Title, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {TextColor3 = themeColor}):Play()
-                        TweenService:Create(ToggleCircle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Position = UDim2.new(0, 15, 0, 0), BackgroundColor3 = themeColor}):Play()
-                        TweenService:Create(FrameStroke, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Color = themeColor}):Play()
-                        TweenService:Create(FeatureFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundColor3 = themeColor}):Play()
+                local function updateVisual(anim)
+                    if state then
+                        SwitchBg.BackgroundColor3 = Color3.fromRGB(170, 170, 185)
+                        Knob.BackgroundColor3 = COLOR_WHITE
+                        if anim then TweenService:Create(Knob, TweenInfo.new(0.15), {Position = UDim2.new(1, -16, 0.5, -7)}):Play()
+                        else Knob.Position = UDim2.new(1, -16, 0.5, -7) end
                     else
-                        TweenService:Create(Title, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {TextColor3 = Color3.fromRGB(230, 230, 230)}):Play()
-                        TweenService:Create(ToggleCircle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Position = UDim2.new(0, 0, 0, 0), BackgroundColor3 = Color3.fromRGB(200, 200, 200)}):Play()
-                        TweenService:Create(FrameStroke, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Color = Color3.fromRGB(100, 100, 100)}):Play()
-                        TweenService:Create(FeatureFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(60, 60, 75)}):Play()
+                        SwitchBg.BackgroundColor3 = Color3.fromRGB(60, 60, 75)
+                        Knob.BackgroundColor3 = COLOR_WHITE
+                        if anim then TweenService:Create(Knob, TweenInfo.new(0.15), {Position = UDim2.new(0, 2, 0.5, -7)}):Play()
+                        else Knob.Position = UDim2.new(0, 2, 0.5, -7) end
                     end
-                    if cfg.Callback then pcall(cfg.Callback, state) end
                 end
-                SetState(state)
+                updateVisual(false)
 
                 local btn = Instance.new("TextButton", ToggleFrame)
                 btn.BackgroundTransparency = 1
                 btn.Size = UDim2.new(1, 0, 1, 0)
                 btn.Text = ""
-                btn.Name = "ToggleButton"
                 btn.MouseButton1Click:Connect(function()
-                    CircleClick(btn, Mouse.X, Mouse.Y)
-                    SetState(not state)
+                    state = not state
+                    updateVisual(true)
+                    if cfg.Callback then pcall(cfg.Callback, state) end
                 end)
 
                 UpdateContentSize()
                 local tAPI = {}
-                function tAPI:SetValue(val) SetState(val) end
+                function tAPI:SetValue(val)
+                    state = val
+                    updateVisual(true)
+                    if cfg.Callback then pcall(cfg.Callback, state) end
+                end
                 return tAPI
             end
 
@@ -1442,7 +1415,7 @@ function OrvionLib:CreateWindow(config)
                     PopFrame.BackgroundColor3 = COLOR_INTERACTIVE_BG
                     PopFrame.BackgroundTransparency = 0.05
                     PopFrame.Position = UDim2.new(0, 296, 0, popStartY)
-                    PopFrame.Size = UDim2.new(0, 162, 0, popHeight)
+                    PopFrame.Size = UDim2.new(0, 162, 0, math.min(popHeight, 200))
                     PopFrame.CanvasSize = UDim2.new(0, 0, 0, #(cfg.Values or {}) * 36)
                     PopFrame.ScrollBarThickness = 2
                     PopFrame.BorderSizePixel = 0
@@ -1481,7 +1454,7 @@ function OrvionLib:CreateWindow(config)
                         local optCorner = Instance.new("UICorner", optBtn) optCorner.CornerRadius = UDim.new(0, 4)
 
                         local ind = Instance.new("Frame", optBtn)
-                        ind.BackgroundColor3 = ThemeSystem.ThemeColors[ThemeSystem.CurrentTheme]
+                        ind.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                         ind.Size = UDim2.new(0, 3, 0, 16)
                         ind.Position = UDim2.new(0, 2, 0.5, -8)
                         ind.BorderSizePixel = 0
