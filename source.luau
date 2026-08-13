@@ -1128,7 +1128,8 @@ function Orvion:CreateWindow(config)
     SearchBar.BorderSizePixel = 0
     SearchBar.Position = UDim2.new(0, 0, 0, 6)
     SearchBar.Size = UDim2.new(1, 0, 0, 30)
-    SearchBar.ZIndex = 3
+    SearchBar.ZIndex = 20
+    SearchBar.Active = true
     SearchBar.Parent = TabFrame
 
     local SearchBarCorner = Instance.new("UICorner")
@@ -1136,12 +1137,12 @@ function Orvion:CreateWindow(config)
     SearchBarCorner.Parent = SearchBar
 
     local SearchIcon = Instance.new("ImageLabel")
-    SearchIcon.Image = "rbxassetid://91353318935184"
+    SearchIcon.Image = "rbxassetid://109869955247116"
     SearchIcon.BackgroundTransparency = 1
     SearchIcon.Position = UDim2.new(0, 5, 0.5, 0)
     SearchIcon.AnchorPoint = Vector2.new(0, 0.5)
     SearchIcon.Size = UDim2.new(0, 14, 0, 14)
-    SearchIcon.ZIndex = 4
+    SearchIcon.ZIndex = 22
     SearchIcon.Parent = SearchBar
 
     local SearchTextBox = Instance.new("TextBox")
@@ -1157,7 +1158,7 @@ function Orvion:CreateWindow(config)
     SearchTextBox.Position = UDim2.new(0, 22, 0, 0)
     SearchTextBox.Size = UDim2.new(1, -24, 1, 0)
     SearchTextBox.ClearTextOnFocus = false
-    SearchTextBox.ZIndex = 4
+    SearchTextBox.ZIndex = 21
     SearchTextBox.Parent = SearchBar
 
     local SearchResults = Instance.new("ScrollingFrame")
