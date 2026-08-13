@@ -1106,8 +1106,8 @@ function Orvion:CreateWindow(config)
     TabScroll.BackgroundTransparency = 0.999
     TabScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
     TabScroll.BorderSizePixel = 0
-    TabScroll.Position = UDim2.new(0, 0, 0, 30)
-    TabScroll.Size = UDim2.new(1, 0, 1, -80)
+    TabScroll.Position = UDim2.new(0, 0, 0, 36)
+    TabScroll.Size = UDim2.new(1, 0, 1, -86)
     TabScroll.Name = "TabScroll"
     TabScroll.Parent = TabFrame
 
@@ -1117,7 +1117,7 @@ function Orvion:CreateWindow(config)
     TabLayout.Parent = TabScroll
 
     local TabTopPadding = Instance.new("UIPadding")
-    TabTopPadding.PaddingTop = UDim.new(0, 6)
+    TabTopPadding.PaddingTop = UDim.new(0, 4)
     TabTopPadding.Parent = TabScroll
 
     -- Search bar
@@ -1126,7 +1126,7 @@ function Orvion:CreateWindow(config)
     SearchBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     SearchBar.BackgroundTransparency = 0.93
     SearchBar.BorderSizePixel = 0
-    SearchBar.Position = UDim2.new(0, 0, 0, 0)
+    SearchBar.Position = UDim2.new(0, 0, 0, 6)
     SearchBar.Size = UDim2.new(1, 0, 0, 24)
     SearchBar.ZIndex = 3
     SearchBar.Parent = TabFrame
@@ -1456,8 +1456,8 @@ function Orvion:CreateWindow(config)
         if not title or title == "" then return end
         local collapsibleFrame = nil
         local c = tabContainer
-        if c and c.Parent and c.Parent.Name == "InnerContainer" then
-            collapsibleFrame = c.Parent.Parent
+        if c and c.Name == "InnerContainer" then
+            collapsibleFrame = c.Parent
         end
         local tabName = nil
         local walker = tabContainer
