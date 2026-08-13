@@ -1116,15 +1116,15 @@ function Orvion:CreateWindow(config)
     TabLayout.Parent = TabScroll
 
     local TabTopPadding = Instance.new("UIPadding")
-    TabTopPadding.PaddingTop = UDim.new(0, 4)
+    TabTopPadding.PaddingTop = UDim.new(0, 6)
     TabTopPadding.Parent = TabScroll
 
     -- Player footer
     local PlayerFooter = Instance.new("Frame")
     PlayerFooter.Name = "PlayerFooter"
     PlayerFooter.BackgroundTransparency = 1
-    PlayerFooter.Position = UDim2.new(0, 6, 1, -42)
-    PlayerFooter.Size = UDim2.new(1, -12, 0, 38)
+    PlayerFooter.Position = UDim2.new(0, 0, 1, -46)
+    PlayerFooter.Size = UDim2.new(1, 0, 0, 42)
     PlayerFooter.BorderSizePixel = 0
     PlayerFooter.Parent = TabFrame
 
@@ -1239,8 +1239,8 @@ function Orvion:CreateWindow(config)
     ContentScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ContentScroll.BorderSizePixel = 0
     ContentScroll.ClipsDescendants = true
-    ContentScroll.Position = UDim2.new(0, 0, 0, 0)
-    ContentScroll.Size = UDim2.new(1, 0, 1, 0)
+    ContentScroll.Position = UDim2.new(0, 0, 0, 6)
+    ContentScroll.Size = UDim2.new(1, 0, 1, -6)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
