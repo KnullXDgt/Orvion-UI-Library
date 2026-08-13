@@ -1159,21 +1159,22 @@ function Orvion:CreateWindow(config)
     WelcomeLabel.BackgroundTransparency = 1
     WelcomeLabel.Position = UDim2.new(0, 43, 0.5, -8)
     WelcomeLabel.AnchorPoint = Vector2.new(0, 0)
-    WelcomeLabel.Size = UDim2.new(1, -40, 0, 13)
+    WelcomeLabel.Size = UDim2.new(1, -47, 0, 13)
     WelcomeLabel.Font = Enum.Font.GothamBold
     WelcomeLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
     WelcomeLabel.TextSize = 11
     WelcomeLabel.TextXAlignment = Enum.TextXAlignment.Left
     WelcomeLabel.TextWrapped = false
     WelcomeLabel.Text = "Welcome,"
+    WelcomeLabel.Visible = false
     WelcomeLabel.Parent = PlayerFooter
 
     local UsernameLabel = Instance.new("TextLabel")
     UsernameLabel.Name = "UsernameLabel"
     UsernameLabel.BackgroundTransparency = 1
-    UsernameLabel.Position = UDim2.new(0, 43, 0.5, 3)
-    UsernameLabel.AnchorPoint = Vector2.new(0, 0)
-    UsernameLabel.Size = UDim2.new(1, -40, 0, 13)
+    UsernameLabel.Position = UDim2.new(0, 43, 0.5, 0)
+    UsernameLabel.AnchorPoint = Vector2.new(0, 0.5)
+    UsernameLabel.Size = UDim2.new(1, -47, 0, 13)
     UsernameLabel.Font = Enum.Font.GothamBold
     UsernameLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
     UsernameLabel.TextSize = 11
@@ -1182,11 +1183,34 @@ function Orvion:CreateWindow(config)
     UsernameLabel.Text = "usr***"
     UsernameLabel.Parent = PlayerFooter
 
+    local maskedName = "usr***"
     pcall(function()
         local rawName = tostring(Players.LocalPlayer.Name)
-        local masked = string.sub(rawName, 1, 3) .. "***"
-        UsernameLabel.Text = masked
+        maskedName = string.sub(rawName, 1, 3) .. "***"
+        UsernameLabel.Text = maskedName
     end)
+
+    -- Dynamic footer: 1 line when small, 2 lines when large
+    local function UpdateFooterLayout()
+        local h = Main.AbsoluteSize.Y
+        if h > 300 then
+            -- 2 labels
+            WelcomeLabel.Visible = true
+            WelcomeLabel.Position = UDim2.new(0, 43, 0.5, -8)
+            UsernameLabel.Position = UDim2.new(0, 43, 0.5, 3)
+            UsernameLabel.AnchorPoint = Vector2.new(0, 0)
+            UsernameLabel.Text = maskedName
+        else
+            -- 1 label: "Welcome, usr***"
+            WelcomeLabel.Visible = false
+            UsernameLabel.Position = UDim2.new(0, 43, 0.5, 0)
+            UsernameLabel.AnchorPoint = Vector2.new(0, 0.5)
+            UsernameLabel.Text = "Welcome, " .. maskedName
+        end
+    end
+
+    Main:GetPropertyChangedSignal("AbsoluteSize"):Connect(UpdateFooterLayout)
+    task.defer(UpdateFooterLayout)
 
     local ContentFrame = Instance.new("Frame")
     ContentFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
