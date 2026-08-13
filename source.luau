@@ -850,7 +850,8 @@ function Orvion:CreateWindow(config)
 
     local ImageWrapper = Instance.new("Frame")
     ImageWrapper.Name = "ImageWrapper"
-    ImageWrapper.Size = UDim2.new(1, 0, 1, 0)
+    ImageWrapper.Size = UDim2.new(1, -147, 1, -48)
+    ImageWrapper.Position = UDim2.new(0, 138, 0, 39)
     ImageWrapper.BackgroundTransparency = 1
     ImageWrapper.ClipsDescendants = true
     ImageWrapper.ZIndex = 0
@@ -862,17 +863,16 @@ function Orvion:CreateWindow(config)
 
     local ThemeImage = Instance.new("ImageLabel")
     ThemeImage.Name = "ThemeImage"
-    ThemeImage.Size = UDim2.new(0, 305.5, 0, 256.5)
-    ThemeImage.Position = UDim2.new(1, -305.5, 1, -256.5)
+    ThemeImage.Size = UDim2.new(1, 0, 1, 0)
+    ThemeImage.Position = UDim2.new(0, 0, 0, 0)
     ThemeImage.BackgroundTransparency = 1
+    ThemeImage.ImageTransparency = 0.55
+    ThemeImage.ScaleType = Enum.ScaleType.Crop
     ThemeImage.Image = BgImageId
     ThemeImage.ZIndex = 0
     ThemeImage.Visible = (ConfigSystem.CurrentTheme == BgImageTheme)
     ThemeImage.Parent = ImageWrapper
 
-    local ThemeImageCorner = Instance.new("UICorner")
-    ThemeImageCorner.CornerRadius = UDim.new(0, 8)
-    ThemeImageCorner.Parent = ThemeImage
 
     table.insert(ConfigSystem.ThemeElements, {
         Update = function()
@@ -1126,9 +1126,9 @@ function Orvion:CreateWindow(config)
 
     local AvatarContainer = Instance.new("Frame")
     AvatarContainer.BackgroundTransparency = 1
-    AvatarContainer.Position = UDim2.new(0, 6, 0.5, 0)
+    AvatarContainer.Position = UDim2.new(0, 5, 0.5, 0)
     AvatarContainer.AnchorPoint = Vector2.new(0, 0.5)
-    AvatarContainer.Size = UDim2.new(0, 24, 0, 24)
+    AvatarContainer.Size = UDim2.new(0, 32, 0, 32)
     AvatarContainer.BorderSizePixel = 0
     AvatarContainer.Parent = PlayerFooter
 
@@ -1157,7 +1157,7 @@ function Orvion:CreateWindow(config)
     local WelcomeLabel = Instance.new("TextLabel")
     WelcomeLabel.Name = "WelcomeLabel"
     WelcomeLabel.BackgroundTransparency = 1
-    WelcomeLabel.Position = UDim2.new(0, 36, 0.5, -8)
+    WelcomeLabel.Position = UDim2.new(0, 43, 0.5, -8)
     WelcomeLabel.AnchorPoint = Vector2.new(0, 0)
     WelcomeLabel.Size = UDim2.new(1, -40, 0, 13)
     WelcomeLabel.Font = Enum.Font.GothamBold
@@ -1171,7 +1171,7 @@ function Orvion:CreateWindow(config)
     local UsernameLabel = Instance.new("TextLabel")
     UsernameLabel.Name = "UsernameLabel"
     UsernameLabel.BackgroundTransparency = 1
-    UsernameLabel.Position = UDim2.new(0, 36, 0.5, 3)
+    UsernameLabel.Position = UDim2.new(0, 43, 0.5, 3)
     UsernameLabel.AnchorPoint = Vector2.new(0, 0)
     UsernameLabel.Size = UDim2.new(1, -40, 0, 13)
     UsernameLabel.Font = Enum.Font.GothamBold
@@ -1397,8 +1397,9 @@ function Orvion:CreateWindow(config)
         local TBImg = Instance.new("ImageLabel")
         TBImg.Image = ToggleButtonImage
         TBImg.BackgroundTransparency = 1
-        TBImg.Size = UDim2.new(0.7, 0, 0.7, 0)
-        TBImg.Position = UDim2.new(0.15, 0, 0.15, 0)
+        TBImg.Size = UDim2.new(1, 0, 1, 0)
+        TBImg.Position = UDim2.new(0, 0, 0, 0)
+        TBImg.ScaleType = Enum.ScaleType.Fit
         TBImg.ZIndex = 101
         TBImg.Parent = ToggleBtn
 
@@ -2140,7 +2141,7 @@ function Orvion:CreateWindow(config)
                 DropdownList.Size = UDim2.new(0, 138, 0, 0)
                 DropdownList.Visible = true
 
-                local targetH = math.min(176, ListScroll.CanvasSize.Y.Offset + 10)
+                local targetH = 176
                 TweenService:Create(
                     DropdownList,
                     TweenInfo.new(0.25),
@@ -3847,20 +3848,11 @@ function Orvion:CreateWindow(config)
         TabNameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
         TabNameLabel.BorderSizePixel = 0
         TabNameLabel.Size = UDim2.new(1, 0, 1, 0)
-        TabNameLabel.Position = UDim2.new(0, 30, 0, 0)
+        TabNameLabel.Position = UDim2.new(0, 10, 0, 0)
         TabNameLabel.Name = "TabName"
         TabNameLabel.Parent = Tab
 
-        local FeatureImg = Instance.new("ImageLabel")
-        FeatureImg.Image = iconId or ""
-        FeatureImg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        FeatureImg.BackgroundTransparency = 0.999
-        FeatureImg.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        FeatureImg.BorderSizePixel = 0
-        FeatureImg.Position = UDim2.new(0, 9, 0, 7)
-        FeatureImg.Size = UDim2.new(0, 16, 0, 16)
-        FeatureImg.Name = "FeatureImg"
-        FeatureImg.Parent = Tab
+
 
         local ChooseFrame = Instance.new("Frame")
         ChooseFrame.BackgroundColor3 = ConfigSystem.ThemeColors[ConfigSystem.CurrentTheme]
