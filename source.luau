@@ -800,7 +800,7 @@ function Orvion:CreateWindow(config)
     config = config or {}
     local Title = config.Title or "Orvion UI"
     local Theme = config.Theme or "Default"
-    local Size = config.Size or UDim2.fromOffset(520, 420)
+    local Size = config.Size or UDim2.fromOffset(470, 270)
     local Center = config.Center ~= false
     local Draggable = config.Draggable ~= false
     local Resizable = config.Resize or false
