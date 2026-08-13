@@ -2410,7 +2410,7 @@ function Orvion:CreateWindow(config)
 
                 local cfW    = ContentFrame.AbsoluteSize.X
                 local halfCF = math.floor(cfW / 2)
-                local rightW = cfW - halfCF
+                local rightW = cfW - halfCF - 4
                 local targetH = math.floor(Main.AbsoluteSize.Y - 8)
                 DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 4)
                 DropdownList.Size = UDim2.new(0, rightW, 0, 0)
