@@ -2161,16 +2161,17 @@ function Orvion:CreateWindow(config)
                 local existingOC = Main:FindFirstChild("DropOutsideClick")
                 if existingOC then existingOC:Destroy() end
 
-                local halfW = math.floor((Main.AbsoluteSize.X - 147) / 2)
-                local targetH = Main.AbsoluteSize.Y
-                DropdownList.Position = UDim2.new(0, 138 + halfW, 0, 0)
-                DropdownList.Size = UDim2.new(0, halfW, 0, 0)
+                local cfW    = ContentFrame.AbsoluteSize.X
+                local halfCF = math.floor(cfW / 2)
+                local targetH = math.floor(39 + ContentFrame.AbsoluteSize.Y)
+                DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 0)
+                DropdownList.Size = UDim2.new(0, halfCF, 0, 0)
                 DropdownList.Visible = true
 
                 TweenService:Create(
                     DropdownList,
                     TweenInfo.new(0.25),
-                    {Size = UDim2.new(0, halfW, 0, targetH)}
+                    {Size = UDim2.new(0, halfCF, 0, targetH)}
                 ):Play()
                 TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 180}):Play()
 
@@ -2184,7 +2185,8 @@ function Orvion:CreateWindow(config)
                 OutsideClick.Parent = Main
                 OutsideClick.Activated:Connect(function()
                     dropdownData.Open = false
-                    TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, halfW, 0, 0)}):Play()
+                    local halfCF = math.floor(ContentFrame.AbsoluteSize.X / 2)
+                    TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, halfCF, 0, 0)}):Play()
                     TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 0}):Play()
                     task.wait(0.2)
                     DropdownList.Visible = false
@@ -2193,8 +2195,8 @@ function Orvion:CreateWindow(config)
             else
                 local oc = Main:FindFirstChild("DropOutsideClick")
                 if oc then oc:Destroy() end
-                local halfW = math.floor((Main.AbsoluteSize.X - 147) / 2)
-                TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, halfW, 0, 0)}):Play()
+                local halfCF = math.floor(ContentFrame.AbsoluteSize.X / 2)
+                TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, halfCF, 0, 0)}):Play()
                 TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 0}):Play()
                 task.wait(0.2)
                 DropdownList.Visible = false
