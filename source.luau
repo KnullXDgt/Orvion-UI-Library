@@ -1198,7 +1198,9 @@ function Orvion:CreateWindow(config)
     end
 
     local function openSearchResults()
-        local targetH = math.floor((TabFrame.AbsoluteSize.Y - 36) / 2)
+        local frameH = TabFrame.AbsoluteSize.Y
+        if frameH <= 0 then frameH = 200 end
+        local targetH = math.max(80, math.floor((frameH - 36) / 2))
         SearchResults.Size = UDim2.new(1, 0, 0, 0)
         SearchResults.Visible = true
         searchResultsOpen = true
@@ -2392,8 +2394,8 @@ function Orvion:CreateWindow(config)
                 local cfW    = ContentFrame.AbsoluteSize.X
                 local halfCF = math.floor(cfW / 2)
                 local rightW = cfW - halfCF
-                local targetH = math.floor(Main.AbsoluteSize.Y - 2)
-                DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 1)
+                local targetH = math.floor(Main.AbsoluteSize.Y - 8)
+                DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 4)
                 DropdownList.Size = UDim2.new(0, rightW, 0, 0)
                 DropdownList.Visible = true
 
