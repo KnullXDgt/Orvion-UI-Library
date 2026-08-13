@@ -1241,6 +1241,22 @@ function Orvion:CreateWindow(config)
                 ItemCorner.CornerRadius = UDim.new(0, 3)
                 ItemCorner.Parent = Item
 
+                -- tab name tag kanan
+                local ItemTag = Instance.new("TextLabel")
+                ItemTag.Font = Enum.Font.Gotham
+                ItemTag.Text = entry.tabName
+                ItemTag.TextColor3 = Color3.fromRGB(120, 120, 140)
+                ItemTag.TextSize = 9
+                ItemTag.TextXAlignment = Enum.TextXAlignment.Right
+                ItemTag.TextTruncate = Enum.TextTruncate.AtEnd
+                ItemTag.BackgroundTransparency = 1
+                ItemTag.BorderSizePixel = 0
+                ItemTag.AnchorPoint = Vector2.new(1, 0.5)
+                ItemTag.Position = UDim2.new(1, -4, 0.5, 0)
+                ItemTag.Size = UDim2.new(0, 50, 1, 0)
+                ItemTag.ZIndex = 12
+                ItemTag.Parent = Item
+
                 local capturedEntry = entry
                 Item.Activated:Connect(function()
                     local sf = TabSwitchFns[capturedEntry.tabName]
