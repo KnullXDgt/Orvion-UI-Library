@@ -1235,8 +1235,8 @@ function Orvion:CreateWindow(config)
     ContentScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ContentScroll.BorderSizePixel = 0
     ContentScroll.ClipsDescendants = true
-    ContentScroll.Position = UDim2.new(0, 5, 0, 5)
-    ContentScroll.Size = UDim2.new(1, -10, 1, -10)
+    ContentScroll.Position = UDim2.new(0, 0, 0, 0)
+    ContentScroll.Size = UDim2.new(1, 0, 1, 0)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
@@ -3791,10 +3791,7 @@ function Orvion:CreateWindow(config)
         InnerLayout.Padding = UDim.new(0, 5)
         InnerLayout.Parent = InnerContainer
 
-        local InnerPadding = Instance.new("UIPadding")
-        InnerPadding.PaddingTop = UDim.new(0, 4)
-        InnerPadding.PaddingBottom = UDim.new(0, 4)
-        InnerPadding.Parent = InnerContainer
+
 
         local isOpen = defaultOpen
 
