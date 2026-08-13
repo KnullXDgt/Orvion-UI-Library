@@ -2072,7 +2072,7 @@ function Orvion:CreateWindow(config)
         OptionImg.Parent = SelectOptionsFrame
 
         local DropdownList = Instance.new("Frame")
-        DropdownList.AnchorPoint = Vector2.new(1, 0)
+        DropdownList.AnchorPoint = Vector2.new(0, 0)
         DropdownList.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
         DropdownList.BorderColor3 = Color3.fromRGB(0, 0, 0)
         DropdownList.BorderSizePixel = 0
@@ -2161,15 +2161,15 @@ function Orvion:CreateWindow(config)
                 local existingOC = Main:FindFirstChild("DropOutsideClick")
                 if existingOC then existingOC:Destroy() end
 
-                DropdownList.Position = UDim2.new(0, 138, 0, 38)
-                DropdownList.Size = UDim2.new(0, 276, 0, 0)
+                DropdownList.Position = UDim2.new(0, 276, 0, 38)
+                DropdownList.Size = UDim2.new(0, 138, 0, 0)
                 DropdownList.Visible = true
 
-                local targetH = 176
+                local targetH = math.floor(Main.AbsoluteSize.Y - 58)
                 TweenService:Create(
                     DropdownList,
                     TweenInfo.new(0.25),
-                    {Size = UDim2.new(0, 276, 0, targetH)}
+                    {Size = UDim2.new(0, 138, 0, targetH)}
                 ):Play()
                 TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 180}):Play()
 
@@ -2183,7 +2183,7 @@ function Orvion:CreateWindow(config)
                 OutsideClick.Parent = Main
                 OutsideClick.Activated:Connect(function()
                     dropdownData.Open = false
-                    TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, 276, 0, 0)}):Play()
+                    TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, 138, 0, 0)}):Play()
                     TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 0}):Play()
                     task.wait(0.2)
                     DropdownList.Visible = false
@@ -2192,7 +2192,7 @@ function Orvion:CreateWindow(config)
             else
                 local oc = Main:FindFirstChild("DropOutsideClick")
                 if oc then oc:Destroy() end
-                TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, 276, 0, 0)}):Play()
+                TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, 138, 0, 0)}):Play()
                 TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 0}):Play()
                 task.wait(0.2)
                 DropdownList.Visible = false
