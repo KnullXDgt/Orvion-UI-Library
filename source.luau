@@ -1089,7 +1089,7 @@ function Orvion:CreateWindow(config)
     TabFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
     TabFrame.BorderSizePixel = 0
     TabFrame.Position = UDim2.new(0, 9, 0, 39)
-    TabFrame.Size = UDim2.new(0, 120, 1, -59)
+    TabFrame.Size = UDim2.new(0, 120, 1, -39)
     TabFrame.Name = "TabFrame"
     TabFrame.Parent = Main
 
@@ -1114,6 +1114,10 @@ function Orvion:CreateWindow(config)
     TabLayout.Padding = UDim.new(0, 3)
     TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
     TabLayout.Parent = TabScroll
+
+    local TabTopPadding = Instance.new("UIPadding")
+    TabTopPadding.PaddingTop = UDim.new(0, 4)
+    TabTopPadding.Parent = TabScroll
 
     -- Player footer
     local PlayerFooter = Instance.new("Frame")
@@ -1218,7 +1222,7 @@ function Orvion:CreateWindow(config)
     ContentFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ContentFrame.BorderSizePixel = 0
     ContentFrame.Position = UDim2.new(0, 138, 0, 39)
-    ContentFrame.Size = UDim2.new(1, -147, 1, -59)
+    ContentFrame.Size = UDim2.new(1, -147, 1, -39)
     ContentFrame.Name = "ContentFrame"
     ContentFrame.Parent = Main
 
@@ -3880,7 +3884,7 @@ function Orvion:CreateWindow(config)
         ChooseFrame.BackgroundColor3 = ConfigSystem.ThemeColors[ConfigSystem.CurrentTheme]
         ChooseFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         ChooseFrame.BorderSizePixel = 0
-        ChooseFrame.Position = UDim2.new(0, 2, 0, 9)
+        ChooseFrame.Position = UDim2.new(0, 0, 0, 9)
         ChooseFrame.Size = UDim2.new(0, 1, 0, 12)
         ChooseFrame.Name = "ChooseFrame"
         ChooseFrame.Parent = Tab
