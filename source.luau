@@ -1106,7 +1106,8 @@ function Orvion:CreateWindow(config)
     TabScroll.BackgroundTransparency = 0.999
     TabScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
     TabScroll.BorderSizePixel = 0
-    TabScroll.Size = UDim2.new(1, 0, 1, -50)
+    TabScroll.Position = UDim2.new(0, 0, 0, 30)
+    TabScroll.Size = UDim2.new(1, 0, 1, -80)
     TabScroll.Name = "TabScroll"
     TabScroll.Parent = TabFrame
 
@@ -1118,6 +1119,179 @@ function Orvion:CreateWindow(config)
     local TabTopPadding = Instance.new("UIPadding")
     TabTopPadding.PaddingTop = UDim.new(0, 6)
     TabTopPadding.Parent = TabScroll
+
+    -- Search bar
+    local SearchBar = Instance.new("Frame")
+    SearchBar.Name = "SearchBar"
+    SearchBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SearchBar.BackgroundTransparency = 0.93
+    SearchBar.BorderSizePixel = 0
+    SearchBar.Position = UDim2.new(0, 0, 0, 0)
+    SearchBar.Size = UDim2.new(1, 0, 0, 24)
+    SearchBar.ZIndex = 3
+    SearchBar.Parent = TabFrame
+
+    local SearchBarCorner = Instance.new("UICorner")
+    SearchBarCorner.CornerRadius = UDim.new(0, 4)
+    SearchBarCorner.Parent = SearchBar
+
+    local SearchIcon = Instance.new("ImageLabel")
+    SearchIcon.Image = "rbxassetid://91353318935184"
+    SearchIcon.BackgroundTransparency = 1
+    SearchIcon.Position = UDim2.new(0, 5, 0.5, 0)
+    SearchIcon.AnchorPoint = Vector2.new(0, 0.5)
+    SearchIcon.Size = UDim2.new(0, 14, 0, 14)
+    SearchIcon.ZIndex = 4
+    SearchIcon.Parent = SearchBar
+
+    local SearchTextBox = Instance.new("TextBox")
+    SearchTextBox.Font = Enum.Font.Gotham
+    SearchTextBox.PlaceholderText = "Search Features..."
+    SearchTextBox.PlaceholderColor3 = Color3.fromRGB(100, 100, 110)
+    SearchTextBox.Text = ""
+    SearchTextBox.TextColor3 = Color3.fromRGB(230, 230, 230)
+    SearchTextBox.TextSize = 11
+    SearchTextBox.TextXAlignment = Enum.TextXAlignment.Left
+    SearchTextBox.BackgroundTransparency = 1
+    SearchTextBox.BorderSizePixel = 0
+    SearchTextBox.Position = UDim2.new(0, 22, 0, 0)
+    SearchTextBox.Size = UDim2.new(1, -24, 1, 0)
+    SearchTextBox.ClearTextOnFocus = false
+    SearchTextBox.ZIndex = 4
+    SearchTextBox.Parent = SearchBar
+
+    local SearchResults = Instance.new("ScrollingFrame")
+    SearchResults.Name = "SearchResults"
+    SearchResults.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+    SearchResults.BorderSizePixel = 0
+    SearchResults.Position = UDim2.new(0, 0, 0, 24)
+    SearchResults.Size = UDim2.new(1, 0, 0, 0)
+    SearchResults.ScrollBarThickness = 2
+    SearchResults.ScrollBarImageColor3 = Color3.fromRGB(150, 150, 170)
+    SearchResults.ClipsDescendants = true
+    SearchResults.ZIndex = 10
+    SearchResults.Visible = false
+    SearchResults.CanvasSize = UDim2.new(0, 0, 0, 0)
+    SearchResults.Parent = TabFrame
+
+    local SearchResultsCorner = Instance.new("UICorner")
+    SearchResultsCorner.CornerRadius = UDim.new(0, 4)
+    SearchResultsCorner.Parent = SearchResults
+
+    local SearchResultsLayout = Instance.new("UIListLayout")
+    SearchResultsLayout.Padding = UDim.new(0, 2)
+    SearchResultsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    SearchResultsLayout.Parent = SearchResults
+
+    SearchResultsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        SearchResults.CanvasSize = UDim2.new(0, 0, 0, SearchResultsLayout.AbsoluteContentSize.Y + 4)
+    end)
+
+    local searchResultsOpen = false
+
+    local function closeSearchResults()
+        if not searchResultsOpen then return end
+        searchResultsOpen = false
+        TweenService:Create(SearchResults, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, 0)}):Play()
+        task.wait(0.2)
+        SearchResults.Visible = false
+    end
+
+    local function openSearchResults()
+        local targetH = math.floor((TabFrame.AbsoluteSize.Y - 30) / 2)
+        SearchResults.Size = UDim2.new(1, 0, 0, 0)
+        SearchResults.Visible = true
+        searchResultsOpen = true
+        TweenService:Create(SearchResults, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, targetH)}):Play()
+    end
+
+    local function buildSearchResults(query)
+        for _, child in SearchResults:GetChildren() do
+            if child:IsA("TextButton") or child:IsA("TextLabel") then
+                child:Destroy()
+            end
+        end
+        if query == "" then
+            closeSearchResults()
+            return
+        end
+        local q = query:lower()
+        local found = 0
+        for _, entry in ipairs(SearchRegistry) do
+            if entry.title:find(q, 1, true) then
+                found = found + 1
+                local Item = Instance.new("TextButton")
+                Item.Font = Enum.Font.GothamBold
+                Item.Text = "  " .. entry.displayTitle
+                Item.TextColor3 = Color3.fromRGB(220, 220, 220)
+                Item.TextSize = 11
+                Item.TextXAlignment = Enum.TextXAlignment.Left
+                Item.TextTruncate = Enum.TextTruncate.AtEnd
+                Item.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                Item.BackgroundTransparency = 0.92
+                Item.BorderSizePixel = 0
+                Item.Size = UDim2.new(1, 0, 0, 26)
+                Item.ZIndex = 11
+                Item.AutoButtonColor = true
+                Item.Parent = SearchResults
+
+                local ItemCorner = Instance.new("UICorner")
+                ItemCorner.CornerRadius = UDim.new(0, 3)
+                ItemCorner.Parent = Item
+
+                local capturedEntry = entry
+                Item.Activated:Connect(function()
+                    local sf = TabSwitchFns[capturedEntry.tabName]
+                    if sf then
+                        sf()
+                    end
+                    if capturedEntry.collapsibleFrame then
+                        local hdr = capturedEntry.collapsibleFrame:FindFirstChild("HeaderBtn")
+                        if hdr then
+                            local arrow = hdr:FindFirstChild("SectionArrow")
+                            if arrow and arrow.Rotation == -90 then
+                                hdr.MouseButton1Click:Fire()
+                            end
+                        end
+                    end
+                    task.wait(0.05)
+                    if capturedEntry.elementFrame then
+                        pcall(function()
+                            local ey = capturedEntry.elementFrame.AbsolutePosition.Y
+                            local cy = ContentScroll.AbsolutePosition.Y
+                            ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
+                        end)
+                    end
+                    SearchTextBox.Text = ""
+                    closeSearchResults()
+                end)
+            end
+        end
+        if found == 0 then
+            local NoItem = Instance.new("TextLabel")
+            NoItem.Text = "  No results"
+            NoItem.Font = Enum.Font.Gotham
+            NoItem.TextColor3 = Color3.fromRGB(120, 120, 130)
+            NoItem.TextSize = 11
+            NoItem.TextXAlignment = Enum.TextXAlignment.Left
+            NoItem.BackgroundTransparency = 1
+            NoItem.BorderSizePixel = 0
+            NoItem.Size = UDim2.new(1, 0, 0, 26)
+            NoItem.ZIndex = 11
+            NoItem.Parent = SearchResults
+        end
+        openSearchResults()
+    end
+
+    SearchTextBox:GetPropertyChangedSignal("Text"):Connect(function()
+        buildSearchResults(SearchTextBox.Text)
+    end)
+
+    SearchTextBox.FocusLost:Connect(function()
+        if SearchTextBox.Text == "" then
+            closeSearchResults()
+        end
+    end)
 
     -- Player footer
     local PlayerFooter = Instance.new("Frame")
@@ -1253,6 +1427,8 @@ function Orvion:CreateWindow(config)
     local CurrentTab = nil
     local TabCount = 0
     local AllElements = {}
+    local SearchRegistry = {}
+    local TabSwitchFns = {}
 
     local function UpdateTabSize()
         local OffsetY = 0
@@ -1274,6 +1450,35 @@ function Orvion:CreateWindow(config)
             end
             ContentScroll.CanvasSize = UDim2.new(0, 0, 0, OffsetY)
         end
+    end
+
+    local function RegisterSearchElement(title, elementFrame, tabContainer)
+        if not title or title == "" then return end
+        local collapsibleFrame = nil
+        local c = tabContainer
+        if c and c.Parent and c.Parent.Name == "InnerContainer" then
+            collapsibleFrame = c.Parent.Parent
+        end
+        local tabName = nil
+        local walker = tabContainer
+        while walker do
+            for tname, tc in pairs(TabContents) do
+                if tc == walker then
+                    tabName = tname
+                    break
+                end
+            end
+            if tabName then break end
+            walker = walker.Parent
+        end
+        if not tabName then return end
+        table.insert(SearchRegistry, {
+            title        = title:lower(),
+            displayTitle = title,
+            elementFrame = elementFrame,
+            tabName      = tabName,
+            collapsibleFrame = collapsibleFrame,
+        })
     end
 
     TabScroll.ChildAdded:Connect(UpdateTabSize)
@@ -1517,6 +1722,7 @@ function Orvion:CreateWindow(config)
         ParagraphContent.TextWrapped = true
         Paragraph.Size = UDim2.new(1, 0, 0, math.max(46, textSize.Y + 33))
 
+        RegisterSearchElement(title, Paragraph, tabContainer)
         task.wait(0.1)
         UpdateContentSize()
 
@@ -1630,6 +1836,7 @@ function Orvion:CreateWindow(config)
             end
         )
 
+        RegisterSearchElement(title, Button, tabContainer)
         task.wait(0.1)
         UpdateContentSize()
 
@@ -1809,6 +2016,7 @@ function Orvion:CreateWindow(config)
             end
         )
 
+        RegisterSearchElement(title, Toggle, tabContainer)
         task.wait(0.1)
         UpdateContentSize()
 
@@ -3944,6 +4152,8 @@ function Orvion:CreateWindow(config)
             CurrentTab = tabName
             UpdateContentSize()
         end
+
+        TabSwitchFns[tabName] = SwitchToTab
 
         TabButton.Activated:Connect(
             function()
