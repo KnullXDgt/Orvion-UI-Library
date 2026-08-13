@@ -1115,12 +1115,6 @@ function Orvion:CreateWindow(config)
     TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
     TabLayout.Parent = TabScroll
 
-    local TabScrollPadding = Instance.new("UIPadding")
-    TabScrollPadding.PaddingLeft   = UDim.new(0, 4)
-    TabScrollPadding.PaddingRight  = UDim.new(0, 4)
-    TabScrollPadding.PaddingTop    = UDim.new(0, 4)
-    TabScrollPadding.Parent        = TabScroll
-
     -- Player footer
     local PlayerFooter = Instance.new("Frame")
     PlayerFooter.Name = "PlayerFooter"
