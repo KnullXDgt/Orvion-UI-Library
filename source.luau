@@ -1943,6 +1943,7 @@ function Orvion:CreateWindow(config)
             end
         )
 
+        RegisterSearchElement(title, Input, tabContainer)
         task.wait(0.1)
         UpdateContentSize()
 
