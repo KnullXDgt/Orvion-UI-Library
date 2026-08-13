@@ -3780,6 +3780,7 @@ function Orvion:CreateWindow(config)
         InnerContainer.Position = UDim2.new(0, 0, 0, 34)
         InnerContainer.Size = UDim2.new(1, 0, 0, 0)
         InnerContainer.BorderSizePixel = 0
+        InnerContainer.ClipsDescendants = true
         InnerContainer.Name = "InnerContainer"
         InnerContainer.Parent = SectionFrame
 
