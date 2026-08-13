@@ -252,7 +252,7 @@ local ConfigSystem = {
     CurrentConfig = nil,
     Configs = {},
     ThemeColors = {
-        ["Default"] = Color3.fromRGB(255, 0, 255),
+        ["Default"] = Color3.fromRGB(150, 150, 170),
         ["Blue"] = Color3.fromRGB(0, 120, 255),
         ["Red"] = Color3.fromRGB(255, 50, 50),
         ["Green"] = Color3.fromRGB(0, 200, 80),
@@ -865,6 +865,42 @@ function Orvion:CreateWindow(config)
     UIStroke.Thickness = 1.6
     UIStroke.Parent = Main
 
+    -- Background image (customizable, shown only on selected theme)
+    local BgImageId    = config.BackgroundImage       or "rbxassetid://133127875115995"
+    local BgImageTheme = config.BackgroundImage_Theme or "Default"
+
+    local ImageWrapper = Instance.new("Frame")
+    ImageWrapper.Name = "ImageWrapper"
+    ImageWrapper.Size = UDim2.new(1, 0, 1, 0)
+    ImageWrapper.BackgroundTransparency = 1
+    ImageWrapper.ClipsDescendants = true
+    ImageWrapper.ZIndex = 0
+    ImageWrapper.Parent = Main
+
+    local ImageWrapperCorner = Instance.new("UICorner")
+    ImageWrapperCorner.CornerRadius = UDim.new(0, 8)
+    ImageWrapperCorner.Parent = ImageWrapper
+
+    local ThemeImage = Instance.new("ImageLabel")
+    ThemeImage.Name = "ThemeImage"
+    ThemeImage.Size = UDim2.new(0, 305.5, 0, 256.5)
+    ThemeImage.Position = UDim2.new(1, -305.5, 1, -256.5)
+    ThemeImage.BackgroundTransparency = 1
+    ThemeImage.Image = BgImageId
+    ThemeImage.ZIndex = 0
+    ThemeImage.Visible = (ConfigSystem.CurrentTheme == BgImageTheme)
+    ThemeImage.Parent = ImageWrapper
+
+    local ThemeImageCorner = Instance.new("UICorner")
+    ThemeImageCorner.CornerRadius = UDim.new(0, 8)
+    ThemeImageCorner.Parent = ThemeImage
+
+    table.insert(ConfigSystem.ThemeElements, {
+        Update = function()
+            ThemeImage.Visible = (ConfigSystem.CurrentTheme == BgImageTheme)
+        end
+    })
+
     local Top = Instance.new("Frame")
     Top.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     Top.BackgroundTransparency = 0.999
@@ -873,6 +909,16 @@ function Orvion:CreateWindow(config)
     Top.Size = UDim2.new(1, 0, 0, 38)
     Top.Name = "Top"
     Top.Parent = Main
+
+    local DecideFrame = Instance.new("Frame")
+    DecideFrame.Name = "DecideFrame"
+    DecideFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    DecideFrame.BackgroundTransparency = 0.85
+    DecideFrame.Position = UDim2.new(0, 0, 0, 38)
+    DecideFrame.Size = UDim2.new(1, 0, 0, 1)
+    DecideFrame.BorderSizePixel = 0
+    DecideFrame.ZIndex = 2
+    DecideFrame.Parent = Main
 
     local TitleLabel = Instance.new("TextLabel")
     TitleLabel.Font = Enum.Font.GothamBold
@@ -1063,7 +1109,7 @@ function Orvion:CreateWindow(config)
     TabFrame.BackgroundTransparency = 0.999
     TabFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
     TabFrame.BorderSizePixel = 0
-    TabFrame.Position = UDim2.new(0, 9, 0, 50)
+    TabFrame.Position = UDim2.new(0, 9, 0, 39)
     TabFrame.Size = UDim2.new(0, 120, 1, -59)
     TabFrame.Name = "TabFrame"
     TabFrame.Parent = Main
@@ -1090,12 +1136,85 @@ function Orvion:CreateWindow(config)
     TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
     TabLayout.Parent = TabScroll
 
+    -- Player footer
+    local PlayerFooter = Instance.new("Frame")
+    PlayerFooter.Name = "PlayerFooter"
+    PlayerFooter.BackgroundTransparency = 1
+    PlayerFooter.Position = UDim2.new(0, 6, 1, -42)
+    PlayerFooter.Size = UDim2.new(1, -12, 0, 38)
+    PlayerFooter.BorderSizePixel = 0
+    PlayerFooter.Parent = TabFrame
+
+    local AvatarContainer = Instance.new("Frame")
+    AvatarContainer.BackgroundTransparency = 1
+    AvatarContainer.Position = UDim2.new(0, 6, 0.5, 0)
+    AvatarContainer.AnchorPoint = Vector2.new(0, 0.5)
+    AvatarContainer.Size = UDim2.new(0, 24, 0, 24)
+    AvatarContainer.BorderSizePixel = 0
+    AvatarContainer.Parent = PlayerFooter
+
+    local AvatarImg = Instance.new("ImageLabel")
+    AvatarImg.BackgroundTransparency = 1
+    AvatarImg.Size = UDim2.new(1, 0, 1, 0)
+    AvatarImg.Image = "rbxassetid://0"
+    AvatarImg.Parent = AvatarContainer
+
+    local AvatarCorner = Instance.new("UICorner")
+    AvatarCorner.CornerRadius = UDim.new(1, 0)
+    AvatarCorner.Parent = AvatarImg
+
+    local AvatarStroke = Instance.new("UIStroke")
+    AvatarStroke.Color = Color3.fromRGB(120, 120, 135)
+    AvatarStroke.Thickness = 1.5
+    AvatarStroke.Transparency = 0.2
+    AvatarStroke.Parent = AvatarImg
+
+    pcall(function()
+        local lp = Players.LocalPlayer
+        local content, isReady = Players:GetUserThumbnailAsync(lp.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
+        if isReady then AvatarImg.Image = content end
+    end)
+
+    local WelcomeLabel = Instance.new("TextLabel")
+    WelcomeLabel.Name = "WelcomeLabel"
+    WelcomeLabel.BackgroundTransparency = 1
+    WelcomeLabel.Position = UDim2.new(0, 36, 0.5, -8)
+    WelcomeLabel.AnchorPoint = Vector2.new(0, 0)
+    WelcomeLabel.Size = UDim2.new(1, -40, 0, 13)
+    WelcomeLabel.Font = Enum.Font.GothamBold
+    WelcomeLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+    WelcomeLabel.TextSize = 11
+    WelcomeLabel.TextXAlignment = Enum.TextXAlignment.Left
+    WelcomeLabel.TextWrapped = false
+    WelcomeLabel.Text = "Welcome,"
+    WelcomeLabel.Parent = PlayerFooter
+
+    local UsernameLabel = Instance.new("TextLabel")
+    UsernameLabel.Name = "UsernameLabel"
+    UsernameLabel.BackgroundTransparency = 1
+    UsernameLabel.Position = UDim2.new(0, 36, 0.5, 3)
+    UsernameLabel.AnchorPoint = Vector2.new(0, 0)
+    UsernameLabel.Size = UDim2.new(1, -40, 0, 13)
+    UsernameLabel.Font = Enum.Font.GothamBold
+    UsernameLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+    UsernameLabel.TextSize = 11
+    UsernameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    UsernameLabel.TextWrapped = false
+    UsernameLabel.Text = "usr***"
+    UsernameLabel.Parent = PlayerFooter
+
+    pcall(function()
+        local rawName = tostring(Players.LocalPlayer.Name)
+        local masked = string.sub(rawName, 1, 3) .. "***"
+        UsernameLabel.Text = masked
+    end)
+
     local ContentFrame = Instance.new("Frame")
     ContentFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ContentFrame.BackgroundTransparency = 0.999
     ContentFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ContentFrame.BorderSizePixel = 0
-    ContentFrame.Position = UDim2.new(0, 138, 0, 50)
+    ContentFrame.Position = UDim2.new(0, 138, 0, 39)
     ContentFrame.Size = UDim2.new(1, -147, 1, -59)
     ContentFrame.Name = "ContentFrame"
     ContentFrame.Parent = Main
@@ -1103,22 +1222,6 @@ function Orvion:CreateWindow(config)
     local ContentCorner = Instance.new("UICorner")
     ContentCorner.CornerRadius = UDim.new(0, 2)
     ContentCorner.Parent = ContentFrame
-
-    local ContentTitle = Instance.new("TextLabel")
-    ContentTitle.Font = Enum.Font.GothamBold
-    ContentTitle.Text = "Main"
-    ContentTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    ContentTitle.TextSize = 24
-    ContentTitle.TextWrapped = true
-    ContentTitle.TextXAlignment = Enum.TextXAlignment.Left
-    ContentTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    ContentTitle.BackgroundTransparency = 0.999
-    ContentTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    ContentTitle.BorderSizePixel = 0
-    ContentTitle.Size = UDim2.new(1, 0, 0, 30)
-    ContentTitle.Position = UDim2.new(0, 10, 0, 0)
-    ContentTitle.Name = "ContentTitle"
-    ContentTitle.Parent = ContentFrame
 
     local ContentScroll = Instance.new("ScrollingFrame")
     ContentScroll.ScrollBarImageColor3 = Color3.fromRGB(80, 80, 80)
@@ -1129,8 +1232,8 @@ function Orvion:CreateWindow(config)
     ContentScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ContentScroll.BorderSizePixel = 0
     ContentScroll.ClipsDescendants = true
-    ContentScroll.Position = UDim2.new(0, 10, 0, 35)
-    ContentScroll.Size = UDim2.new(1, -20, 1, -35)
+    ContentScroll.Position = UDim2.new(0, 5, 0, 5)
+    ContentScroll.Size = UDim2.new(1, -10, 1, -10)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
@@ -1286,6 +1389,61 @@ function Orvion:CreateWindow(config)
                 end
             }
         )
+    end
+
+    -- Floating toggle button (open/close UI)
+    local ToggleButtonEnabled = config.ToggleButton or false
+    local ToggleButtonImage   = config.ToggleButton_Image or "rbxassetid://121365062523142"
+
+    if ToggleButtonEnabled then
+        local ToggleBtn = Instance.new("Frame")
+        ToggleBtn.Name = "OrvionToggleButton"
+        ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        ToggleBtn.BackgroundTransparency = 0.15
+        ToggleBtn.BorderSizePixel = 0
+        ToggleBtn.Size = UDim2.new(0, 48, 0, 48)
+        ToggleBtn.Position = UDim2.new(0, 15, 0.5, -100)
+        ToggleBtn.ZIndex = 100
+        ToggleBtn.Parent = ScreenGui
+
+        local TBCorner = Instance.new("UICorner")
+        TBCorner.CornerRadius = UDim.new(0, 10)
+        TBCorner.Parent = ToggleBtn
+
+        local TBStroke = Instance.new("UIStroke")
+        TBStroke.Color = Color3.fromRGB(80, 80, 100)
+        TBStroke.Thickness = 1.2
+        TBStroke.Parent = ToggleBtn
+
+        local TBImg = Instance.new("ImageLabel")
+        TBImg.Image = ToggleButtonImage
+        TBImg.BackgroundTransparency = 1
+        TBImg.Size = UDim2.new(0.7, 0, 0.7, 0)
+        TBImg.Position = UDim2.new(0.15, 0, 0.15, 0)
+        TBImg.ZIndex = 101
+        TBImg.Parent = ToggleBtn
+
+        local TBClick = Instance.new("TextButton")
+        TBClick.Text = ""
+        TBClick.BackgroundTransparency = 1
+        TBClick.Size = UDim2.new(1, 0, 1, 0)
+        TBClick.ZIndex = 102
+        TBClick.Parent = ToggleBtn
+
+        local tbDragging = MakeDraggableMobileButton(TBClick, ToggleBtn, ScreenGui)
+
+        local lastTBClick = 0
+        TBClick.Activated:Connect(function()
+            local now = tick()
+            if now - lastTBClick < 0.3 then return end
+            lastTBClick = now
+            if not tbDragging() then
+                DropShadowHolder.Visible = not DropShadowHolder.Visible
+                TweenService:Create(ToggleBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 42, 0, 42)}):Play()
+                task.wait(0.1)
+                TweenService:Create(ToggleBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 48, 0, 48)}):Play()
+            end
+        end)
     end
 
     -- Element Creation Functions
@@ -1920,7 +2078,7 @@ function Orvion:CreateWindow(config)
         DropdownList.Visible = false
         DropdownList.ClipsDescendants = true
         DropdownList.ZIndex = 10
-        DropdownList.Parent = ScreenGui
+        DropdownList.Parent = Main
 
         local ListCorner = Instance.new("UICorner")
         ListCorner.CornerRadius = UDim.new(0, 4)
@@ -1995,27 +2153,44 @@ function Orvion:CreateWindow(config)
         local function ToggleDropdown()
             dropdownData.Open = not dropdownData.Open
             if dropdownData.Open then
-                local dropdownAbsPos = Dropdown.AbsolutePosition
-                local dropdownAbsSize = Dropdown.AbsoluteSize
-                DropdownList.Position =
-                    UDim2.new(
-                    0,
-                    dropdownAbsPos.X + dropdownAbsSize.X - 172,
-                    0,
-                    dropdownAbsPos.Y + dropdownAbsSize.Y + 5
-                )
+                -- Remove any existing outside-click blocker
+                local existingOC = Main:FindFirstChild("DropOutsideClick")
+                if existingOC then existingOC:Destroy() end
 
+                DropdownList.Position = UDim2.new(0, 276, 0, 38)
+                DropdownList.Size = UDim2.new(0, 138, 0, 0)
                 DropdownList.Visible = true
+
+                local targetH = math.min(176, ListScroll.CanvasSize.Y.Offset + 10)
                 TweenService:Create(
                     DropdownList,
-                    TweenInfo.new(0.3),
-                    {Size = UDim2.new(0, 160, 0, math.min(150, ListScroll.CanvasSize.Y.Offset + 10))}
+                    TweenInfo.new(0.25),
+                    {Size = UDim2.new(0, 138, 0, targetH)}
                 ):Play()
                 TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 180}):Play()
+
+                -- Outside click blocker
+                local OutsideClick = Instance.new("TextButton")
+                OutsideClick.Name = "DropOutsideClick"
+                OutsideClick.Text = ""
+                OutsideClick.BackgroundTransparency = 1
+                OutsideClick.Size = UDim2.new(1, 0, 1, 0)
+                OutsideClick.ZIndex = DropdownList.ZIndex - 1
+                OutsideClick.Parent = Main
+                OutsideClick.Activated:Connect(function()
+                    dropdownData.Open = false
+                    TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, 138, 0, 0)}):Play()
+                    TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 0}):Play()
+                    task.wait(0.2)
+                    DropdownList.Visible = false
+                    OutsideClick:Destroy()
+                end)
             else
-                TweenService:Create(DropdownList, TweenInfo.new(0.3), {Size = UDim2.new(0, 160, 0, 0)}):Play()
+                local oc = Main:FindFirstChild("DropOutsideClick")
+                if oc then oc:Destroy() end
+                TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, 138, 0, 0)}):Play()
                 TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 0}):Play()
-                task.wait(0.3)
+                task.wait(0.2)
                 DropdownList.Visible = false
             end
         end
@@ -3506,6 +3681,152 @@ function Orvion:CreateWindow(config)
         return keybindFunc
     end
     
+    local function CreateButtonGrid(tabContainer, btn1Config, btn2Config)
+        if not tabContainer or not tabContainer:IsA("Frame") then return end
+
+        local GridFrame = Instance.new("Frame")
+        GridFrame.BackgroundTransparency = 1
+        GridFrame.Size = UDim2.new(1, 0, 0, 36)
+        GridFrame.BorderSizePixel = 0
+        GridFrame.Name = "ButtonGrid"
+        GridFrame.Parent = tabContainer
+
+        local GridLayout = Instance.new("UIListLayout")
+        GridLayout.FillDirection = Enum.FillDirection.Horizontal
+        GridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        GridLayout.Padding = UDim.new(0, 6)
+        GridLayout.Parent = GridFrame
+
+        local function makeHalfBtn(cfg, order)
+            local Btn = Instance.new("TextButton")
+            Btn.Font = Enum.Font.GothamBold
+            Btn.Text = cfg.Title or "Button"
+            Btn.TextColor3 = Color3.fromRGB(230, 230, 230)
+            Btn.TextSize = 12
+            Btn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            Btn.BackgroundTransparency = 0.92
+            Btn.BorderSizePixel = 0
+            Btn.Size = UDim2.new(0.5, -3, 1, 0)
+            Btn.LayoutOrder = order
+            Btn.AutoButtonColor = true
+            Btn.Name = "GridBtn"
+            Btn.Parent = GridFrame
+
+            local BtnCorner = Instance.new("UICorner")
+            BtnCorner.CornerRadius = UDim.new(0, 4)
+            BtnCorner.Parent = Btn
+
+            local BtnStroke = Instance.new("UIStroke")
+            BtnStroke.Color = Color3.fromRGB(80, 80, 80)
+            BtnStroke.Thickness = 1
+            BtnStroke.Transparency = 0.6
+            BtnStroke.Parent = Btn
+
+            if cfg.Callback then
+                Btn.Activated:Connect(function()
+                    CircleClick(Btn, Mouse.X, Mouse.Y)
+                    cfg.Callback()
+                end)
+            end
+            return Btn
+        end
+
+        makeHalfBtn(btn1Config or {}, 1)
+        makeHalfBtn(btn2Config or {}, 2)
+
+        task.wait(0.1)
+        UpdateContentSize()
+    end
+
+    local function CreateCollapsible(tabContainer, title, defaultOpen)
+        if not tabContainer or not tabContainer:IsA("Frame") then return end
+        defaultOpen = defaultOpen == true
+
+        local SectionFrame = Instance.new("Frame")
+        SectionFrame.BackgroundTransparency = 1
+        SectionFrame.Size = UDim2.new(1, 0, 0, 34)
+        SectionFrame.BorderSizePixel = 0
+        SectionFrame.ClipsDescendants = true
+        SectionFrame.Name = "Collapsible"
+        SectionFrame.Parent = tabContainer
+
+        local HeaderBtn = Instance.new("TextButton")
+        HeaderBtn.BackgroundTransparency = 1
+        HeaderBtn.Size = UDim2.new(1, 0, 0, 34)
+        HeaderBtn.Font = Enum.Font.GothamBold
+        HeaderBtn.Text = "  " .. (title or "Section")
+        HeaderBtn.TextColor3 = Color3.fromRGB(170, 170, 185)
+        HeaderBtn.TextSize = 14
+        HeaderBtn.TextXAlignment = Enum.TextXAlignment.Left
+        HeaderBtn.BorderSizePixel = 0
+        HeaderBtn.Name = "HeaderBtn"
+        HeaderBtn.Parent = SectionFrame
+
+        local SectionArrow = Instance.new("ImageLabel")
+        SectionArrow.BackgroundTransparency = 1
+        SectionArrow.AnchorPoint = Vector2.new(1, 0.5)
+        SectionArrow.Position = UDim2.new(1, -8, 0.5, 0)
+        SectionArrow.Size = UDim2.new(0, 20, 0, 20)
+        SectionArrow.Image = "rbxassetid://16851841101"
+        SectionArrow.ImageTransparency = 0.3
+        SectionArrow.Rotation = defaultOpen and 0 or -90
+        SectionArrow.Name = "SectionArrow"
+        SectionArrow.Parent = HeaderBtn
+
+        local InnerContainer = Instance.new("Frame")
+        InnerContainer.BackgroundTransparency = 1
+        InnerContainer.Position = UDim2.new(0, 0, 0, 34)
+        InnerContainer.Size = UDim2.new(1, 0, 0, 0)
+        InnerContainer.BorderSizePixel = 0
+        InnerContainer.Name = "InnerContainer"
+        InnerContainer.Parent = SectionFrame
+
+        local InnerLayout = Instance.new("UIListLayout")
+        InnerLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        InnerLayout.Padding = UDim.new(0, 5)
+        InnerLayout.Parent = InnerContainer
+
+        local InnerPadding = Instance.new("UIPadding")
+        InnerPadding.PaddingTop = UDim.new(0, 4)
+        InnerPadding.PaddingBottom = UDim.new(0, 4)
+        InnerPadding.Parent = InnerContainer
+
+        local isOpen = defaultOpen
+
+        local function updateSize()
+            -- close any open dropdown when collapsing
+            local oc = Main:FindFirstChild("DropOutsideClick")
+            if oc then oc:Destroy() end
+            local dl = Main:FindFirstChild("DropdownList")
+            if dl then dl.Visible = false end
+
+            local contentH = InnerLayout.AbsoluteContentSize.Y + 8
+            if isOpen then
+                InnerContainer.Size = UDim2.new(1, 0, 0, contentH)
+                SectionFrame.Size  = UDim2.new(1, 0, 0, 34 + contentH)
+                TweenService:Create(SectionArrow, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Rotation = 0}):Play()
+            else
+                InnerContainer.Size = UDim2.new(1, 0, 0, 0)
+                SectionFrame.Size  = UDim2.new(1, 0, 0, 34)
+                TweenService:Create(SectionArrow, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Rotation = -90}):Play()
+            end
+            task.wait(0.01)
+            UpdateContentSize()
+        end
+
+        InnerLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            if isOpen then updateSize() end
+        end)
+
+        HeaderBtn.Activated:Connect(function()
+            isOpen = not isOpen
+            updateSize()
+        end)
+
+        updateSize()
+        return InnerContainer
+    end
+
     local function CreateTabButton(tabName, iconId, isConfigTab)
         TabCount = TabCount + 1
         local Tab = Instance.new("Frame")
@@ -3622,7 +3943,6 @@ function Orvion:CreateWindow(config)
             TabContentContainer.Visible = true
             ChooseFrame.Visible = true
             Tab.BackgroundTransparency = 0.92
-            ContentTitle.Text = tabName
             CurrentTab = tabName
             UpdateContentSize()
         end
@@ -3642,37 +3962,7 @@ function Orvion:CreateWindow(config)
     -- Create config tab elements
     CreateParagraph(ConfigTabContainer, "Configuration Settings", "Manage your UI settings and themes here.")
     
-    local themeNames = {}
-    for themeName, _ in pairs(ConfigSystem.ThemeColors) do
-        table.insert(themeNames, themeName)
-    end
-    
     local CurrentConfigName = ""
-    
-    local ThemeDropdown =
-        CreateDropdown(
-        ConfigTabContainer,
-        "Theme",
-        "Select UI theme color",
-        themeNames,
-        false,
-        ConfigSystem.CurrentTheme,
-        function(value)
-            local success, themeColor = ConfigSystem:SetTheme(value)
-            if success then
-                MakeNotify(
-                    {
-                        Title = "Theme",
-                        Description = "Changed",
-                        Content = "Theme changed to " .. value .. "!",
-                        Color = themeColor,
-                        Delay = 3
-                    }
-                )
-            end
-        end,
-        "ThemeDropdown"
-    )
     
     local TransparencyToggle =
         CreateToggle(
@@ -3704,103 +3994,99 @@ function Orvion:CreateWindow(config)
         "ConfigNameInput"
     )
     
-    CreateButton(
-        ConfigTabContainer,
-        "Save Config",
-        "Save current settings to config",
-        "rbxassetid://16932740082",
-        function()
-            if CurrentConfigName and CurrentConfigName ~= "" then
-                local configData = {}
-                for id, element in pairs(AllElements) do
-                    if element.Type == "Toggle" then
-                        configData[id] = element.Value
-                    elseif element.Type == "Slider" then
-                        configData[id] = element.Value
-                    elseif element.Type == "Dropdown" then
-                        configData[id] = element.Value
-                    elseif element.Type == "Input" then
-                        configData[id] = element.Value
-                    elseif element.Type == "ColorPicker" then
-                        configData[id] = {element.Value.R, element.Value.G, element.Value.B}
-                    elseif element.Type == "Keybind" then
-                        configData[id] = element.Value and element.Value.Name or nil
-                    end
-                end
-                local notifyData = ConfigSystem:SaveConfig(CurrentConfigName, configData)
-                MakeNotify(notifyData)
+    local SelectedConfigName = ""
 
-                local configList = ConfigSystem:GetConfigList()
-                LoadConfigDropdown:Refresh(configList)
-                DeleteConfigDropdown:Refresh(configList)
-            else
-                MakeNotify(
-                    {
-                        Title = "Config",
-                        Description = "Error",
-                        Content = "Please enter a config name first!",
-                        Color = Color3.fromRGB(255, 50, 50),
-                        Delay = 3
-                    }
-                )
+    local SelectConfigDropdown = CreateDropdown(
+        ConfigTabContainer,
+        "Select Config",
+        "Pick a saved config",
+        ConfigSystem:GetConfigList(),
+        false,
+        nil,
+        function(value)
+            if value and value ~= "" then
+                SelectedConfigName = value
+                CurrentConfigName = value
+            end
+        end,
+        "SelectConfigDropdown"
+    )
+
+    local function doSaveConfig()
+        local targetName = CurrentConfigName ~= "" and CurrentConfigName or SelectedConfigName
+        if not targetName or targetName == "" then
+            MakeNotify({ Title = "Config", Description = "Error", Content = "Enter or select a config name first!", Color = Color3.fromRGB(255, 50, 50), Delay = 3 })
+            return
+        end
+        local configData = {}
+        for id, element in pairs(AllElements) do
+            if element.Type == "Toggle" then configData[id] = element.Value
+            elseif element.Type == "Slider" then configData[id] = element.Value
+            elseif element.Type == "Dropdown" then configData[id] = element.Value
+            elseif element.Type == "Input" then configData[id] = element.Value
+            elseif element.Type == "ColorPicker" then configData[id] = {element.Value.R, element.Value.G, element.Value.B}
+            elseif element.Type == "Keybind" then configData[id] = element.Value and element.Value.Name or nil
             end
         end
-    )
-    
-    local LoadConfigDropdown =
-        CreateDropdown(
-        ConfigTabContainer,
-        "Load Config",
-        "Select config to load",
-        {},
-        false,
-        nil,
-        function(value)
-            if value then
-                local notifyData, configData = ConfigSystem:LoadConfig(value)
-                MakeNotify(notifyData)
-                if configData then
-                    for id, val in pairs(configData) do
-                        if AllElements[id] then
-                            if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
-                                AllElements[id]:Set(Color3.new(val[1], val[2], val[3]))
-                            elseif AllElements[id].Type == "Keybind" and val then
-                                AllElements[id]:Set(Enum.KeyCode[val])
-                            else
-                                AllElements[id]:Set(val)
-                            end
-                        end
+        local notifyData = ConfigSystem:SaveConfig(targetName, configData)
+        MakeNotify(notifyData)
+        local configList = ConfigSystem:GetConfigList()
+        SelectConfigDropdown:Refresh(configList)
+    end
+
+    local function doLoadConfig()
+        local targetName = SelectedConfigName ~= "" and SelectedConfigName or CurrentConfigName
+        if not targetName or targetName == "" then
+            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(255, 50, 50), Delay = 3 })
+            return
+        end
+        local notifyData, configData = ConfigSystem:LoadConfig(targetName)
+        MakeNotify(notifyData)
+        if configData then
+            for id, val in pairs(configData) do
+                if AllElements[id] then
+                    if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
+                        AllElements[id]:Set(Color3.new(val[1], val[2], val[3]))
+                    elseif AllElements[id].Type == "Keybind" and val then
+                        AllElements[id]:Set(Enum.KeyCode[val])
+                    else
+                        AllElements[id]:Set(val)
                     end
-                    ThemeDropdown:Set(ConfigSystem.CurrentTheme)
                 end
             end
-        end,
-        "LoadConfigDropdown"
+        end
+    end
+
+    local function doDeleteConfig()
+        local targetName = SelectedConfigName ~= "" and SelectedConfigName or CurrentConfigName
+        if not targetName or targetName == "" then
+            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(255, 50, 50), Delay = 3 })
+            return
+        end
+        local notifyData = ConfigSystem:DeleteConfig(targetName)
+        MakeNotify(notifyData)
+        SelectedConfigName = ""
+        local configList = ConfigSystem:GetConfigList()
+        SelectConfigDropdown:Refresh(configList)
+    end
+
+    CreateButtonGrid(ConfigTabContainer,
+        { Title = "Save Config", Callback = doSaveConfig },
+        { Title = "Load Config", Callback = doLoadConfig }
     )
-    
-    local DeleteConfigDropdown =
-        CreateDropdown(
-        ConfigTabContainer,
-        "Delete Config",
-        "Select config to delete",
-        {},
-        false,
-        nil,
-        function(value)
-            if value then
-                local notifyData = ConfigSystem:DeleteConfig(value)
-                MakeNotify(notifyData)
-                local configList = ConfigSystem:GetConfigList()
-                LoadConfigDropdown:Refresh(configList)
-                DeleteConfigDropdown:Refresh(configList)
-            end
-        end,
-        "DeleteConfigDropdown"
+
+    CreateButtonGrid(ConfigTabContainer,
+        { Title = "Delete Config", Callback = doDeleteConfig },
+        { Title = "Refresh List",  Callback = function()
+            local configList = ConfigSystem:GetConfigList()
+            SelectConfigDropdown:Refresh(configList)
+            MakeNotify({ Title = "Config", Description = "Refreshed", Content = "Config list updated.", Color = Color3.fromRGB(150,150,170), Delay = 2 })
+        end }
     )
-    
-    local initialConfigList = ConfigSystem:GetConfigList()
-    LoadConfigDropdown:Refresh(initialConfigList)
-    DeleteConfigDropdown:Refresh(initialConfigList)
+
+    -- backward compat refs
+    local LoadConfigDropdown = SelectConfigDropdown
+    local DeleteConfigDropdown = SelectConfigDropdown
     
     CreateParagraph(ConfigTabContainer, "Note", "Configs are saved to local files in the OrvionConfigs folder.")
     
@@ -3853,6 +4139,14 @@ function Orvion:CreateWindow(config)
     -- FIXED: Renamed from AddSection to AddDivider
     function Window:AddDivider(tabContainer, title)
         return CreateDivider(tabContainer, title)
+    end
+
+    function Window:AddCollapsible(tabContainer, title, defaultOpen)
+        return CreateCollapsible(tabContainer, title, defaultOpen)
+    end
+
+    function Window:AddButtonGrid(tabContainer, btn1Config, btn2Config)
+        return CreateButtonGrid(tabContainer, btn1Config, btn2Config)
     end
 
     function Window:AddColorPicker(tabContainer, title, content, defaultColor, callback, elementId)
