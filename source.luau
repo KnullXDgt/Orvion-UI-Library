@@ -1289,6 +1289,19 @@ function Orvion:CreateWindow(config)
         end
     end)
 
+    -- polling fallback for executors that don't fire Changed
+    local _lastSearchText = ""
+    task.spawn(function()
+        while SearchTextBox and SearchTextBox.Parent do
+            local t = SearchTextBox.Text
+            if t ~= _lastSearchText then
+                _lastSearchText = t
+                buildSearchResults(t)
+            end
+            task.wait(0.1)
+        end
+    end)
+
     SearchTextBox.FocusLost:Connect(function()
         if SearchTextBox.Text == "" then
             closeSearchResults()
@@ -2378,15 +2391,16 @@ function Orvion:CreateWindow(config)
 
                 local cfW    = ContentFrame.AbsoluteSize.X
                 local halfCF = math.floor(cfW / 2)
-                local targetH = math.floor(39 + ContentFrame.AbsoluteSize.Y)
-                DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 0)
-                DropdownList.Size = UDim2.new(0, halfCF, 0, 0)
+                local rightW = cfW - halfCF
+                local targetH = math.floor(Main.AbsoluteSize.Y - 2)
+                DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 1)
+                DropdownList.Size = UDim2.new(0, rightW, 0, 0)
                 DropdownList.Visible = true
 
                 TweenService:Create(
                     DropdownList,
                     TweenInfo.new(0.25),
-                    {Size = UDim2.new(0, halfCF, 0, targetH)}
+                    {Size = UDim2.new(0, rightW, 0, targetH)}
                 ):Play()
                 TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 180}):Play()
 
@@ -2400,8 +2414,9 @@ function Orvion:CreateWindow(config)
                 OutsideClick.Parent = Main
                 OutsideClick.Activated:Connect(function()
                     dropdownData.Open = false
-                    local halfCF = math.floor(ContentFrame.AbsoluteSize.X / 2)
-                    TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, halfCF, 0, 0)}):Play()
+                    local cfW2 = ContentFrame.AbsoluteSize.X
+                    local rW2 = cfW2 - math.floor(cfW2 / 2)
+                    TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, rW2, 0, 0)}):Play()
                     TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 0}):Play()
                     task.wait(0.2)
                     DropdownList.Visible = false
@@ -2410,8 +2425,9 @@ function Orvion:CreateWindow(config)
             else
                 local oc = Main:FindFirstChild("DropOutsideClick")
                 if oc then oc:Destroy() end
-                local halfCF = math.floor(ContentFrame.AbsoluteSize.X / 2)
-                TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, halfCF, 0, 0)}):Play()
+                local cfW3 = ContentFrame.AbsoluteSize.X
+                local rW3 = cfW3 - math.floor(cfW3 / 2)
+                TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, rW3, 0, 0)}):Play()
                 TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 0}):Play()
                 task.wait(0.2)
                 DropdownList.Visible = false
@@ -4096,7 +4112,7 @@ function Orvion:CreateWindow(config)
         ChooseFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         ChooseFrame.BorderSizePixel = 0
         ChooseFrame.Position = UDim2.new(0, 0, 0, 9)
-        ChooseFrame.Size = UDim2.new(0, 1, 0, 12)
+        ChooseFrame.Size = UDim2.new(0, 3, 0, 12)
         ChooseFrame.Name = "ChooseFrame"
         ChooseFrame.Parent = Tab
         ChooseFrame.Visible = false
