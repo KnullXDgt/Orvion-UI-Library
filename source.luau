@@ -1127,7 +1127,7 @@ function Orvion:CreateWindow(config)
     SearchBar.BackgroundTransparency = 0.93
     SearchBar.BorderSizePixel = 0
     SearchBar.Position = UDim2.new(0, 0, 0, 6)
-    SearchBar.Size = UDim2.new(1, 0, 0, 24)
+    SearchBar.Size = UDim2.new(1, 0, 0, 30)
     SearchBar.ZIndex = 3
     SearchBar.Parent = TabFrame
 
@@ -1164,7 +1164,7 @@ function Orvion:CreateWindow(config)
     SearchResults.Name = "SearchResults"
     SearchResults.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
     SearchResults.BorderSizePixel = 0
-    SearchResults.Position = UDim2.new(0, 0, 0, 24)
+    SearchResults.Position = UDim2.new(0, 0, 0, 36)
     SearchResults.Size = UDim2.new(1, 0, 0, 0)
     SearchResults.ScrollBarThickness = 2
     SearchResults.ScrollBarImageColor3 = Color3.fromRGB(150, 150, 170)
@@ -1198,7 +1198,7 @@ function Orvion:CreateWindow(config)
     end
 
     local function openSearchResults()
-        local targetH = math.floor((TabFrame.AbsoluteSize.Y - 30) / 2)
+        local targetH = math.floor((TabFrame.AbsoluteSize.Y - 36) / 2)
         SearchResults.Size = UDim2.new(1, 0, 0, 0)
         SearchResults.Visible = true
         searchResultsOpen = true
@@ -1283,8 +1283,10 @@ function Orvion:CreateWindow(config)
         openSearchResults()
     end
 
-    SearchTextBox:GetPropertyChangedSignal("Text"):Connect(function()
-        buildSearchResults(SearchTextBox.Text)
+    SearchTextBox.Changed:Connect(function(prop)
+        if prop == "Text" then
+            buildSearchResults(SearchTextBox.Text)
+        end
     end)
 
     SearchTextBox.FocusLost:Connect(function()
