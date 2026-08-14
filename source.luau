@@ -1460,6 +1460,7 @@ function Orvion:CreateWindow(config)
     local AllElements = {}
     local SearchRegistry = {}
     local TabSwitchFns = {}
+    local TabNameByContainer = {}
 
     local function UpdateTabSize()
         local OffsetY = 0
@@ -1486,28 +1487,29 @@ function Orvion:CreateWindow(config)
     local function RegisterSearchElement(title, elementFrame, tabContainer)
         if not title or title == "" then return end
         local collapsibleFrame = nil
-        local c = tabContainer
-        if c and c.Name == "InnerContainer" then
-            collapsibleFrame = c.Parent
+        local actualContainer = tabContainer
+        -- if inside collapsible InnerContainer, get parent SectionFrame
+        if tabContainer and tabContainer.Name == "InnerContainer" then
+            collapsibleFrame = tabContainer.Parent
+            actualContainer  = tabContainer.Parent and tabContainer.Parent.Parent
         end
-        local tabName = nil
-        local walker = tabContainer
-        while walker do
-            for tname, tc in pairs(TabContents) do
-                if tc == walker then
-                    tabName = tname
-                    break
-                end
+        -- direct lookup first
+        local tabName = TabNameByContainer[actualContainer]
+        -- fallback: walk up
+        if not tabName then
+            local walker = actualContainer
+            while walker do
+                tabName = TabNameByContainer[walker]
+                if tabName then break end
+                walker = walker.Parent
             end
-            if tabName then break end
-            walker = walker.Parent
         end
         if not tabName then return end
         table.insert(SearchRegistry, {
-            title        = title:lower(),
-            displayTitle = title,
-            elementFrame = elementFrame,
-            tabName      = tabName,
+            title            = title:lower(),
+            displayTitle     = title,
+            elementFrame     = elementFrame,
+            tabName          = tabName,
             collapsibleFrame = collapsibleFrame,
         })
     end
@@ -4149,6 +4151,7 @@ function Orvion:CreateWindow(config)
         )
 
         TabContents[tabName] = TabContentContainer
+        TabNameByContainer[TabContentContainer] = tabName
 
         local function SwitchToTab()
             for name, container in pairs(TabContents) do
