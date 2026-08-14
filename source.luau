@@ -830,7 +830,7 @@ function Orvion:CreateWindow(config)
     UIStroke.Parent = Main
 
     -- Background image (customizable, shown only on selected theme)
-    local BgImageId    = config.BackgroundImage       or "rbxassetid://133127875115995"
+    local BgImageId    = config.BackgroundImage       or "rbxassetid://123981509631924"
     local BgImageTheme = config.BackgroundImage_Theme or "Default"
 
     local ImageWrapper = Instance.new("Frame")
