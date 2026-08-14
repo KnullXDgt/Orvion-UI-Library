@@ -4511,7 +4511,7 @@ function Orvion:CreateWindow(config)
 
     -- Autoload on startup
     task.spawn(function()
-        task.wait(2)
+        task.wait(5)
         pcall(function()
             if isfile(AutoloadFile) then
                 local autoName = readfile(AutoloadFile)
