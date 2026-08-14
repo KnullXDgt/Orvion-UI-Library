@@ -1164,7 +1164,7 @@ function Orvion:CreateWindow(config)
     SearchResultsCorner.CornerRadius = UDim.new(0, 4)
     SearchResultsCorner.Parent = SearchResults
 
-    local SearchResultsLayout = Instance.new("UIListLayout")
+    SearchResultsLayout = Instance.new("UIListLayout")
     SearchResultsLayout.Padding = UDim.new(0, 2)
     SearchResultsLayout.SortOrder = Enum.SortOrder.LayoutOrder
     SearchResultsLayout.Parent = SearchResults
@@ -1178,6 +1178,8 @@ function Orvion:CreateWindow(config)
     local SearchSections = {}
     local TabContents = {}
     local TabSwitchFns = {}
+    local ContentScroll = nil      -- forward declaration
+    local SearchResultsLayout = nil -- forward declaration
 
     -- helper: sum Size.Y.Offset of children above stopAt (reliable, no render needed)
     local function sumChildH(container, stopAt)
@@ -1559,7 +1561,7 @@ function Orvion:CreateWindow(config)
     ContentCorner.CornerRadius = UDim.new(0, 2)
     ContentCorner.Parent = ContentFrame
 
-    local ContentScroll = Instance.new("ScrollingFrame")
+    ContentScroll = Instance.new("ScrollingFrame")
     ContentScroll.ScrollBarImageColor3 = Color3.fromRGB(80, 80, 80)
     ContentScroll.ScrollBarThickness = 0
     ContentScroll.Active = true
