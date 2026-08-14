@@ -1273,11 +1273,11 @@ function Orvion:CreateWindow(config)
                                         local sf = TabSwitchFns[capSec.tabName]
                                         if sf then sf() end
                                         pcall(capSec.openFn)
-                                        task.wait(0.3)
+                                        task.wait(0.5)
                                         local ey = capElem.AbsolutePosition.Y
                                         local cy = ContentScroll.AbsolutePosition.Y
                                         TweenService:Create(ContentScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                                            CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
+                                            CanvasPosition = Vector2.new(0, math.max(0, ey - cy + ContentScroll.CanvasPosition.Y))
                                         }):Play()
                                         task.spawn(function()
                                             TweenService:Create(capElem, TweenInfo.new(0.2), {BackgroundTransparency=0.5}):Play()
@@ -1356,11 +1356,11 @@ function Orvion:CreateWindow(config)
                                     pcall(function()
                                         local sf = TabSwitchFns[capTab]
                                         if sf then sf() end
-                                        task.wait(0.3)
+                                        task.wait(0.5)
                                         local ey = capElem.AbsolutePosition.Y
                                         local cy = ContentScroll.AbsolutePosition.Y
                                         TweenService:Create(ContentScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                                            CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
+                                            CanvasPosition = Vector2.new(0, math.max(0, ey - cy + ContentScroll.CanvasPosition.Y))
                                         }):Play()
                                         task.spawn(function()
                                             TweenService:Create(capElem, TweenInfo.new(0.2), {BackgroundTransparency=0.5}):Play()
@@ -3611,7 +3611,7 @@ function Orvion:CreateWindow(config)
                 TweenService:Create(ColorPickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(0, 200, 0, 210)}):Play()
             else
                 TweenService:Create(ColorPickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(0, 200, 0, 0)}):Play()
-                task.wait(0.3)
+                task.wait(0.5)
                 ColorPickerFrame.Visible = false
             end
         end
