@@ -146,18 +146,13 @@ local function MakeDraggableMobileButton(button, object, screenGui)
                 -- use AbsolutePosition so mixed-scale positions don't cause jump
                 StartPosition = Vector2.new(object.AbsolutePosition.X, object.AbsolutePosition.Y)
 
-                input.Changed:Connect(
-                    function()
+                pcall(function()
+                    input.Changed:Connect(function()
                         if input.UserInputState == Enum.UserInputState.End then
-                            local dragTime = tick() - ClickStartTime
-                            local dragDistance = (input.Position - ClickStartPos).Magnitude
-
-                            if dragTime < 0.2 and dragDistance < 5 then
-                            end
                             Dragging = false
                         end
-                    end
-                )
+                    end)
+                end)
             end
         end
     )
@@ -1218,7 +1213,8 @@ function Orvion:CreateWindow(config)
         end
         local q = query:lower()
         local found = 0
-        for _, entry in ipairs(SearchRegistry) do
+        local reg = SearchRegistry or {}
+        for _, entry in ipairs(reg) do
             if entry.title:find(q, 1, true) then
                 found = found + 1
                 local Item = Instance.new("TextButton")
