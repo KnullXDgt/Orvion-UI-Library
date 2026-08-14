@@ -1,3 +1,3 @@
 return {
-    ["Default"] = Color3.fromRGB(150, 150, 170),
+    ["Darker"] = Color3.fromRGB(150, 150, 170),
 }
