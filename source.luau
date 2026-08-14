@@ -4295,9 +4295,10 @@ function Orvion:CreateWindow(config)
     local CurrentConfigName = ""
     local SelectedConfigName = ""
     local AutoloadFile = ConfigFolder .. "/Autoload.txt"
+    local CfgSection = CreateCollapsible(ConfigTabContainer, "Configuration", true)
 
     -- Status header frame with gear icon + two-line status
-    local CfgHeaderFrame = Instance.new("Frame", ConfigTabContainer)
+    local CfgHeaderFrame = Instance.new("Frame", CfgSection)
     CfgHeaderFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
     CfgHeaderFrame.BackgroundTransparency = 0.935
     CfgHeaderFrame.BorderSizePixel = 0
@@ -4355,7 +4356,7 @@ function Orvion:CreateWindow(config)
 
     local ConfigNameInput =
         CreateInput(
-        ConfigTabContainer,
+        CfgSection,
         "Config Name",
         "",
         "MyConfig",
@@ -4366,7 +4367,7 @@ function Orvion:CreateWindow(config)
     )
 
     local SelectConfigDropdown = CreateDropdown(
-        ConfigTabContainer,
+        CfgSection,
         "Select Config",
         "Choose from saved configs",
         ConfigSystem:GetConfigList(),
@@ -4491,17 +4492,17 @@ function Orvion:CreateWindow(config)
         updateCfgStatus()
     end
 
-    CreateButtonGrid(ConfigTabContainer,
+    CreateButtonGrid(CfgSection,
         { Title = "Save Config", Callback = doSaveConfig },
         { Title = "Load Config", Callback = doLoadConfig }
     )
 
-    CreateButtonGrid(ConfigTabContainer,
+    CreateButtonGrid(CfgSection,
         { Title = "Delete Config", Callback = doDeleteConfig },
         { Title = "Set Autoload",  Callback = doSetAutoload }
     )
 
-    CreateButtonGrid(ConfigTabContainer,
+    CreateButtonGrid(CfgSection,
         { Title = "Refresh List", Callback = function()
             local configList = ConfigSystem:GetConfigList()
             SelectConfigDropdown:Refresh(configList)
@@ -4510,7 +4511,7 @@ function Orvion:CreateWindow(config)
         { Title = "Clear Autoload", Callback = doClearAutoload }
     )
 
-    CreateButton(ConfigTabContainer, "Reset All Elements", "Reset semua element ke default", "rbxassetid://16932740082", function()
+    CreateButton(CfgSection, "Reset All Elements", "Reset semua element ke default", "rbxassetid://16932740082", function()
         for id, element in pairs(AllElements) do
             pcall(function()
                 if element.Type == "Toggle" then
