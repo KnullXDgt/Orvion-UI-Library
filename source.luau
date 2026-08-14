@@ -140,7 +140,7 @@ local function MakeDraggableMobileButton(button, object, screenGui)
         function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 Dragging = false
-                ClickStartTime = os.clock()
+                ClickStartTime = (os and os.clock and os.clock()) or (tick and tick()) or 0
                 ClickStartPos = input.Position
                 DragStart = input.Position
                 -- use AbsolutePosition so mixed-scale positions don't cause jump
@@ -4066,12 +4066,12 @@ function Orvion:CreateWindow(config)
         end)
 
         -- register section for search
-        local tabName = pcall(function() end) and nil
+        local tabName = nil
         do
             local w = tabContainer
             while w and w ~= Main do
-                local ok, v = pcall(function() return w:GetAttribute("OrvionTabName") end)
-                if ok and v then tabName = v break end
+                local s, v = pcall(function() return w:GetAttribute("OrvionTabName") end)
+                if s and v then tabName = v break end
                 w = w.Parent
             end
         end
