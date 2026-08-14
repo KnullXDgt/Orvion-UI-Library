@@ -1174,54 +1174,95 @@ function Orvion:CreateWindow(config)
     end)
 
     local searchResultsOpen = false
-    local NoResultsLabel = nil -- forward declaration, assigned below
+    local NoResultsLabel = nil
+    local SearchSections = {} -- pure Lua table, no instance comparison needed
 
     local function closeSearchResults()
         searchResultsOpen = false
         SearchResults.Visible = false
+        for _, child in ipairs(SearchResults:GetChildren()) do
+            if child:IsA("TextButton") then child:Destroy() end
+        end
+        if NoResultsLabel then NoResultsLabel.Visible = false end
     end
 
     local function buildSearchResults(query)
         if not NoResultsLabel then return end
-        local q = string.lower(query)
-        NoResultsLabel.Visible = false
-        local anyVisible = false
-        local visibleCount = 0
-
-        for _, item in ipairs(SearchResults:GetChildren()) do
-            if item:IsA("TextButton") then
-                if q == "" then
-                    item.Visible = false
-                else
-                    -- match on Text (strip leading spaces) AND Name, whichever works
-                    local rawText = (item.Text or ""):gsub("^%s+", ""):lower()
-                    local rawName = (item.Name or ""):lower()
-                    local match = (rawText ~= "" and string.find(rawText, q, 1, true) ~= nil)
-                                or string.find(rawName, q, 1, true) ~= nil
-                    item.Visible = match
-                    if match then
-                        anyVisible = true
-                        visibleCount = visibleCount + 1
-                    end
-                end
-            end
+        -- fresh destroy old buttons
+        for _, child in ipairs(SearchResults:GetChildren()) do
+            if child:IsA("TextButton") then child:Destroy() end
         end
+        NoResultsLabel.Visible = false
 
-        if q == "" then
+        if query == "" then
             closeSearchResults()
             return
         end
 
-        if not anyVisible then
-            NoResultsLabel.Visible = true
-            visibleCount = 1
+        local q = string.lower(query)
+        local found = 0
+
+        for _, sec in ipairs(SearchSections) do
+            if string.find(string.lower(sec.title or ""), q, 1, true) then
+                found = found + 1
+                local Item = Instance.new("TextButton", SearchResults)
+                Item.Font = Enum.Font.GothamBold
+                Item.Text = "  " .. sec.title
+                Item.TextColor3 = Color3.fromRGB(220, 220, 220)
+                Item.TextSize = 11
+                Item.TextXAlignment = Enum.TextXAlignment.Left
+                Item.TextTruncate = Enum.TextTruncate.AtEnd
+                Item.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                Item.BackgroundTransparency = 0.92
+                Item.BorderSizePixel = 0
+                Item.Size = UDim2.new(1, 0, 0, 26)
+                Item.ZIndex = 51
+                Item.AutoButtonColor = true
+                Item.Visible = true
+                Instance.new("UICorner", Item).CornerRadius = UDim.new(0, 3)
+                local tag = Instance.new("TextLabel", Item)
+                tag.Font = Enum.Font.Gotham
+                tag.Text = sec.tabName or ""
+                tag.TextColor3 = Color3.fromRGB(120, 120, 140)
+                tag.TextSize = 9
+                tag.TextXAlignment = Enum.TextXAlignment.Right
+                tag.BackgroundTransparency = 1
+                tag.BorderSizePixel = 0
+                tag.AnchorPoint = Vector2.new(1, 0.5)
+                tag.Position = UDim2.new(1, -4, 0.5, 0)
+                tag.Size = UDim2.new(0, 50, 1, 0)
+                tag.ZIndex = 52
+                local capSec = sec
+                Item.MouseButton1Click:Connect(function()
+                    local sf = TabSwitchFns[capSec.tabName]
+                    if sf then sf() end
+                    pcall(capSec.openFn)
+                    task.wait(0.05)
+                    pcall(function()
+                        local ey = capSec.secFrame.AbsolutePosition.Y
+                        local cy = ContentScroll.AbsolutePosition.Y
+                        ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
+                    end)
+                    SearchTextBox.Text = ""
+                    closeSearchResults()
+                end)
+            end
         end
 
-        SearchResults.CanvasSize = UDim2.new(0, 0, 0, visibleCount * 28 + 4)
-        local targetH = math.max(60, math.min(visibleCount * 28 + 4, 150))
-        SearchResults.Size = UDim2.new(0, 120, 0, targetH)
-        SearchResults.Visible = true
-        searchResultsOpen = true
+        if found == 0 then
+            NoResultsLabel.Visible = true
+        end
+
+        -- defer so UIListLayout computes AbsoluteContentSize after items added
+        task.defer(function()
+            local contentH = SearchResultsLayout.AbsoluteContentSize.Y + 4
+            if found == 0 then contentH = 30 end
+            local targetH = math.max(30, math.min(contentH, 150))
+            SearchResults.CanvasSize = UDim2.new(0, 0, 0, contentH)
+            SearchResults.Size = UDim2.new(0, 120, 0, targetH)
+            SearchResults.Visible = true
+            searchResultsOpen = true
+        end)
     end
 
 
@@ -3955,51 +3996,22 @@ function Orvion:CreateWindow(config)
             updateSize()
         end)
 
-        -- extract tabName from container Name (TabContentContainer.Name = tabName.."Content")
+        -- register in SearchSections for live search
         local rawName = (tabContainer and tabContainer.Name) or ""
         local tabName = rawName ~= "" and rawName:gsub("Content$", "") or nil
         if tabName and title and title ~= "" then
             local secTitle = (title or ""):gsub("^%s+", "")
-            local SBtn = Instance.new("TextButton", SearchResults)
-            SBtn.Name = secTitle
-            SBtn.Font = Enum.Font.GothamBold
-            SBtn.Text = "  " .. secTitle
-            SBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
-            SBtn.TextSize = 11
-            SBtn.TextXAlignment = Enum.TextXAlignment.Left
-            SBtn.TextTruncate = Enum.TextTruncate.AtEnd
-            SBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            SBtn.BackgroundTransparency = 0.92
-            SBtn.BorderSizePixel = 0
-            SBtn.Size = UDim2.new(1, 0, 0, 26)
-            SBtn.ZIndex = 51
-            SBtn.AutoButtonColor = true
-            SBtn.Visible = false
-            Instance.new("UICorner", SBtn).CornerRadius = UDim.new(0, 3)
-            local tag = Instance.new("TextLabel", SBtn)
-            tag.Font = Enum.Font.Gotham
-            tag.Text = tabName
-            tag.TextColor3 = Color3.fromRGB(120, 120, 140)
-            tag.TextSize = 9
-            tag.TextXAlignment = Enum.TextXAlignment.Right
-            tag.BackgroundTransparency = 1
-            tag.BorderSizePixel = 0
-            tag.AnchorPoint = Vector2.new(1, 0.5)
-            tag.Position = UDim2.new(1, -4, 0.5, 0)
-            tag.Size = UDim2.new(0, 50, 1, 0)
-            tag.ZIndex = 52
-            local capTab, capSec = tabName, SectionFrame
-            SBtn.MouseButton1Click:Connect(function()
-                local sf = TabSwitchFns[capTab]
-                if sf then sf() end
-                if not isOpen then isOpen = true updateSize() end
-                task.wait(0.05)
-                local ey = capSec.AbsolutePosition.Y
-                local cy = ContentScroll.AbsolutePosition.Y
-                ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
-                SearchTextBox.Text = ""
-                closeSearchResults()
-            end)
+            table.insert(SearchSections, {
+                title   = secTitle,
+                tabName = tabName,
+                secFrame = SectionFrame,
+                openFn  = function()
+                    if not isOpen then
+                        isOpen = true
+                        updateSize()
+                    end
+                end,
+            })
         end
 
         updateSize()
