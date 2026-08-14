@@ -237,9 +237,9 @@ local ConfigSystem = {
     CurrentConfig = nil,
     Configs = {},
     ThemeColors = {
-        ["Default"] = Color3.fromRGB(150, 150, 170),
+        ["Darker"] = Color3.fromRGB(150, 150, 170),
     },
-    CurrentTheme = "Default",
+    CurrentTheme = "Darker",
     ThemeElements = {},
     ToggleElements = {},
     SliderElements = {},
@@ -756,7 +756,7 @@ end
 function Orvion:CreateWindow(config)
     config = config or {}
     local Title = config.Title or "Orvion UI"
-    local Theme = config.Theme or "Default"
+    local Theme = config.Theme or "Darker"
     local Size = config.Size or UDim2.fromOffset(470, 270)
     local Center = config.Center ~= false
     local Draggable = config.Draggable ~= false
@@ -825,7 +825,7 @@ function Orvion:CreateWindow(config)
 
     -- Background image (customizable, shown only on selected theme)
     local BgImageId    = config.BackgroundImage       or "rbxassetid://123981509631924"
-    local BgImageTheme = config.BackgroundImage_Theme or "Default"
+    local BgImageTheme = config.BackgroundImage_Theme or "Darker"
 
     local ImageWrapper = Instance.new("Frame")
     ImageWrapper.Name = "ImageWrapper"
