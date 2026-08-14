@@ -1920,8 +1920,8 @@ function Orvion:CreateWindow(config)
         FeatureFrame.BackgroundTransparency = 0.999
         FeatureFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         FeatureFrame.BorderSizePixel = 0
-        FeatureFrame.Position = UDim2.new(1, -15, 0.5, 0)
-        FeatureFrame.Size = UDim2.new(0, 25, 0, 25)
+        FeatureFrame.Position = UDim2.new(1, -5, 0.5, 0)
+        FeatureFrame.Size = UDim2.new(0, 20, 0, 20)
         FeatureFrame.Name = "FeatureFrame"
         FeatureFrame.Parent = Button
 
@@ -2155,7 +2155,7 @@ function Orvion:CreateWindow(config)
         Input.BackgroundTransparency = 0.935
         Input.BorderColor3 = Color3.fromRGB(0, 0, 0)
         Input.BorderSizePixel = 0
-        Input.Size = UDim2.new(1, 0, 0, 46)
+        Input.Size = UDim2.new(1, 0, 0, 44)
         Input.Name = "Input"
         Input.Parent = tabContainer
 
@@ -4295,10 +4295,10 @@ function Orvion:CreateWindow(config)
     CfgTitle.ZIndex = 2
 
     local CfgStatusLabel = Instance.new("TextLabel", CfgHeaderFrame)
-    CfgStatusLabel.Font = Enum.Font.GothamBold
+    CfgStatusLabel.Font = Enum.Font.Gotham
     CfgStatusLabel.Text = "Current: None  |  Autoload: None"
-    CfgStatusLabel.TextColor3 = Color3.fromRGB(180, 180, 200)
-    CfgStatusLabel.TextSize = 12
+    CfgStatusLabel.TextColor3 = Color3.fromRGB(160, 160, 180)
+    CfgStatusLabel.TextSize = 11
     CfgStatusLabel.TextXAlignment = Enum.TextXAlignment.Left
     CfgStatusLabel.TextWrapped = true
     CfgStatusLabel.BackgroundTransparency = 1
