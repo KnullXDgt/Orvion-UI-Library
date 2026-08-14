@@ -1,5 +1,4 @@
 local Orvion = {}
-Orvion._silentLoad = false
 
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -518,7 +517,6 @@ function ConfigSystem:GetConfigList()
 end
 
 local function MakeNotify(NotifyConfig)
-    if Orvion._silentLoad then return end
     local NotifyConfig = NotifyConfig or {}
     NotifyConfig.Title = NotifyConfig.Title or "Notification"
     NotifyConfig.Description = NotifyConfig.Description or "Description"
@@ -764,7 +762,6 @@ function Orvion:CreateWindow(config)
     local Draggable = config.Draggable ~= false
     local Resizable = config.Resize or false
     local MinimizeKey = config.MinimizeKey or Enum.KeyCode.RightShift
-    local ManualAutoload = config.ManualAutoload or false
     if config.ConfigFolder then ConfigFolder = config.ConfigFolder end
     local MinimizeButton = config.MinimizeButton or false
     local MinimizeButtonImage = config.MinimizeButton_Image or "rbxassetid://16932740082"
@@ -4516,8 +4513,7 @@ function Orvion:CreateWindow(config)
         MakeNotify({ Title = "Config", Description = "Reset", Content = "All elements reset to default.", Color = Color3.fromRGB(150,150,170), Delay = 2 })
     end)
 
-    -- Autoload on startup (skip if ManualAutoload=true)
-    if not ManualAutoload then
+    -- Autoload on startup
     task.spawn(function()
         task.wait(2)
         pcall(function()
@@ -4527,7 +4523,6 @@ function Orvion:CreateWindow(config)
                     local _, configData = ConfigSystem:LoadConfig(autoName)
                     if configData then
                         task.wait(0.1)
-                        Orvion._silentLoad = true
                         for id, val in pairs(configData) do
                             if AllElements[id] then
                                 if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
@@ -4539,7 +4534,6 @@ function Orvion:CreateWindow(config)
                                 end
                             end
                         end
-                        Orvion._silentLoad = false
                         CurrentConfigName = autoName
                         updateCfgStatus()
                         MakeNotify({ Title = "Config", Description = "Autoloaded", Content = "\"" .. autoName .. "\" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 4 })
@@ -4548,7 +4542,6 @@ function Orvion:CreateWindow(config)
             end
         end)
     end)
-    end
 
     -- backward compat refs
     local LoadConfigDropdown = SelectConfigDropdown
@@ -4679,37 +4672,6 @@ function Orvion:CreateWindow(config)
     
     function Window:Destroy()
         ScreenGui:Destroy()
-    end
-
-    function Window:ApplyConfig(nameOverride)
-        pcall(function()
-            local autoName = nameOverride
-            if not autoName then
-                if isfile(AutoloadFile) then
-                    local v = readfile(AutoloadFile)
-                    if v and v ~= "" then autoName = v end
-                end
-            end
-            if not autoName then return end
-            local _, configData = ConfigSystem:LoadConfig(autoName)
-            if not configData then return end
-            Orvion._silentLoad = true
-            for id, val in pairs(configData) do
-                if AllElements[id] then
-                    if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
-                        AllElements[id]:Set(Color3.new(val[1], val[2], val[3]))
-                    elseif AllElements[id].Type == "Keybind" and val then
-                        AllElements[id]:Set(Enum.KeyCode[val])
-                    else
-                        AllElements[id]:Set(val)
-                    end
-                end
-            end
-            Orvion._silentLoad = false
-            CurrentConfigName = autoName
-            updateCfgStatus()
-            MakeNotify({ Title = "Config", Description = "Autoloaded", Content = "\"" .. autoName .. "\" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
-        end)
     end
     
     return Window
