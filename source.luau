@@ -2163,7 +2163,7 @@ function Orvion:CreateWindow(config)
         InputCorner.CornerRadius = UDim.new(0, 4)
         InputCorner.Parent = Input
 
-        Input.Size = UDim2.new(1, 0, 0, 68)
+        Input.Size = UDim2.new(1, 0, 0, 46)
 
         local InputTitle = Instance.new("TextLabel")
         InputTitle.Font = Enum.Font.GothamBold
@@ -2173,8 +2173,8 @@ function Orvion:CreateWindow(config)
         InputTitle.TextXAlignment = Enum.TextXAlignment.Left
         InputTitle.BackgroundTransparency = 0.999
         InputTitle.BorderSizePixel = 0
-        InputTitle.Position = UDim2.new(0, 8, 0, 6)
-        InputTitle.Size = UDim2.new(1, -16, 0, 14)
+        InputTitle.Position = UDim2.new(0, 10, 0, 10)
+        InputTitle.Size = UDim2.new(1, -180, 0, 13)
         InputTitle.Name = "InputTitle"
         InputTitle.Parent = Input
 
@@ -2183,8 +2183,9 @@ function Orvion:CreateWindow(config)
         InputFrame.BackgroundTransparency = 0.95
         InputFrame.BorderSizePixel = 0
         InputFrame.ClipsDescendants = true
-        InputFrame.Position = UDim2.new(0, 6, 0, 27)
-        InputFrame.Size = UDim2.new(1, -12, 0, 36)
+        InputFrame.AnchorPoint = Vector2.new(1, 0.5)
+        InputFrame.Position = UDim2.new(1, -7, 0.5, 0)
+        InputFrame.Size = UDim2.new(0, 148, 0, 30)
         InputFrame.Name = "InputFrame"
         InputFrame.Parent = Input
 
