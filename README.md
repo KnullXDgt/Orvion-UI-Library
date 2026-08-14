@@ -1,6 +1,6 @@
 # Orvion UI Library
 
-A clean, lightweight Roblox UI library built for executor scripts. Dark themed, mobile-friendly, and easy to drop into any script.
+A Roblox UI library for executor scripts. Dark theme, mobile-first, drops into any script without setup.
 
 ---
 
@@ -14,7 +14,7 @@ local Orvion = loadstring(game:HttpGet(
 
 ---
 
-## Creating a Window
+## Creating a window
 
 ```lua
 local Window = Orvion:CreateWindow({
@@ -22,9 +22,9 @@ local Window = Orvion:CreateWindow({
     Center         = true,
     Draggable      = true,
     Resizable      = true,
-    ToggleButton   = true,          -- floating button to open/close UI
-    ConfigFolder   = "MyFolder",    -- folder name in executor workspace
-    -- BackgroundImage = "rbxassetid://...",  -- optional bg image (Default theme only)
+    ToggleButton   = true,
+    ConfigFolder   = "MyFolder",
+    -- BackgroundImage = "rbxassetid://...",
 })
 ```
 
@@ -38,13 +38,13 @@ local Tab = Window:CreateTab("Features")
 
 ---
 
-## Collapsible Section
+## Collapsible sections
 
 ```lua
-local Section = Window:AddCollapsible(Tab, "Section Name", true)  -- true = open by default
+local Section = Window:AddCollapsible(Tab, "Section Name", true)
 ```
 
-All elements below can be added to a tab directly or inside a collapsible section.
+Elements can go into a tab directly or inside a collapsible section.
 
 ---
 
@@ -53,7 +53,7 @@ All elements below can be added to a tab directly or inside a collapsible sectio
 ### Toggle
 
 ```lua
-Window:AddToggle(Tab, "Enable Something", "Description text", false, function(state)
+Window:AddToggle(Tab, "Enable Something", "Description", false, function(state)
     print(state)
 end)
 ```
@@ -66,7 +66,7 @@ Window:AddButton(Tab, "Do Action", "Description", "rbxassetid://16932740082", fu
 end)
 ```
 
-### Button Grid (2 side by side)
+### Button grid (2 side by side)
 
 ```lua
 Window:AddButtonGrid(Tab,
@@ -91,7 +91,7 @@ Window:AddSlider(Tab, "Speed", "Description", 0, 100, 16, function(value)
 end)
 ```
 
-### Dropdown (single)
+### Dropdown
 
 ```lua
 Window:AddDropdown(Tab, "Mode", "Description",
@@ -101,7 +101,7 @@ Window:AddDropdown(Tab, "Mode", "Description",
 )
 ```
 
-### Dropdown (multi select)
+### Multi-select dropdown
 
 ```lua
 Window:AddMultiDropdown(Tab, "Perks", "Description",
@@ -117,7 +117,7 @@ Window:AddMultiDropdown(Tab, "Perks", "Description",
 Window:AddParagraph(Tab, "Title", "Body text here.")
 ```
 
-### Color Picker
+### Color picker
 
 ```lua
 Window:AddColorPicker(Tab, "Color", "Pick a color", Color3.fromRGB(255,0,0), function(color)
@@ -135,7 +135,7 @@ end)
 
 ---
 
-## Notification
+## Notifications
 
 ```lua
 Orvion:Notify({
@@ -149,21 +149,11 @@ Orvion:Notify({
 
 ---
 
-## Config System
+## Config system
 
-A **Configs** tab is automatically added to every window. It handles:
+Every window gets a Configs tab automatically. From there you can save and load element states to a JSON file, set a config to auto-load on the next run, delete configs, or reset everything to default.
 
-- **Config Name** — type a name for your config
-- **Select Config** — pick an existing saved config
-- **Save Config / Load Config** — save or restore all element states to a JSON file
-- **Delete Config / Set Autoload** — delete a config or mark it to auto-load on next run
-- **Refresh List / Clear Autoload** — refresh the dropdown or clear the autoload marker
-- **Reset All Elements** — reset all toggles/sliders/dropdowns/inputs to default
-
-Config files are saved to: `ConfigFolder/Configs/name.json`
-Autoload marker: `ConfigFolder/Autoload.txt`
-
-To use a custom folder name:
+Files go to `ConfigFolder/Configs/name.json`. The autoload marker is at `ConfigFolder/Autoload.txt`.
 
 ```lua
 local Window = Orvion:CreateWindow({
@@ -174,37 +164,37 @@ local Window = Orvion:CreateWindow({
 
 ---
 
-## Search Bar
+## Search
 
-Type in the search bar (sidebar) to find any element across all tabs and sections. Click a result to jump directly to it with a highlight effect.
+Type in the sidebar search bar to find any element across all tabs. Click a result to jump to it.
 
 ---
 
-## Toggle Button (floating)
+## Toggle button
 
-A draggable button on the left side of the screen to open/close the UI. Enable it with:
+A draggable button on the left side of the screen that opens and closes the UI.
 
 ```lua
-ToggleButton = true,
--- ToggleButton_Image = "rbxassetid://...",  -- optional custom icon
+ToggleButton       = true,
+ToggleButton_Image = "rbxassetid://...",  -- optional custom icon
 ```
 
 ---
 
-## Background Image
+## Background image
 
-Shows a background image inside the main content area. Visible only on the Darker theme by default.
+Shows an image inside the main content area. Only visible on the Darker theme by default.
 
 ```lua
 BackgroundImage       = "rbxassetid://123981509631924",
-BackgroundImage_Theme = "Darker",  -- which theme shows it
+BackgroundImage_Theme = "Darker",
 ```
 
 ---
 
-## Setting Values Programmatically
+## Setting values from code
 
-Every element returns an object you can call `:Set()` on:
+Every element returns an object with a `:Set()` method.
 
 ```lua
 local MyToggle = Window:AddToggle(Tab, "Auto Fish", "", false, function(state) end)
@@ -216,15 +206,6 @@ MySlider:Set(5)
 local MyDropdown = Window:AddDropdown(Tab, "Mode", "", {"A","B"}, false, "A", function(v) end)
 MyDropdown:Set("B")
 ```
-
----
-
-## Notes
-
-- Executor: tested on Delta (Android)
-- UI is mobile-first — works on both mobile and PC
-- All element IDs are auto-generated from their title (spaces and special chars stripped)
-- No emoji in script code — Delta will silently fail to parse them
 
 ---
 
