@@ -1203,48 +1203,101 @@ function Orvion:CreateWindow(config)
         local found = 0
 
         for _, sec in ipairs(SearchSections) do
-            if string.find(string.lower(sec.title or ""), q, 1, true) then
+            -- check section header
+            local secMatch = string.find(string.lower(sec.title or ""), q, 1, true)
+
+            -- collect matching children
+            local matchingChildren = {}
+            pcall(function()
+                local inner = sec.secFrame and sec.secFrame:FindFirstChild("InnerContainer")
+                if inner then
+                    for _, elem in ipairs(inner:GetChildren()) do
+                        for _, lname in ipairs({"ToggleTitle","ButtonTitle","InputTitle","DropdownTitle","SliderTitle","ParagraphTitle","ParagraphContent"}) do
+                            local lbl = elem:FindFirstChild(lname)
+                            if lbl and lbl.Text and lbl.Text ~= "" then
+                                local matched = string.find(string.lower(lbl.Text), q, 1, true)
+                                if matched then
+                                    table.insert(matchingChildren, {text=lbl.Text, frame=elem})
+                                    break
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+
+            local function makeItem(displayText, tagText, clickFn)
                 found = found + 1
                 local Item = Instance.new("TextButton", SearchResults)
                 Item.Font = Enum.Font.GothamBold
-                Item.Text = "  " .. sec.title
+                Item.Text = displayText
                 Item.TextColor3 = Color3.fromRGB(220, 220, 220)
-                Item.TextSize = 11
+                Item.TextSize = 13
                 Item.TextXAlignment = Enum.TextXAlignment.Left
                 Item.TextTruncate = Enum.TextTruncate.AtEnd
                 Item.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 Item.BackgroundTransparency = 0.92
                 Item.BorderSizePixel = 0
-                Item.Size = UDim2.new(1, 0, 0, 26)
+                Item.Size = UDim2.new(1, 0, 0, 28)
                 Item.ZIndex = 51
                 Item.AutoButtonColor = true
                 Item.Visible = true
                 Instance.new("UICorner", Item).CornerRadius = UDim.new(0, 3)
-                local tag = Instance.new("TextLabel", Item)
-                tag.Font = Enum.Font.Gotham
-                tag.Text = sec.tabName or ""
-                tag.TextColor3 = Color3.fromRGB(120, 120, 140)
-                tag.TextSize = 9
-                tag.TextXAlignment = Enum.TextXAlignment.Right
-                tag.BackgroundTransparency = 1
-                tag.BorderSizePixel = 0
-                tag.AnchorPoint = Vector2.new(1, 0.5)
-                tag.Position = UDim2.new(1, -4, 0.5, 0)
-                tag.Size = UDim2.new(0, 50, 1, 0)
-                tag.ZIndex = 52
-                local capSec = sec
+                if tagText and tagText ~= "" then
+                    local tag = Instance.new("TextLabel", Item)
+                    tag.Font = Enum.Font.Gotham
+                    tag.Text = tagText
+                    tag.TextColor3 = Color3.fromRGB(120, 120, 140)
+                    tag.TextSize = 9
+                    tag.TextXAlignment = Enum.TextXAlignment.Right
+                    tag.BackgroundTransparency = 1
+                    tag.BorderSizePixel = 0
+                    tag.AnchorPoint = Vector2.new(1, 0.5)
+                    tag.Position = UDim2.new(1, -4, 0.5, 0)
+                    tag.Size = UDim2.new(0, 55, 1, 0)
+                    tag.ZIndex = 52
+                end
                 Item.MouseButton1Click:Connect(function()
-                    local sf = TabSwitchFns[capSec.tabName]
-                    if sf then sf() end
-                    pcall(capSec.openFn)
-                    task.wait(0.05)
-                    pcall(function()
-                        local ey = capSec.secFrame.AbsolutePosition.Y
-                        local cy = ContentScroll.AbsolutePosition.Y
-                        ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
-                    end)
+                    pcall(clickFn)
                     SearchTextBox.Text = ""
                     closeSearchResults()
+                end)
+            end
+
+            local function navToSection()
+                local sf = TabSwitchFns[sec.tabName]
+                if sf then sf() end
+                pcall(sec.openFn)
+                task.wait(0.05)
+                pcall(function()
+                    local ey = sec.secFrame.AbsolutePosition.Y
+                    local cy = ContentScroll.AbsolutePosition.Y
+                    ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
+                end)
+            end
+
+            local function navToChild(childFrame)
+                local sf = TabSwitchFns[sec.tabName]
+                if sf then sf() end
+                pcall(sec.openFn)
+                task.wait(0.05)
+                pcall(function()
+                    local ey = childFrame.AbsolutePosition.Y
+                    local cy = ContentScroll.AbsolutePosition.Y
+                    ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
+                end)
+            end
+
+            -- section header item
+            if secMatch then
+                makeItem(sec.title, sec.tabName, navToSection)
+            end
+
+            -- flat child items — each standalone
+            for _, child in ipairs(matchingChildren) do
+                local capChild = child
+                makeItem(capChild.text, sec.title, function()
+                    navToChild(capChild.frame)
                 end)
             end
         end
