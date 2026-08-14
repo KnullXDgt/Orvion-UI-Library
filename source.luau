@@ -1269,36 +1269,39 @@ function Orvion:CreateWindow(config)
                                 SubLabel.ZIndex = 52
 
                                 Item.MouseButton1Click:Connect(function()
-                                    pcall(function()
-                                        local sf = TabSwitchFns[capSec.tabName]
-                                        if sf then sf() end
-                                        pcall(capSec.openFn)
-                                        task.wait(0.5)
-                                        -- compute Y by summing child heights (reliable after layout)
-                                        local inner2 = capSec.secFrame and capSec.secFrame:FindFirstChild("InnerContainer")
-                                        local targetY = 0
-                                        if inner2 then
-                                            for _, ch in ipairs(inner2:GetChildren()) do
-                                                if ch == capElem then break end
-                                                if ch:IsA("Frame") then targetY = targetY + ch.Size.Y.Offset + 5 end
-                                            end
+                                    task.spawn(function()
+                                        pcall(function()
+                                            local sf = TabSwitchFns[capSec.tabName]
+                                            if sf then sf() end
+                                            pcall(capSec.openFn)
+                                        end)
+                                        -- poll until CanvasSize is ready (max 1s)
+                                        local waited = 0
+                                        repeat
+                                            task.wait(0.05)
+                                            waited = waited + 0.05
+                                        until ContentScroll.CanvasSize.Y.Offset > 50 or waited >= 1
+
+                                        -- use AbsolutePosition now that layout is ready
+                                        local ok2, scrollY = pcall(function()
+                                            local ey = capElem.AbsolutePosition.Y
+                                            local cy = ContentScroll.AbsolutePosition.Y
+                                            return ey - cy + ContentScroll.CanvasPosition.Y
+                                        end)
+                                        if ok2 and scrollY and scrollY > 0 then
+                                            TweenService:Create(ContentScroll, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                                                CanvasPosition = Vector2.new(0, math.max(0, scrollY))
+                                            }):Play()
                                         end
-                                        -- offset by section position in scroll
-                                        local secY = 0
-                                        local container2 = capSec.secFrame and capSec.secFrame.Parent
-                                        if container2 then
-                                            for _, ch in ipairs(container2:GetChildren()) do
-                                                if ch == capSec.secFrame then break end
-                                                if ch:IsA("Frame") then secY = secY + ch.Size.Y.Offset + 8 end
-                                            end
-                                        end
-                                        TweenService:Create(ContentScroll, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                                            CanvasPosition = Vector2.new(0, math.max(0, secY + 34 + targetY))
-                                        }):Play()
-                                        task.spawn(function()
-                                            TweenService:Create(capElem, TweenInfo.new(0.2), {BackgroundTransparency=0.5}):Play()
-                                            task.wait(0.5)
-                                            TweenService:Create(capElem, TweenInfo.new(0.3), {BackgroundTransparency=0.935}):Play()
+
+                                        -- flash highlight
+                                        task.wait(0.1)
+                                        pcall(function()
+                                            local origColor = capElem.BackgroundColor3
+                                            local origTrans = capElem.BackgroundTransparency
+                                            TweenService:Create(capElem, TweenInfo.new(0.15), {BackgroundColor3=Color3.fromRGB(150,150,170), BackgroundTransparency=0.3}):Play()
+                                            task.wait(0.4)
+                                            TweenService:Create(capElem, TweenInfo.new(0.3), {BackgroundColor3=origColor, BackgroundTransparency=origTrans}):Play()
                                         end)
                                     end)
                                     SearchTextBox.Text = ""
@@ -1369,25 +1372,35 @@ function Orvion:CreateWindow(config)
                                 SL2.Size = UDim2.new(1, -10, 0, 12)
                                 SL2.ZIndex = 52
                                 Item.MouseButton1Click:Connect(function()
-                                    pcall(function()
-                                        local sf = TabSwitchFns[capTab]
-                                        if sf then sf() end
-                                        task.wait(0.5)
-                                        local targetY = 0
-                                        local cont = TabContents[capTab]
-                                        if cont then
-                                            for _, ch in ipairs(cont:GetChildren()) do
-                                                if ch == capElem then break end
-                                                if ch:IsA("Frame") then targetY = targetY + ch.Size.Y.Offset + 8 end
-                                            end
+                                    task.spawn(function()
+                                        pcall(function()
+                                            local sf = TabSwitchFns[capTab]
+                                            if sf then sf() end
+                                        end)
+                                        local waited = 0
+                                        repeat
+                                            task.wait(0.05)
+                                            waited = waited + 0.05
+                                        until ContentScroll.CanvasSize.Y.Offset > 50 or waited >= 1
+
+                                        local ok2, scrollY = pcall(function()
+                                            local ey = capElem.AbsolutePosition.Y
+                                            local cy = ContentScroll.AbsolutePosition.Y
+                                            return ey - cy + ContentScroll.CanvasPosition.Y
+                                        end)
+                                        if ok2 and scrollY and scrollY > 0 then
+                                            TweenService:Create(ContentScroll, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                                                CanvasPosition = Vector2.new(0, math.max(0, scrollY))
+                                            }):Play()
                                         end
-                                        TweenService:Create(ContentScroll, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                                            CanvasPosition = Vector2.new(0, math.max(0, targetY))
-                                        }):Play()
-                                        task.spawn(function()
-                                            TweenService:Create(capElem, TweenInfo.new(0.2), {BackgroundTransparency=0.5}):Play()
-                                            task.wait(0.5)
-                                            TweenService:Create(capElem, TweenInfo.new(0.3), {BackgroundTransparency=0.935}):Play()
+
+                                        task.wait(0.1)
+                                        pcall(function()
+                                            local origColor = capElem.BackgroundColor3
+                                            local origTrans = capElem.BackgroundTransparency
+                                            TweenService:Create(capElem, TweenInfo.new(0.15), {BackgroundColor3=Color3.fromRGB(150,150,170), BackgroundTransparency=0.3}):Play()
+                                            task.wait(0.4)
+                                            TweenService:Create(capElem, TweenInfo.new(0.3), {BackgroundColor3=origColor, BackgroundTransparency=origTrans}):Play()
                                         end)
                                     end)
                                     SearchTextBox.Text = ""
