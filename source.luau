@@ -1956,7 +1956,7 @@ function Orvion:CreateWindow(config)
         FeatureFrame.BackgroundTransparency = 0.2
         FeatureFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         FeatureFrame.BorderSizePixel = 0
-        FeatureFrame.Position = UDim2.new(1, -30, 0.5, 0)
+        FeatureFrame.Position = UDim2.new(1, -7, 0.5, 0)
         FeatureFrame.Size = UDim2.new(0, 30, 0, 15)
         FeatureFrame.Name = "FeatureFrame"
         FeatureFrame.Parent = Toggle
@@ -2329,7 +2329,7 @@ function Orvion:CreateWindow(config)
         DropdownList.Parent = Main
 
         local ListCorner = Instance.new("UICorner")
-        ListCorner.CornerRadius = UDim.new(0, 4)
+        ListCorner.CornerRadius = UDim.new(0, 2)
         ListCorner.Parent = DropdownList
 
         local ListStroke = Instance.new("UIStroke")
@@ -2407,18 +2407,11 @@ function Orvion:CreateWindow(config)
 
                 local cfW    = ContentFrame.AbsoluteSize.X
                 local halfCF = math.floor(cfW / 2)
-                local rightW = cfW - halfCF - 8
+                local rightW = cfW - halfCF - 4
                 local targetH = math.floor(Main.AbsoluteSize.Y - 16)
                 DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 8)
-                DropdownList.Size = UDim2.new(0, rightW, 0, 0)
+                DropdownList.Size = UDim2.new(0, rightW, 0, targetH)
                 DropdownList.Visible = true
-
-                TweenService:Create(
-                    DropdownList,
-                    TweenInfo.new(0.25),
-                    {Size = UDim2.new(0, rightW, 0, targetH)}
-                ):Play()
-                TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 180}):Play()
 
                 -- Outside click blocker
                 local OutsideClick = Instance.new("TextButton")
@@ -2432,9 +2425,6 @@ function Orvion:CreateWindow(config)
                     dropdownData.Open = false
                     local cfW2 = ContentFrame.AbsoluteSize.X
                     local rW2 = cfW2 - math.floor(cfW2 / 2)
-                    TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, rW2, 0, 0)}):Play()
-                    TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 0}):Play()
-                    task.wait(0.2)
                     DropdownList.Visible = false
                     OutsideClick:Destroy()
                 end)
@@ -2443,9 +2433,6 @@ function Orvion:CreateWindow(config)
                 if oc then oc:Destroy() end
                 local cfW3 = ContentFrame.AbsoluteSize.X
                 local rW3 = cfW3 - math.floor(cfW3 / 2)
-                TweenService:Create(DropdownList, TweenInfo.new(0.2), {Size = UDim2.new(0, rW3, 0, 0)}):Play()
-                TweenService:Create(OptionImg, TweenInfo.new(0.3), {Rotation = 0}):Play()
-                task.wait(0.2)
                 DropdownList.Visible = false
             end
         end
