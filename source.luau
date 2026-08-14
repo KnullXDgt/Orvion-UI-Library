@@ -384,17 +384,10 @@ end
 function ConfigSystem:SaveConfig(name, data)
     self:EnsureFolder()
 
-    local configData = {
-        Name = name,
-        Theme = self.CurrentTheme,
-        Data = data or {},
-        SavedAt = os.time()
-    }
-
     local success, encoded =
         pcall(
         function()
-            return HttpService:JSONEncode(configData)
+            return HttpService:JSONEncode(data or {})
         end
     )
 
@@ -433,24 +426,24 @@ function ConfigSystem:LoadConfig(name)
         )
 
         if success then
-            local decodeSuccess, config =
+            local decodeSuccess, decoded =
                 pcall(
                 function()
                     return HttpService:JSONDecode(content)
                 end
             )
 
-            if decodeSuccess and config then
-                self.CurrentTheme = config.Theme or "Default"
+            if decodeSuccess and decoded then
                 self.CurrentConfig = name
-
+                -- support both flat format and legacy {Data=...} format
+                local configData = decoded.Data or decoded
                 return {
                     Title = "Config",
                     Description = "Loaded",
                     Content = "Config '" .. name .. "' loaded successfully!",
                     Color = self.ThemeColors[self.CurrentTheme],
                     Delay = 3
-                }, config.Data
+                }, configData
             end
         end
     end
@@ -4477,13 +4470,14 @@ function Orvion:CreateWindow(config)
 
     -- Autoload on startup
     task.spawn(function()
-        task.wait(1)
+        task.wait(2)
         pcall(function()
             if isfile(AutoloadFile) then
                 local autoName = readfile(AutoloadFile)
                 if autoName and autoName ~= "" then
                     local _, configData = ConfigSystem:LoadConfig(autoName)
                     if configData then
+                        task.wait(0.1)
                         for id, val in pairs(configData) do
                             if AllElements[id] then
                                 if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
