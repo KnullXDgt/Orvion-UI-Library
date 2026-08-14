@@ -1289,6 +1289,84 @@ function Orvion:CreateWindow(config)
             end)
         end
 
+        -- second pass: scan elements directly in tabs (outside collapsibles)
+        for tabName, container in pairs(TabContents or {}) do
+            for _, elem in ipairs(container:GetChildren()) do
+                if elem.Name ~= "Collapsible" then
+                    for _, lname in ipairs({"ToggleTitle","ButtonTitle","InputTitle","DropdownTitle","SliderTitle","ParagraphTitle"}) do
+                        local lbl = elem:FindFirstChild(lname)
+                        if lbl and lbl.Text and lbl.Text ~= "" then
+                            if string.find(string.lower(lbl.Text), q, 1, true) then
+                                found = found + 1
+                                local displayText = lbl.Text
+                                local subtitleText = tabName .. " • " .. tabName
+                                local capTab = tabName
+                                local capElem = elem
+
+                                local Item = Instance.new("TextButton", SearchResults)
+                                Item.Font = Enum.Font.GothamBold
+                                Item.Text = ""
+                                Item.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                                Item.BackgroundTransparency = 0.92
+                                Item.BorderSizePixel = 0
+                                Item.Size = UDim2.new(1, 0, 0, 40)
+                                Item.ZIndex = 51
+                                Item.AutoButtonColor = true
+                                Item.Visible = true
+                                Instance.new("UICorner", Item).CornerRadius = UDim.new(0, 3)
+                                local Pill2 = Instance.new("Frame", Item)
+                                Pill2.BackgroundColor3 = Color3.fromRGB(150, 150, 170)
+                                Pill2.BorderSizePixel = 0
+                                Pill2.Position = UDim2.new(0, 0, 0.1, 0)
+                                Pill2.Size = UDim2.new(0, 2, 0.8, 0)
+                                Pill2.ZIndex = 52
+                                Instance.new("UICorner", Pill2).CornerRadius = UDim.new(1, 0)
+                                local ML2 = Instance.new("TextLabel", Item)
+                                ML2.Font = Enum.Font.GothamBold
+                                ML2.Text = displayText
+                                ML2.TextColor3 = Color3.fromRGB(220, 220, 220)
+                                ML2.TextSize = 12
+                                ML2.TextXAlignment = Enum.TextXAlignment.Left
+                                ML2.TextTruncate = Enum.TextTruncate.AtEnd
+                                ML2.BackgroundTransparency = 1
+                                ML2.BorderSizePixel = 0
+                                ML2.Position = UDim2.new(0, 8, 0, 4)
+                                ML2.Size = UDim2.new(1, -10, 0, 16)
+                                ML2.ZIndex = 52
+                                local SL2 = Instance.new("TextLabel", Item)
+                                SL2.Font = Enum.Font.Gotham
+                                SL2.Text = subtitleText
+                                SL2.TextColor3 = Color3.fromRGB(120, 120, 140)
+                                SL2.TextSize = 9
+                                SL2.TextXAlignment = Enum.TextXAlignment.Left
+                                SL2.TextTruncate = Enum.TextTruncate.AtEnd
+                                SL2.BackgroundTransparency = 1
+                                SL2.BorderSizePixel = 0
+                                SL2.Position = UDim2.new(0, 8, 0, 22)
+                                SL2.Size = UDim2.new(1, -10, 0, 12)
+                                SL2.ZIndex = 52
+                                Item.MouseButton1Click:Connect(function()
+                                    pcall(function()
+                                        local sf = TabSwitchFns[capTab]
+                                        if sf then sf() end
+                                        task.wait(0.1)
+                                        local ey = capElem.AbsolutePosition.Y
+                                        local cy = ContentScroll.AbsolutePosition.Y
+                                        TweenService:Create(ContentScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                                            CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
+                                        }):Play()
+                                    end)
+                                    SearchTextBox.Text = ""
+                                    closeSearchResults()
+                                end)
+                            end
+                            break
+                        end
+                    end
+                end
+            end
+        end
+
         if found == 0 then
             NoResultsLabel.Visible = true
         end
