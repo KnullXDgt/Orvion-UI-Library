@@ -2131,12 +2131,15 @@ function Orvion:CreateWindow(config)
 
         local toggleFunc = {
             Value = state,
-            Set = SetState,
             _reset = function() SetState(false) end,
             _live = function() return state end,
             Type = "Toggle",
             Id = elementId
         }
+
+        function toggleFunc:Set(value)
+            SetState(value)
+        end
 
         if elementId then
             AllElements[elementId] = toggleFunc
