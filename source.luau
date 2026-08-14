@@ -140,7 +140,13 @@ local function MakeDraggableMobileButton(button, object, screenGui)
             Dragging = false
             ClickStartPos = input.Position
             DragStart = input.Position
-            StartPosition = Vector2.new(object.AbsolutePosition.X, object.AbsolutePosition.Y)
+            -- store absolute position safely
+            pcall(function()
+                StartPosition = Vector2.new(object.AbsolutePosition.X, object.AbsolutePosition.Y)
+            end)
+            if not StartPosition then
+                StartPosition = Vector2.new(object.Position.X.Offset, object.Position.Y.Offset)
+            end
         end
     end)
 
@@ -1238,8 +1244,24 @@ function Orvion:CreateWindow(config)
     NoResultsLabel.ZIndex = 51
     NoResultsLabel.Visible = false
 
-    SearchTextBox:GetPropertyChangedSignal("Text"):Connect(function()
-        buildSearchResults(SearchTextBox.Text)
+    pcall(function()
+        SearchTextBox:GetPropertyChangedSignal("Text"):Connect(function()
+            buildSearchResults(SearchTextBox.Text)
+        end)
+    end)
+
+    -- polling backup (for executors where GetPropertyChangedSignal fails)
+    local _lastTxt = ""
+    task.spawn(function()
+        while true do
+            task.wait(0.1)
+            if not SearchTextBox or not SearchTextBox.Parent then break end
+            local t = SearchTextBox.Text
+            if t ~= _lastTxt then
+                _lastTxt = t
+                pcall(buildSearchResults, t)
+            end
+        end
     end)
 
     SearchTextBox.FocusLost:Connect(function()
