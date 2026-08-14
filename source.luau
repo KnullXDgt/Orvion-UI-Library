@@ -845,7 +845,7 @@ function Orvion:CreateWindow(config)
     ThemeImage.Size = UDim2.new(1, 0, 1, 0)
     ThemeImage.Position = UDim2.new(0, 0, 0, 0)
     ThemeImage.BackgroundTransparency = 1
-    ThemeImage.ImageTransparency = 0.82
+    ThemeImage.ImageTransparency = 0.92
     ThemeImage.ScaleType = Enum.ScaleType.Crop
     ThemeImage.Image = BgImageId
     ThemeImage.ZIndex = 0
@@ -4318,23 +4318,7 @@ function Orvion:CreateWindow(config)
     end
     updateCfgStatus()
 
-    local TransparencyToggle =
-        CreateToggle(
-        ConfigTabContainer,
-        "UI Transparency",
-        "Toggle UI background transparency",
-        false,
-        function(state)
-            if state then
-                TweenService:Create(Main, TweenInfo.new(0.3), {BackgroundTransparency = 0.5}):Play()
-                TweenService:Create(UIStroke, TweenInfo.new(0.3), {Transparency = 0.7}):Play()
-            else
-                TweenService:Create(Main, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
-                TweenService:Create(UIStroke, TweenInfo.new(0.3), {Transparency = 0}):Play()
-            end
-        end,
-        "TransparencyToggle"
-    )
+
 
     local ConfigNameInput =
         CreateInput(
@@ -4486,6 +4470,28 @@ function Orvion:CreateWindow(config)
         end },
         { Title = "Clear Autoload", Callback = doClearAutoload }
     )
+
+    CreateButton(ConfigTabContainer, "Reset All Elements", "Reset semua element ke default", "rbxassetid://16932740082", function()
+        for id, element in pairs(AllElements) do
+            pcall(function()
+                if element.Type == "Toggle" then
+                    element:Set(false)
+                elseif element.Type == "Slider" then
+                    local min = element._data and element._data.MinValue or 0
+                    element:Set(min)
+                elseif element.Type == "Dropdown" then
+                    if element._data and element._data.Multi then
+                        element:Set({})
+                    else
+                        element:Set(nil)
+                    end
+                elseif element.Type == "Input" then
+                    element:Set("")
+                end
+            end)
+        end
+        MakeNotify({ Title = "Config", Description = "Reset", Content = "All elements reset to default.", Color = Color3.fromRGB(150,150,170), Delay = 2 })
+    end)
 
     -- Autoload on startup
     task.spawn(function()
