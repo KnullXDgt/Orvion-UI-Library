@@ -2826,6 +2826,7 @@ function Orvion:CreateWindow(config)
         if not tabContainer or not tabContainer:IsA("Frame") then
             return
         end
+        elementId = elementId or string.gsub((title or ""), "[^%w]", "")
         showKnob = showKnob ~= false
 
         local Slider = Instance.new("Frame")
