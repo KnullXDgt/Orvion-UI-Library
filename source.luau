@@ -1176,8 +1176,30 @@ function Orvion:CreateWindow(config)
     local searchResultsOpen = false
     local NoResultsLabel = nil
     local SearchSections = {}
-    local TabContents = {}    -- forward declaration
-    local TabSwitchFns = {}   -- forward declaration
+    local TabContents = {}
+    local TabSwitchFns = {}
+
+    -- helper: sum Size.Y.Offset of children above stopAt (reliable, no render needed)
+    local function sumChildH(container, stopAt)
+        local y = 0
+        for _, ch in ipairs(container:GetChildren()) do
+            if ch == stopAt then break end
+            if ch:IsA("Frame") then y = y + ch.Size.Y.Offset + 8 end
+        end
+        return y
+    end
+
+    local function flashElem(elem)
+        task.spawn(function()
+            local s = Instance.new("UIStroke")
+            s.Color = Color3.fromRGB(180, 180, 210)
+            s.Thickness = 2.5
+            s.Transparency = 0
+            s.Parent = elem
+            task.wait(0.8)
+            if s and s.Parent then s:Destroy() end
+        end)
+    end
 
     local function closeSearchResults()
         searchResultsOpen = false
@@ -1270,36 +1292,18 @@ function Orvion:CreateWindow(config)
 
                                 Item.MouseButton1Click:Connect(function()
                                     task.spawn(function()
-                                        -- switch tab + open section
                                         local sf = TabSwitchFns[capSec.tabName]
                                         if sf then pcall(sf) end
                                         pcall(capSec.openFn)
-
-                                        -- wait until element is actually rendered
-                                        local w = 0
-                                        while w < 2 do
-                                            task.wait(0.05)
-                                            w = w + 0.05
-                                            if capElem.AbsoluteSize.Y > 0 then break end
-                                        end
-
-                                        -- scroll to element
-                                        local ey = capElem.AbsolutePosition.Y
-                                        local cy = ContentScroll.AbsolutePosition.Y
-                                        local scrollTo = math.max(0, ey - cy + ContentScroll.CanvasPosition.Y)
+                                        task.wait(0.2)
+                                        -- reliable scroll: sum child heights
+                                        local cont = TabContents[capSec.tabName]
+                                        local inner3 = capSec.secFrame and capSec.secFrame:FindFirstChild("InnerContainer")
+                                        local secOffset = cont and sumChildH(cont, capSec.secFrame) or 0
+                                        local elemOffset = inner3 and sumChildH(inner3, capElem) or 0
+                                        local scrollTo = secOffset + 34 + elemOffset
                                         ContentScroll.CanvasPosition = Vector2.new(0, scrollTo)
-                                        TweenService:Create(ContentScroll, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                                            CanvasPosition = Vector2.new(0, scrollTo)
-                                        }):Play()
-
-                                        -- flash: direct without pcall
-                                        task.wait(0.05)
-                                        local oBg = capElem.BackgroundTransparency
-                                        capElem.BackgroundTransparency = 0.3
-                                        capElem.BackgroundColor3 = Color3.fromRGB(150, 150, 170)
-                                        task.wait(0.5)
-                                        capElem.BackgroundTransparency = oBg
-                                        capElem.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                                        flashElem(capElem)
                                     end)
                                     SearchTextBox.Text = ""
                                     closeSearchResults()
@@ -1370,35 +1374,13 @@ function Orvion:CreateWindow(config)
                                 SL2.ZIndex = 52
                                 Item.MouseButton1Click:Connect(function()
                                     task.spawn(function()
-                                        -- switch tab
                                         local sf = TabSwitchFns[capTab]
                                         if sf then pcall(sf) end
-
-                                        -- wait until element is rendered
-                                        local w = 0
-                                        while w < 2 do
-                                            task.wait(0.05)
-                                            w = w + 0.05
-                                            if capElem.AbsoluteSize.Y > 0 then break end
-                                        end
-
-                                        -- scroll to element
-                                        local ey = capElem.AbsolutePosition.Y
-                                        local cy = ContentScroll.AbsolutePosition.Y
-                                        local scrollTo = math.max(0, ey - cy + ContentScroll.CanvasPosition.Y)
+                                        task.wait(0.2)
+                                        local cont = TabContents[capTab]
+                                        local scrollTo = cont and sumChildH(cont, capElem) or 0
                                         ContentScroll.CanvasPosition = Vector2.new(0, scrollTo)
-                                        TweenService:Create(ContentScroll, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                                            CanvasPosition = Vector2.new(0, scrollTo)
-                                        }):Play()
-
-                                        -- flash
-                                        task.wait(0.05)
-                                        local oBg = capElem.BackgroundTransparency
-                                        capElem.BackgroundTransparency = 0.3
-                                        capElem.BackgroundColor3 = Color3.fromRGB(150, 150, 170)
-                                        task.wait(0.5)
-                                        capElem.BackgroundTransparency = oBg
-                                        capElem.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                                        flashElem(capElem)
                                     end)
                                     SearchTextBox.Text = ""
                                     closeSearchResults()
