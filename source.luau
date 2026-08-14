@@ -1147,6 +1147,7 @@ function Orvion:CreateWindow(config)
     SearchTextBox.Parent = SearchBar
 
     local SearchResults = Instance.new("ScrollingFrame")
+    local SearchResultsLayout = nil  -- forward, assigned below
     SearchResults.Name = "SearchResults"
     SearchResults.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
     SearchResults.BorderSizePixel = 0
@@ -1178,9 +1179,7 @@ function Orvion:CreateWindow(config)
     local SearchSections = {}
     local TabContents = {}
     local TabSwitchFns = {}
-    local ContentScroll = nil      -- forward declaration
-    local SearchResultsLayout = nil -- forward declaration
-
+    local ContentScroll = nil
     -- helper: sum Size.Y.Offset of children above stopAt (reliable, no render needed)
     local function sumChildH(container, stopAt)
         local y = 0
