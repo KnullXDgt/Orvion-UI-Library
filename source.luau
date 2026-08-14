@@ -1920,8 +1920,8 @@ function Orvion:CreateWindow(config)
         FeatureFrame.BackgroundTransparency = 0.999
         FeatureFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         FeatureFrame.BorderSizePixel = 0
-        FeatureFrame.Position = UDim2.new(1, -3, 0.5, 0)
-        FeatureFrame.Size = UDim2.new(0, 16, 0, 16)
+        FeatureFrame.Position = UDim2.new(1, -15, 0.5, 0)
+        FeatureFrame.Size = UDim2.new(0, 25, 0, 25)
         FeatureFrame.Name = "FeatureFrame"
         FeatureFrame.Parent = Button
 
