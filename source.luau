@@ -784,7 +784,6 @@ function Orvion:CreateWindow(config)
     DropShadowHolder.ZIndex = 0
     DropShadowHolder.Name = "DropShadowHolder"
     DropShadowHolder.Parent = ScreenGui
-    DropShadowHolder.Visible = false
 
     if Center then
         DropShadowHolder.Position = UDim2.new(0.5, -Size.X.Offset / 2, 0.5, -Size.Y.Offset / 2)
