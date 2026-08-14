@@ -2132,6 +2132,7 @@ function Orvion:CreateWindow(config)
         local toggleFunc = {
             Value = state,
             Set = SetState,
+            _reset = function() SetState(false) end,
             Type = "Toggle",
             Id = elementId
         }
@@ -4475,7 +4476,7 @@ function Orvion:CreateWindow(config)
         for id, element in pairs(AllElements) do
             pcall(function()
                 if element.Type == "Toggle" then
-                    element.Set(false)
+                    if element._reset then element._reset() else element.Set(false) end
                 elseif element.Type == "Slider" then
                     local min = element._data and element._data.MinValue or 0
                     element:Set(min)
