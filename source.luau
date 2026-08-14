@@ -1187,6 +1187,7 @@ function Orvion:CreateWindow(config)
     local function buildSearchResults(query)
         local q = string.lower(query)
         local anyVisible = false
+        NoResultsLabel.Visible = false
         for _, item in ipairs(SearchResults:GetChildren()) do
             if item:IsA("TextButton") then
                 if q == "" then
@@ -3937,11 +3938,9 @@ function Orvion:CreateWindow(config)
             updateSize()
         end)
 
-        -- register section for search — pre-create button in SearchResults
-        local tabName = nil
-        for tname, tc in pairs(TabContents) do
-            if tc == tabContainer then tabName = tname break end
-        end
+        -- extract tabName from container Name (TabContentContainer.Name = tabName.."Content")
+        local rawName = (tabContainer and tabContainer.Name) or ""
+        local tabName = rawName ~= "" and rawName:gsub("Content$", "") or nil
         if tabName and title and title ~= "" then
             local secTitle = (title or ""):gsub("^%s+", "")
             local SBtn = Instance.new("TextButton", SearchResults)
