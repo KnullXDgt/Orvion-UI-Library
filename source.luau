@@ -4475,7 +4475,7 @@ function Orvion:CreateWindow(config)
         for id, element in pairs(AllElements) do
             pcall(function()
                 if element.Type == "Toggle" then
-                    element:Set(false)
+                    element.Set(false)
                 elseif element.Type == "Slider" then
                     local min = element._data and element._data.MinValue or 0
                     element:Set(min)
