@@ -4413,23 +4413,28 @@ function Orvion:CreateWindow(config)
             MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
             return
         end
-        local notifyData, configData = ConfigSystem:LoadConfig(targetName)
-        MakeNotify({ Title = "Config", Description = "Loaded", Content = "\"" .. targetName .. "\" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
+        local _, configData = ConfigSystem:LoadConfig(targetName)
         if configData then
             for id, val in pairs(configData) do
-                if AllElements[id] then
-                    if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
-                        AllElements[id]:Set(Color3.new(val[1], val[2], val[3]))
-                    elseif AllElements[id].Type == "Keybind" and val then
-                        AllElements[id]:Set(Enum.KeyCode[val])
-                    else
-                        AllElements[id]:Set(val)
+                pcall(function()
+                    if AllElements[id] then
+                        if AllElements[id].Type == "Toggle" and val == false then
+                            return
+                        end
+                        if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
+                            AllElements[id]:Set(Color3.new(val[1], val[2], val[3]))
+                        elseif AllElements[id].Type == "Keybind" and val then
+                            AllElements[id]:Set(Enum.KeyCode[val])
+                        else
+                            AllElements[id]:Set(val)
+                        end
                     end
-                end
+                end)
             end
         end
         CurrentConfigName = targetName
         updateCfgStatus()
+        MakeNotify({ Title = "Config", Description = "Loaded", Content = "\"" .. targetName .. "\" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
     end
 
     local function doDeleteConfig()
@@ -4643,24 +4648,27 @@ function Orvion:CreateWindow(config)
     function Window:Show()
         DropShadowHolder.Visible = true
         task.spawn(function()
-            task.wait(5)
             pcall(function()
                 if isfile(AutoloadFile) then
                     local autoName = readfile(AutoloadFile)
                     if autoName and autoName ~= "" then
                         local _, configData = ConfigSystem:LoadConfig(autoName)
                         if configData then
-                            task.wait(0.1)
                             for id, val in pairs(configData) do
-                                if AllElements[id] then
-                                    if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
-                                        AllElements[id]:Set(Color3.new(val[1], val[2], val[3]))
-                                    elseif AllElements[id].Type == "Keybind" and val then
-                                        AllElements[id]:Set(Enum.KeyCode[val])
-                                    else
-                                        AllElements[id]:Set(val)
+                                pcall(function()
+                                    if AllElements[id] then
+                                        if AllElements[id].Type == "Toggle" and val == false then
+                                            return
+                                        end
+                                        if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
+                                            AllElements[id]:Set(Color3.new(val[1], val[2], val[3]))
+                                        elseif AllElements[id].Type == "Keybind" and val then
+                                            AllElements[id]:Set(Enum.KeyCode[val])
+                                        else
+                                            AllElements[id]:Set(val)
+                                        end
                                     end
-                                end
+                                end)
                             end
                             CurrentConfigName = autoName
                             updateCfgStatus()
