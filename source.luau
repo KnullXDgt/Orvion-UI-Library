@@ -4065,14 +4065,12 @@ function Orvion:CreateWindow(config)
             updateSize()
         end)
 
-        -- register section for search
+        -- register section for search — direct TabContents lookup, no Roblox API
         local tabName = nil
-        do
-            local w = tabContainer
-            while w and w ~= Main do
-                local s, v = pcall(function() return w:GetAttribute("OrvionTabName") end)
-                if s and v then tabName = v break end
-                w = w.Parent
+        for tname, tc in pairs(TabContents) do
+            if tc == tabContainer then
+                tabName = tname
+                break
             end
         end
         RegisterSection(title, SectionFrame, tabName, function()
