@@ -1644,7 +1644,7 @@ function Orvion:CreateWindow(config)
         ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
         ToggleBtn.BackgroundTransparency = 0.15
         ToggleBtn.BorderSizePixel = 0
-        ToggleBtn.Size = UDim2.new(0, 48, 0, 48)
+        ToggleBtn.Size = UDim2.new(0, 40, 0, 40)
         ToggleBtn.Position = UDim2.new(0, 15, 0.5, -100)
         ToggleBtn.ZIndex = 100
         ToggleBtn.Parent = ScreenGui
@@ -1683,9 +1683,7 @@ function Orvion:CreateWindow(config)
             lastTBClick = now
             if not tbDragging() then
                 DropShadowHolder.Visible = not DropShadowHolder.Visible
-                TweenService:Create(ToggleBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 42, 0, 42)}):Play()
-                task.wait(0.1)
-                TweenService:Create(ToggleBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 48, 0, 48)}):Play()
+
             end
         end)
     end
@@ -1956,7 +1954,7 @@ function Orvion:CreateWindow(config)
         FeatureFrame.BackgroundTransparency = 0.2
         FeatureFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         FeatureFrame.BorderSizePixel = 0
-        FeatureFrame.Position = UDim2.new(1, -5, 0.5, 0)
+        FeatureFrame.Position = UDim2.new(1, -3, 0.5, 0)
         FeatureFrame.Size = UDim2.new(0, 30, 0, 15)
         FeatureFrame.Name = "FeatureFrame"
         FeatureFrame.Parent = Toggle
