@@ -1273,12 +1273,17 @@ function Orvion:CreateWindow(config)
                                         local sf = TabSwitchFns[capSec.tabName]
                                         if sf then sf() end
                                         pcall(capSec.openFn)
-                                        task.wait(0.05)
+                                        task.wait(0.3)
                                         local ey = capElem.AbsolutePosition.Y
                                         local cy = ContentScroll.AbsolutePosition.Y
                                         TweenService:Create(ContentScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
                                             CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
                                         }):Play()
+                                        task.spawn(function()
+                                            TweenService:Create(capElem, TweenInfo.new(0.2), {BackgroundTransparency=0.5}):Play()
+                                            task.wait(0.5)
+                                            TweenService:Create(capElem, TweenInfo.new(0.3), {BackgroundTransparency=0.935}):Play()
+                                        end)
                                     end)
                                     SearchTextBox.Text = ""
                                     closeSearchResults()
@@ -1351,12 +1356,17 @@ function Orvion:CreateWindow(config)
                                     pcall(function()
                                         local sf = TabSwitchFns[capTab]
                                         if sf then sf() end
-                                        task.wait(0.1)
+                                        task.wait(0.3)
                                         local ey = capElem.AbsolutePosition.Y
                                         local cy = ContentScroll.AbsolutePosition.Y
                                         TweenService:Create(ContentScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
                                             CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
                                         }):Play()
+                                        task.spawn(function()
+                                            TweenService:Create(capElem, TweenInfo.new(0.2), {BackgroundTransparency=0.5}):Play()
+                                            task.wait(0.5)
+                                            TweenService:Create(capElem, TweenInfo.new(0.3), {BackgroundTransparency=0.935}):Play()
+                                        end)
                                     end)
                                     SearchTextBox.Text = ""
                                     closeSearchResults()
