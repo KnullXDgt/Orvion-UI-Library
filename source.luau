@@ -2155,7 +2155,7 @@ function Orvion:CreateWindow(config)
         Input.BackgroundTransparency = 0.935
         Input.BorderColor3 = Color3.fromRGB(0, 0, 0)
         Input.BorderSizePixel = 0
-        Input.Size = UDim2.new(1, 0, 0, 58)
+        Input.Size = UDim2.new(1, 0, 0, 62)
         Input.Name = "Input"
         Input.Parent = tabContainer
 
@@ -2182,8 +2182,8 @@ function Orvion:CreateWindow(config)
         InputFrame.BorderSizePixel = 0
         InputFrame.ClipsDescendants = true
         InputFrame.AnchorPoint = Vector2.new(0, 0)
-        InputFrame.Position = UDim2.new(0, 6, 0, 24)
-        InputFrame.Size = UDim2.new(1, -12, 0, 28)
+        InputFrame.Position = UDim2.new(0, 6, 0, 26)
+        InputFrame.Size = UDim2.new(1, -12, 0, 30)
         InputFrame.Name = "InputFrame"
         InputFrame.Parent = Input
 
