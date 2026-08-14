@@ -2066,7 +2066,7 @@ function Orvion:CreateWindow(config)
 
         local state = defaultValue or false
 
-        local function SetState(value)
+        local function SetState(value, fireCallback)
             state = value
             local themeColor = ConfigSystem.ThemeColors[ConfigSystem.CurrentTheme]
             if value then
@@ -2112,12 +2112,12 @@ function Orvion:CreateWindow(config)
                     {BackgroundTransparency = 0.2}
                 ):Play()
             end
-            if callback then
+            if fireCallback ~= false and callback then
                 callback(state)
             end
         end
 
-        SetState(state)
+        SetState(state, false)
 
         ToggleButton.Activated:Connect(
             function()
