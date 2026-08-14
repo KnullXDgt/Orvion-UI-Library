@@ -4375,7 +4375,7 @@ function Orvion:CreateWindow(config)
             local val = nil
             if element.Type == "Toggle" then
                 local live = element._live and element._live() or element.Value
-                if live == true then val = true end  -- only save if ON
+                val = live  -- save both true and false
             elseif element.Type == "Slider" then
                 local live = element._data and element._data.Value or element.Value
                 local def = element._default
