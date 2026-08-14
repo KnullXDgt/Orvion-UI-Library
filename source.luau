@@ -1203,103 +1203,90 @@ function Orvion:CreateWindow(config)
         local found = 0
 
         for _, sec in ipairs(SearchSections) do
-            -- check section header
-            local secMatch = string.find(string.lower(sec.title or ""), q, 1, true)
-
-            -- collect matching children
-            local matchingChildren = {}
             pcall(function()
                 local inner = sec.secFrame and sec.secFrame:FindFirstChild("InnerContainer")
-                if inner then
-                    for _, elem in ipairs(inner:GetChildren()) do
-                        for _, lname in ipairs({"ToggleTitle","ButtonTitle","InputTitle","DropdownTitle","SliderTitle","ParagraphTitle","ParagraphContent"}) do
-                            local lbl = elem:FindFirstChild(lname)
-                            if lbl and lbl.Text and lbl.Text ~= "" then
-                                local matched = string.find(string.lower(lbl.Text), q, 1, true)
-                                if matched then
-                                    table.insert(matchingChildren, {text=lbl.Text, frame=elem})
-                                    break
-                                end
+                if not inner then return end
+                for _, elem in ipairs(inner:GetChildren()) do
+                    for _, lname in ipairs({"ToggleTitle","ButtonTitle","InputTitle","DropdownTitle","SliderTitle","ParagraphTitle"}) do
+                        local lbl = elem:FindFirstChild(lname)
+                        if lbl and lbl.Text and lbl.Text ~= "" then
+                            if string.find(string.lower(lbl.Text), q, 1, true) then
+                                found = found + 1
+                                local displayText = lbl.Text
+                                local subtitleText = (sec.tabName or "") .. " • " .. (sec.title or "")
+                                local capSec = sec
+                                local capElem = elem
+
+                                local Item = Instance.new("TextButton", SearchResults)
+                                Item.Font = Enum.Font.GothamBold
+                                Item.Text = ""
+                                Item.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                                Item.BackgroundTransparency = 0.92
+                                Item.BorderSizePixel = 0
+                                Item.Size = UDim2.new(1, 0, 0, 40)
+                                Item.ZIndex = 51
+                                Item.AutoButtonColor = true
+                                Item.Visible = true
+                                Instance.new("UICorner", Item).CornerRadius = UDim.new(0, 3)
+
+                                -- pill indicator left
+                                local Pill = Instance.new("Frame", Item)
+                                Pill.BackgroundColor3 = Color3.fromRGB(150, 150, 170)
+                                Pill.BorderSizePixel = 0
+                                Pill.Position = UDim2.new(0, 0, 0.1, 0)
+                                Pill.Size = UDim2.new(0, 2, 0.8, 0)
+                                Pill.ZIndex = 52
+                                Instance.new("UICorner", Pill).CornerRadius = UDim.new(1, 0)
+
+                                -- main text
+                                local MainLabel = Instance.new("TextLabel", Item)
+                                MainLabel.Font = Enum.Font.GothamBold
+                                MainLabel.Text = displayText
+                                MainLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+                                MainLabel.TextSize = 12
+                                MainLabel.TextXAlignment = Enum.TextXAlignment.Left
+                                MainLabel.TextTruncate = Enum.TextTruncate.AtEnd
+                                MainLabel.BackgroundTransparency = 1
+                                MainLabel.BorderSizePixel = 0
+                                MainLabel.Position = UDim2.new(0, 8, 0, 4)
+                                MainLabel.Size = UDim2.new(1, -10, 0, 16)
+                                MainLabel.ZIndex = 52
+
+                                -- subtitle
+                                local SubLabel = Instance.new("TextLabel", Item)
+                                SubLabel.Font = Enum.Font.Gotham
+                                SubLabel.Text = subtitleText
+                                SubLabel.TextColor3 = Color3.fromRGB(120, 120, 140)
+                                SubLabel.TextSize = 9
+                                SubLabel.TextXAlignment = Enum.TextXAlignment.Left
+                                SubLabel.TextTruncate = Enum.TextTruncate.AtEnd
+                                SubLabel.BackgroundTransparency = 1
+                                SubLabel.BorderSizePixel = 0
+                                SubLabel.Position = UDim2.new(0, 8, 0, 22)
+                                SubLabel.Size = UDim2.new(1, -10, 0, 12)
+                                SubLabel.ZIndex = 52
+
+                                Item.MouseButton1Click:Connect(function()
+                                    pcall(function()
+                                        local sf = TabSwitchFns[capSec.tabName]
+                                        if sf then sf() end
+                                        pcall(capSec.openFn)
+                                        task.wait(0.05)
+                                        local ey = capElem.AbsolutePosition.Y
+                                        local cy = ContentScroll.AbsolutePosition.Y
+                                        TweenService:Create(ContentScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                                            CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
+                                        }):Play()
+                                    end)
+                                    SearchTextBox.Text = ""
+                                    closeSearchResults()
+                                end)
                             end
+                            break
                         end
                     end
                 end
             end)
-
-            local function makeItem(displayText, tagText, clickFn)
-                found = found + 1
-                local Item = Instance.new("TextButton", SearchResults)
-                Item.Font = Enum.Font.GothamBold
-                Item.Text = displayText
-                Item.TextColor3 = Color3.fromRGB(220, 220, 220)
-                Item.TextSize = 13
-                Item.TextXAlignment = Enum.TextXAlignment.Left
-                Item.TextTruncate = Enum.TextTruncate.AtEnd
-                Item.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                Item.BackgroundTransparency = 0.92
-                Item.BorderSizePixel = 0
-                Item.Size = UDim2.new(1, 0, 0, 28)
-                Item.ZIndex = 51
-                Item.AutoButtonColor = true
-                Item.Visible = true
-                Instance.new("UICorner", Item).CornerRadius = UDim.new(0, 3)
-                if tagText and tagText ~= "" then
-                    local tag = Instance.new("TextLabel", Item)
-                    tag.Font = Enum.Font.Gotham
-                    tag.Text = tagText
-                    tag.TextColor3 = Color3.fromRGB(120, 120, 140)
-                    tag.TextSize = 9
-                    tag.TextXAlignment = Enum.TextXAlignment.Right
-                    tag.BackgroundTransparency = 1
-                    tag.BorderSizePixel = 0
-                    tag.AnchorPoint = Vector2.new(1, 0.5)
-                    tag.Position = UDim2.new(1, -4, 0.5, 0)
-                    tag.Size = UDim2.new(0, 55, 1, 0)
-                    tag.ZIndex = 52
-                end
-                Item.MouseButton1Click:Connect(function()
-                    pcall(clickFn)
-                    SearchTextBox.Text = ""
-                    closeSearchResults()
-                end)
-            end
-
-            local function navToSection()
-                local sf = TabSwitchFns[sec.tabName]
-                if sf then sf() end
-                pcall(sec.openFn)
-                task.wait(0.05)
-                pcall(function()
-                    local ey = sec.secFrame.AbsolutePosition.Y
-                    local cy = ContentScroll.AbsolutePosition.Y
-                    ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
-                end)
-            end
-
-            local function navToChild(childFrame)
-                local sf = TabSwitchFns[sec.tabName]
-                if sf then sf() end
-                pcall(sec.openFn)
-                task.wait(0.05)
-                pcall(function()
-                    local ey = childFrame.AbsolutePosition.Y
-                    local cy = ContentScroll.AbsolutePosition.Y
-                    ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
-                end)
-            end
-
-            -- section header item
-            if secMatch then
-                makeItem(sec.title, sec.tabName, navToSection)
-            end
-
-            -- flat child items — each standalone
-            for _, child in ipairs(matchingChildren) do
-                local capChild = child
-                makeItem(capChild.text, sec.title, function()
-                    navToChild(capChild.frame)
-                end)
-            end
         end
 
         if found == 0 then
