@@ -4269,7 +4269,7 @@ function Orvion:CreateWindow(config)
     CfgHeaderFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
     CfgHeaderFrame.BackgroundTransparency = 0.935
     CfgHeaderFrame.BorderSizePixel = 0
-    CfgHeaderFrame.Size = UDim2.new(1, 0, 0, 52)
+    CfgHeaderFrame.Size = UDim2.new(1, 0, 0, 56)
     CfgHeaderFrame.Name = "CfgHeader"
     Instance.new("UICorner", CfgHeaderFrame).CornerRadius = UDim.new(0, 4)
 
@@ -4285,7 +4285,7 @@ function Orvion:CreateWindow(config)
     CfgTitle.Font = Enum.Font.GothamBold
     CfgTitle.Text = "Config Manager"
     CfgTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
-    CfgTitle.TextSize = 13
+    CfgTitle.TextSize = 14
     CfgTitle.TextXAlignment = Enum.TextXAlignment.Left
     CfgTitle.BackgroundTransparency = 1
     CfgTitle.BorderSizePixel = 0
@@ -4297,7 +4297,7 @@ function Orvion:CreateWindow(config)
     CfgStatusLabel.Font = Enum.Font.Gotham
     CfgStatusLabel.Text = "Current: None  |  Autoload: None"
     CfgStatusLabel.TextColor3 = Color3.fromRGB(150, 150, 170)
-    CfgStatusLabel.TextSize = 10
+    CfgStatusLabel.TextSize = 12
     CfgStatusLabel.TextXAlignment = Enum.TextXAlignment.Left
     CfgStatusLabel.TextWrapped = true
     CfgStatusLabel.BackgroundTransparency = 1
