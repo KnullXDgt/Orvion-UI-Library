@@ -1956,7 +1956,7 @@ function Orvion:CreateWindow(config)
         FeatureFrame.BackgroundTransparency = 0.2
         FeatureFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         FeatureFrame.BorderSizePixel = 0
-        FeatureFrame.Position = UDim2.new(1, -7, 0.5, 0)
+        FeatureFrame.Position = UDim2.new(1, -5, 0.5, 0)
         FeatureFrame.Size = UDim2.new(0, 30, 0, 15)
         FeatureFrame.Name = "FeatureFrame"
         FeatureFrame.Parent = Toggle
