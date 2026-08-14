@@ -1192,8 +1192,10 @@ function Orvion:CreateWindow(config)
 
     local function buildSearchResults(query)
         local q = string.lower(query)
-        local anyVisible = false
         NoResultsLabel.Visible = false
+        local anyVisible = false
+        local visibleCount = 0
+
         for _, item in ipairs(SearchResults:GetChildren()) do
             if item:IsA("TextButton") then
                 if q == "" then
@@ -1201,32 +1203,30 @@ function Orvion:CreateWindow(config)
                 else
                     local match = string.find(string.lower(item.Name), q, 1, true) ~= nil
                     item.Visible = match
-                    if match then anyVisible = true end
+                    if match then
+                        anyVisible = true
+                        visibleCount = visibleCount + 1
+                    end
                 end
             end
         end
+
         if q == "" then
             closeSearchResults()
-        elseif anyVisible then
-            SearchResults.Visible = true
-            searchResultsOpen = true
-            local targetH = 100
-            pcall(function()
-                local fh = TabFrame.AbsoluteSize.Y
-                if fh > 50 then targetH = math.max(80, math.floor((fh - 36) / 2)) end
-            end)
-            SearchResults.Size = UDim2.new(0, 120, 0, targetH)
-        else
-            SearchResults.Visible = true
-            searchResultsOpen = true
-            SearchResults.Size = UDim2.new(0, 120, 0, 30)
-            -- show no results label
-            for _, item in ipairs(SearchResults:GetChildren()) do
-                if item:IsA("TextLabel") and item.Name == "NoResults" then
-                    item.Visible = true
-                end
-            end
+            return
         end
+
+        if not anyVisible then
+            NoResultsLabel.Visible = true
+            visibleCount = 1
+        end
+
+        -- manually set CanvasSize based on visible items
+        SearchResults.CanvasSize = UDim2.new(0, 0, 0, visibleCount * 28 + 4)
+        local targetH = math.max(60, math.min(visibleCount * 28 + 4, 150))
+        SearchResults.Size = UDim2.new(0, 120, 0, targetH)
+        SearchResults.Visible = true
+        searchResultsOpen = true
     end
 
 
