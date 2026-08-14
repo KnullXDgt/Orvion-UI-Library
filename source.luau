@@ -2721,6 +2721,7 @@ function Orvion:CreateWindow(config)
 
         local dropdownFunc = {
             Value = dropdownData.Value,
+            _data = dropdownData,
             Options = dropdownData.Options,
             Type = "Dropdown",
             Id = elementId
@@ -3062,6 +3063,7 @@ function Orvion:CreateWindow(config)
 
         local sliderFunc = {
             Value = sliderData.Value,
+            _data = sliderData,
             Type = "Slider",
             Id = elementId
         }
@@ -4371,12 +4373,29 @@ function Orvion:CreateWindow(config)
         end
         local configData = {}
         for id, element in pairs(AllElements) do
-            if element.Type == "Toggle" then configData[id] = element.Value
-            elseif element.Type == "Slider" then configData[id] = element.Value
-            elseif element.Type == "Dropdown" then configData[id] = element.Value
-            elseif element.Type == "Input" then configData[id] = element.Value
-            elseif element.Type == "ColorPicker" then configData[id] = {element.Value.R, element.Value.G, element.Value.B}
-            elseif element.Type == "Keybind" then configData[id] = element.Value and element.Value.Name or nil
+            local val = nil
+            if element.Type == "Toggle" then
+                val = element.Value
+                if val == false then val = nil end  -- skip default false
+            elseif element.Type == "Slider" then
+                local live = element._data and element._data.Value or element.Value
+                val = live
+            elseif element.Type == "Dropdown" then
+                local live = element._data and element._data.Value or element.Value
+                if element._data and element._data.Multi then
+                    if type(live) == "table" and #live > 0 then val = live end
+                else
+                    if live and live ~= "" and live ~= "Select Option" then val = live end
+                end
+            elseif element.Type == "Input" then
+                if element.Value and element.Value ~= "" then val = element.Value end
+            elseif element.Type == "ColorPicker" then
+                if element.Value then val = {element.Value.R, element.Value.G, element.Value.B} end
+            elseif element.Type == "Keybind" then
+                if element.Value then val = element.Value.Name end
+            end
+            if val ~= nil then
+                configData[id] = val
             end
         end
         local notifyData = ConfigSystem:SaveConfig(targetName, configData)
