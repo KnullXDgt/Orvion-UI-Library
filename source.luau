@@ -1239,7 +1239,7 @@ function Orvion:CreateWindow(config)
                             if string.find(string.lower(lbl.Text), q, 1, true) then
                                 found = found + 1
                                 local displayText = lbl.Text
-                                local subtitleText = (sec.tabName or "") .. "  -  " .. (sec.title or "")
+                                local subtitleText = (sec.tabName or "") .. " \xE2\x80\xA2 " .. (sec.title or "")
                                 local capSec = sec
                                 local capElem = elem
 
@@ -1328,7 +1328,7 @@ function Orvion:CreateWindow(config)
                             if string.find(string.lower(lbl.Text), q, 1, true) then
                                 found = found + 1
                                 local displayText = lbl.Text
-                                local subtitleText = tabName .. "  -  " .. tabName
+                                local subtitleText = tabName .. " \xE2\x80\xA2 " .. tabName
                                 local capTab = tabName
                                 local capElem = elem
 
@@ -4401,7 +4401,7 @@ function Orvion:CreateWindow(config)
             return
         end
         local notifyData, configData = ConfigSystem:LoadConfig(targetName)
-        MakeNotify({ Title = "Config", Description = "Loaded", Content = """ .. targetName .. "" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
+        MakeNotify({ Title = "Config", Description = "Loaded", Content = "\"" .. targetName .. "\" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
         if configData then
             for id, val in pairs(configData) do
                 if AllElements[id] then
@@ -4444,7 +4444,7 @@ function Orvion:CreateWindow(config)
             if not isfolder(ConfigFolder) then makefolder(ConfigFolder) end
             writefile(AutoloadFile, targetName)
         end)
-        MakeNotify({ Title = "Config", Description = "Autoload Set", Content = "Autoload -> "" .. targetName .. """, Color = Color3.fromRGB(150,150,170), Delay = 3 })
+        MakeNotify({ Title = "Config", Description = "Autoload Set", Content = "Autoload -> \"" .. targetName .. "\"", Color = Color3.fromRGB(150,150,170), Delay = 3 })
         updateCfgStatus()
     end
 
@@ -4497,7 +4497,7 @@ function Orvion:CreateWindow(config)
                         end
                         CurrentConfigName = autoName
                         updateCfgStatus()
-                        MakeNotify({ Title = "Config", Description = "Autoloaded", Content = """ .. autoName .. "" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 4 })
+                        MakeNotify({ Title = "Config", Description = "Autoloaded", Content = "\"" .. autoName .. "\" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 4 })
                     end
                 end
             end
