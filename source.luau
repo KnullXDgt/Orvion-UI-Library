@@ -1308,9 +1308,10 @@ function Orvion:CreateWindow(config)
 
     -- polling via Heartbeat — most reliable in executors
     local _lastSearchText = ""
-    local _searchConn = RunService.Heartbeat:Connect(function()
+    local _searchConn
+    _searchConn = RunService.Heartbeat:Connect(function()
         if not SearchTextBox or not SearchTextBox.Parent then
-            _searchConn:Disconnect()
+            if _searchConn then _searchConn:Disconnect() end
             return
         end
         local t = SearchTextBox.Text
