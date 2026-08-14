@@ -1223,7 +1223,7 @@ function Orvion:CreateWindow(config)
 
 
     -- NoResults label (hidden by default)
-    local NoResultsLabel = Instance.new("TextLabel", SearchResults)
+    NoResultsLabel = Instance.new("TextLabel", SearchResults)
     NoResultsLabel.Name = "NoResults"
     NoResultsLabel.Text = "  No results"
     NoResultsLabel.Font = Enum.Font.Gotham
