@@ -4307,15 +4307,15 @@ function Orvion:CreateWindow(config)
     CfgTitle.ZIndex = 2
 
     local CfgStatusLabel = Instance.new("TextLabel", CfgHeaderFrame)
-    CfgStatusLabel.Font = Enum.Font.Gotham
+    CfgStatusLabel.Font = Enum.Font.GothamBold
     CfgStatusLabel.Text = "Current: None  |  Autoload: None"
     CfgStatusLabel.TextColor3 = Color3.fromRGB(160, 160, 180)
-    CfgStatusLabel.TextSize = 11
+    CfgStatusLabel.TextSize = 12
     CfgStatusLabel.TextXAlignment = Enum.TextXAlignment.Left
     CfgStatusLabel.TextWrapped = true
     CfgStatusLabel.BackgroundTransparency = 1
     CfgStatusLabel.BorderSizePixel = 0
-    CfgStatusLabel.Position = UDim2.new(0, 32, 0, 22)
+    CfgStatusLabel.Position = UDim2.new(0, 32, 0, 19)
     CfgStatusLabel.Size = UDim2.new(1, -36, 0, 24)
     CfgStatusLabel.ZIndex = 2
 
