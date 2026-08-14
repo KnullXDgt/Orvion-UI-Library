@@ -1489,18 +1489,20 @@ function Orvion:CreateWindow(config)
         if not title or title == "" then return end
         local collapsibleFrame = nil
         local actualContainer = tabContainer
-        -- if inside collapsible InnerContainer, get parent SectionFrame
         if tabContainer and tabContainer.Name == "InnerContainer" then
             collapsibleFrame = tabContainer.Parent
             actualContainer  = tabContainer.Parent and tabContainer.Parent.Parent
         end
-        -- direct lookup first
+        -- try direct lookup first
         local tabName = TabNameByContainer[actualContainer]
-        -- fallback: walk up
+        -- fallback: walk up and check attribute
         if not tabName then
             local walker = actualContainer
-            while walker do
+            while walker and walker ~= Main do
                 tabName = TabNameByContainer[walker]
+                if not tabName then
+                    tabName = walker:GetAttribute("OrvionTabName")
+                end
                 if tabName then break end
                 walker = walker.Parent
             end
@@ -1975,7 +1977,7 @@ function Orvion:CreateWindow(config)
         ToggleCircle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
         ToggleCircle.BorderColor3 = Color3.fromRGB(0, 0, 0)
         ToggleCircle.BorderSizePixel = 0
-        ToggleCircle.Position = defaultValue and UDim2.new(1, -14, 0, 0) or UDim2.new(0, 0, 0, 0)
+        ToggleCircle.Position = defaultValue and UDim2.new(1, -14, 0.5, -7) or UDim2.new(0, 0, 0.5, -7)
         ToggleCircle.Size = UDim2.new(0, 14, 0, 14)
         ToggleCircle.Name = "ToggleCircle"
         ToggleCircle.Parent = FeatureFrame
@@ -2000,7 +2002,7 @@ function Orvion:CreateWindow(config)
                 TweenService:Create(
                     ToggleCircle,
                     TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-                    {Position = UDim2.new(1, -14, 0, 0), BackgroundColor3 = themeColor}
+                    {Position = UDim2.new(1, -14, 0.5, -7), BackgroundColor3 = themeColor}
                 ):Play()
                 TweenService:Create(
                     FrameStroke,
@@ -2021,7 +2023,7 @@ function Orvion:CreateWindow(config)
                 TweenService:Create(
                     ToggleCircle,
                     TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-                    {Position = UDim2.new(0, 0, 0, 0), BackgroundColor3 = Color3.fromRGB(200, 200, 200)}
+                    {Position = UDim2.new(0, 0, 0.5, -7), BackgroundColor3 = Color3.fromRGB(200, 200, 200)}
                 ):Play()
                 TweenService:Create(
                     FrameStroke,
@@ -4153,6 +4155,7 @@ function Orvion:CreateWindow(config)
 
         TabContents[tabName] = TabContentContainer
         TabNameByContainer[TabContentContainer] = tabName
+        TabContentContainer:SetAttribute("OrvionTabName", tabName)
 
         local function SwitchToTab()
             for name, container in pairs(TabContents) do
