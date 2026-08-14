@@ -1274,10 +1274,26 @@ function Orvion:CreateWindow(config)
                                         if sf then sf() end
                                         pcall(capSec.openFn)
                                         task.wait(0.5)
-                                        local ey = capElem.AbsolutePosition.Y
-                                        local cy = ContentScroll.AbsolutePosition.Y
-                                        TweenService:Create(ContentScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                                            CanvasPosition = Vector2.new(0, math.max(0, ey - cy + ContentScroll.CanvasPosition.Y))
+                                        -- compute Y by summing child heights (reliable after layout)
+                                        local inner2 = capSec.secFrame and capSec.secFrame:FindFirstChild("InnerContainer")
+                                        local targetY = 0
+                                        if inner2 then
+                                            for _, ch in ipairs(inner2:GetChildren()) do
+                                                if ch == capElem then break end
+                                                if ch:IsA("Frame") then targetY = targetY + ch.Size.Y.Offset + 5 end
+                                            end
+                                        end
+                                        -- offset by section position in scroll
+                                        local secY = 0
+                                        local container2 = capSec.secFrame and capSec.secFrame.Parent
+                                        if container2 then
+                                            for _, ch in ipairs(container2:GetChildren()) do
+                                                if ch == capSec.secFrame then break end
+                                                if ch:IsA("Frame") then secY = secY + ch.Size.Y.Offset + 8 end
+                                            end
+                                        end
+                                        TweenService:Create(ContentScroll, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                                            CanvasPosition = Vector2.new(0, math.max(0, secY + 34 + targetY))
                                         }):Play()
                                         task.spawn(function()
                                             TweenService:Create(capElem, TweenInfo.new(0.2), {BackgroundTransparency=0.5}):Play()
@@ -1357,10 +1373,16 @@ function Orvion:CreateWindow(config)
                                         local sf = TabSwitchFns[capTab]
                                         if sf then sf() end
                                         task.wait(0.5)
-                                        local ey = capElem.AbsolutePosition.Y
-                                        local cy = ContentScroll.AbsolutePosition.Y
-                                        TweenService:Create(ContentScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                                            CanvasPosition = Vector2.new(0, math.max(0, ey - cy + ContentScroll.CanvasPosition.Y))
+                                        local targetY = 0
+                                        local cont = TabContents[capTab]
+                                        if cont then
+                                            for _, ch in ipairs(cont:GetChildren()) do
+                                                if ch == capElem then break end
+                                                if ch:IsA("Frame") then targetY = targetY + ch.Size.Y.Offset + 8 end
+                                            end
+                                        end
+                                        TweenService:Create(ContentScroll, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                                            CanvasPosition = Vector2.new(0, math.max(0, targetY))
                                         }):Play()
                                         task.spawn(function()
                                             TweenService:Create(capElem, TweenInfo.new(0.2), {BackgroundTransparency=0.5}):Play()
