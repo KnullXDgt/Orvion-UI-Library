@@ -10,7 +10,7 @@ local HttpService = game:GetService("HttpService")
 local TextService = game:GetService("TextService")
 local RunService = game:GetService("RunService")
 
-local ConfigFolder = "OrvionConfigs"
+local ConfigFolder = "OrvionFishIt"
 
 local function CircleClick(Button, X, Y)
     spawn(
@@ -769,6 +769,7 @@ function Orvion:CreateWindow(config)
     local Draggable = config.Draggable ~= false
     local Resizable = config.Resize or false
     local MinimizeKey = config.MinimizeKey or Enum.KeyCode.RightShift
+    if config.ConfigFolder then ConfigFolder = config.ConfigFolder end
     local MinimizeButton = config.MinimizeButton or false
     local MinimizeButtonImage = config.MinimizeButton_Image or "rbxassetid://16932740082"
     local Badges = config.Badges or {}
@@ -1959,6 +1960,7 @@ function Orvion:CreateWindow(config)
     end
 
     local function CreateToggle(tabContainer, title, content, defaultValue, callback, elementId)
+        elementId = elementId or string.gsub((title or ""), "[^%w]", "")
         if not tabContainer or not tabContainer:IsA("Frame") then
             return
         end
@@ -2149,6 +2151,7 @@ function Orvion:CreateWindow(config)
     end
 
     local function CreateInput(tabContainer, title, content, placeholder, callback, elementId)
+        elementId = elementId or string.gsub((title or ""), "[^%w]", "")
         if not tabContainer or not tabContainer:IsA("Frame") then
             return
         end
@@ -2166,59 +2169,28 @@ function Orvion:CreateWindow(config)
         InputCorner.CornerRadius = UDim.new(0, 4)
         InputCorner.Parent = Input
 
+        Input.Size = UDim2.new(1, 0, 0, 54)
+
         local InputTitle = Instance.new("TextLabel")
         InputTitle.Font = Enum.Font.GothamBold
         InputTitle.Text = title
         InputTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
         InputTitle.TextSize = 13
         InputTitle.TextXAlignment = Enum.TextXAlignment.Left
-        InputTitle.TextYAlignment = Enum.TextYAlignment.Top
-        InputTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         InputTitle.BackgroundTransparency = 0.999
-        InputTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
         InputTitle.BorderSizePixel = 0
-        InputTitle.Position = UDim2.new(0, 10, 0, 10)
-        InputTitle.Size = UDim2.new(1, -180, 0, 13)
+        InputTitle.Position = UDim2.new(0, 8, 0, 6)
+        InputTitle.Size = UDim2.new(1, -16, 0, 14)
         InputTitle.Name = "InputTitle"
         InputTitle.Parent = Input
-        local InputContent = Instance.new("TextLabel")
-        InputContent.Font = Enum.Font.GothamBold
-        InputContent.Text = content
-        InputContent.TextColor3 = Color3.fromRGB(255, 255, 255)
-        InputContent.TextSize = 12
-        InputContent.TextTransparency = 0.6
-        InputContent.TextWrapped = true
-        InputContent.TextXAlignment = Enum.TextXAlignment.Left
-        InputContent.TextYAlignment = Enum.TextYAlignment.Bottom
-        InputContent.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        InputContent.BackgroundTransparency = 0.999
-        InputContent.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        InputContent.BorderSizePixel = 0
-        InputContent.Position = UDim2.new(0, 10, 0, 23)
-        InputContent.Size = UDim2.new(1, -180, 0, 12)
-        InputContent.Name = "InputContent"
-        InputContent.Parent = Input
-        local textSize =
-            TextService:GetTextSize(
-            content,
-            12,
-            Enum.Font.GothamBold,
-            Vector2.new(ContentScroll.AbsoluteSize.X - 200, math.huge)
-        )
-
-        InputContent.Size = UDim2.new(1, -180, 0, textSize.Y)
-        InputContent.TextWrapped = true
-        Input.Size = UDim2.new(1, 0, 0, math.max(46, textSize.Y + 33))
 
         local InputFrame = Instance.new("Frame")
-        InputFrame.AnchorPoint = Vector2.new(1, 0.5)
         InputFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         InputFrame.BackgroundTransparency = 0.95
-        InputFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         InputFrame.BorderSizePixel = 0
         InputFrame.ClipsDescendants = true
-        InputFrame.Position = UDim2.new(1, -7, 0.5, 0)
-        InputFrame.Size = UDim2.new(0, 148, 0, 30)
+        InputFrame.Position = UDim2.new(0, 6, 0, 24)
+        InputFrame.Size = UDim2.new(1, -12, 0, 24)
         InputFrame.Name = "InputFrame"
         InputFrame.Parent = Input
 
@@ -2241,7 +2213,7 @@ function Orvion:CreateWindow(config)
         InputTextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
         InputTextBox.BorderSizePixel = 0
         InputTextBox.Position = UDim2.new(0, 5, 0.5, 0)
-        InputTextBox.Size = UDim2.new(1, -10, 1, -8)
+        InputTextBox.Size = UDim2.new(1, -10, 1, -4)
         InputTextBox.Name = "InputTextBox"
         InputTextBox.Parent = InputFrame
 
@@ -2276,6 +2248,7 @@ function Orvion:CreateWindow(config)
     end
     
     local function CreateDropdown(tabContainer, title, content, options, multi, defaultValue, callback, elementId)
+        elementId = elementId or string.gsub((title or ""), "[^%w]", "")
         if not tabContainer or not tabContainer:IsA("Frame") then
             return
         end
@@ -4289,11 +4262,66 @@ function Orvion:CreateWindow(config)
     
     local ConfigTabContainer, SwitchToConfigTab = CreateTabButton("Configs", "rbxassetid://16932740082", true)
     
-    -- Create config tab elements
-    CreateParagraph(ConfigTabContainer, "Configuration Settings", "Manage your UI settings and themes here.")
-    
+    -- Config tab setup
     local CurrentConfigName = ""
-    
+    local SelectedConfigName = ""
+    local AutoloadFile = ConfigFolder .. "/_autoload.txt"
+
+    -- Status header frame with gear icon + two-line status
+    local CfgHeaderFrame = Instance.new("Frame", ConfigTabContainer)
+    CfgHeaderFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+    CfgHeaderFrame.BackgroundTransparency = 0.935
+    CfgHeaderFrame.BorderSizePixel = 0
+    CfgHeaderFrame.Size = UDim2.new(1, 0, 0, 52)
+    CfgHeaderFrame.Name = "CfgHeader"
+    Instance.new("UICorner", CfgHeaderFrame).CornerRadius = UDim.new(0, 4)
+
+    local CfgGearIcon = Instance.new("ImageLabel", CfgHeaderFrame)
+    CfgGearIcon.Image = "rbxassetid://112919034802026"
+    CfgGearIcon.BackgroundTransparency = 1
+    CfgGearIcon.Position = UDim2.new(0, 8, 0.5, 0)
+    CfgGearIcon.AnchorPoint = Vector2.new(0, 0.5)
+    CfgGearIcon.Size = UDim2.new(0, 18, 0, 18)
+    CfgGearIcon.ZIndex = 2
+
+    local CfgTitle = Instance.new("TextLabel", CfgHeaderFrame)
+    CfgTitle.Font = Enum.Font.GothamBold
+    CfgTitle.Text = "Config Manager"
+    CfgTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
+    CfgTitle.TextSize = 13
+    CfgTitle.TextXAlignment = Enum.TextXAlignment.Left
+    CfgTitle.BackgroundTransparency = 1
+    CfgTitle.BorderSizePixel = 0
+    CfgTitle.Position = UDim2.new(0, 32, 0, 5)
+    CfgTitle.Size = UDim2.new(1, -36, 0, 14)
+    CfgTitle.ZIndex = 2
+
+    local CfgStatusLabel = Instance.new("TextLabel", CfgHeaderFrame)
+    CfgStatusLabel.Font = Enum.Font.Gotham
+    CfgStatusLabel.Text = "Current: None  |  Autoload: None"
+    CfgStatusLabel.TextColor3 = Color3.fromRGB(150, 150, 170)
+    CfgStatusLabel.TextSize = 10
+    CfgStatusLabel.TextXAlignment = Enum.TextXAlignment.Left
+    CfgStatusLabel.TextWrapped = true
+    CfgStatusLabel.BackgroundTransparency = 1
+    CfgStatusLabel.BorderSizePixel = 0
+    CfgStatusLabel.Position = UDim2.new(0, 32, 0, 22)
+    CfgStatusLabel.Size = UDim2.new(1, -36, 0, 24)
+    CfgStatusLabel.ZIndex = 2
+
+    local function updateCfgStatus()
+        local cur = CurrentConfigName ~= "" and CurrentConfigName or "None"
+        local al = "None"
+        pcall(function()
+            if isfile(AutoloadFile) then
+                local v = readfile(AutoloadFile)
+                if v and v ~= "" then al = v end
+            end
+        end)
+        CfgStatusLabel.Text = "Current: " .. cur .. "  |  Autoload: " .. al
+    end
+    updateCfgStatus()
+
     local TransparencyToggle =
         CreateToggle(
         ConfigTabContainer,
@@ -4311,25 +4339,23 @@ function Orvion:CreateWindow(config)
         end,
         "TransparencyToggle"
     )
-    
+
     local ConfigNameInput =
         CreateInput(
         ConfigTabContainer,
         "Config Name",
-        "Enter name for your config",
+        "",
         "MyConfig",
         function(value)
             CurrentConfigName = value
         end,
         "ConfigNameInput"
     )
-    
-    local SelectedConfigName = ""
 
     local SelectConfigDropdown = CreateDropdown(
         ConfigTabContainer,
         "Select Config",
-        "Pick a saved config",
+        "Choose from saved configs",
         ConfigSystem:GetConfigList(),
         false,
         nil,
@@ -4337,6 +4363,7 @@ function Orvion:CreateWindow(config)
             if value and value ~= "" then
                 SelectedConfigName = value
                 CurrentConfigName = value
+                updateCfgStatus()
             end
         end,
         "SelectConfigDropdown"
@@ -4345,7 +4372,7 @@ function Orvion:CreateWindow(config)
     local function doSaveConfig()
         local targetName = CurrentConfigName ~= "" and CurrentConfigName or SelectedConfigName
         if not targetName or targetName == "" then
-            MakeNotify({ Title = "Config", Description = "Error", Content = "Enter or select a config name first!", Color = Color3.fromRGB(150, 150, 170), Delay = 3 })
+            MakeNotify({ Title = "Config", Description = "Error", Content = "Enter or select a config name first!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
             return
         end
         local configData = {}
@@ -4360,6 +4387,8 @@ function Orvion:CreateWindow(config)
         end
         local notifyData = ConfigSystem:SaveConfig(targetName, configData)
         MakeNotify(notifyData)
+        CurrentConfigName = targetName
+        updateCfgStatus()
         local configList = ConfigSystem:GetConfigList()
         SelectConfigDropdown:Refresh(configList)
     end
@@ -4367,11 +4396,11 @@ function Orvion:CreateWindow(config)
     local function doLoadConfig()
         local targetName = SelectedConfigName ~= "" and SelectedConfigName or CurrentConfigName
         if not targetName or targetName == "" then
-            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(150, 150, 170), Delay = 3 })
+            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
             return
         end
         local notifyData, configData = ConfigSystem:LoadConfig(targetName)
-        MakeNotify(notifyData)
+        MakeNotify({ Title = "Config", Description = "Loaded", Content = """ .. targetName .. "" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
         if configData then
             for id, val in pairs(configData) do
                 if AllElements[id] then
@@ -4385,19 +4414,45 @@ function Orvion:CreateWindow(config)
                 end
             end
         end
+        CurrentConfigName = targetName
+        updateCfgStatus()
     end
 
     local function doDeleteConfig()
         local targetName = SelectedConfigName ~= "" and SelectedConfigName or CurrentConfigName
         if not targetName or targetName == "" then
-            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(150, 150, 170), Delay = 3 })
+            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
             return
         end
         local notifyData = ConfigSystem:DeleteConfig(targetName)
         MakeNotify(notifyData)
         SelectedConfigName = ""
+        CurrentConfigName = ""
+        updateCfgStatus()
         local configList = ConfigSystem:GetConfigList()
         SelectConfigDropdown:Refresh(configList)
+    end
+
+    local function doSetAutoload()
+        local targetName = SelectedConfigName ~= "" and SelectedConfigName or CurrentConfigName
+        if not targetName or targetName == "" then
+            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
+            return
+        end
+        pcall(function()
+            if not isfolder(ConfigFolder) then makefolder(ConfigFolder) end
+            writefile(AutoloadFile, targetName)
+        end)
+        MakeNotify({ Title = "Config", Description = "Autoload Set", Content = "Autoload → "" .. targetName .. """, Color = Color3.fromRGB(150,150,170), Delay = 3 })
+        updateCfgStatus()
+    end
+
+    local function doClearAutoload()
+        pcall(function()
+            if isfile(AutoloadFile) then writefile(AutoloadFile, "") end
+        end)
+        MakeNotify({ Title = "Config", Description = "Cleared", Content = "Autoload cleared.", Color = Color3.fromRGB(150,150,170), Delay = 2 })
+        updateCfgStatus()
     end
 
     CreateButtonGrid(ConfigTabContainer,
@@ -4407,18 +4462,50 @@ function Orvion:CreateWindow(config)
 
     CreateButtonGrid(ConfigTabContainer,
         { Title = "Delete Config", Callback = doDeleteConfig },
-        { Title = "Refresh List",  Callback = function()
+        { Title = "Set Autoload",  Callback = doSetAutoload }
+    )
+
+    CreateButtonGrid(ConfigTabContainer,
+        { Title = "Refresh List", Callback = function()
             local configList = ConfigSystem:GetConfigList()
             SelectConfigDropdown:Refresh(configList)
             MakeNotify({ Title = "Config", Description = "Refreshed", Content = "Config list updated.", Color = Color3.fromRGB(150,150,170), Delay = 2 })
-        end }
+        end },
+        { Title = "Clear Autoload", Callback = doClearAutoload }
     )
+
+    -- Autoload on startup
+    task.spawn(function()
+        task.wait(1)
+        pcall(function()
+            if isfile(AutoloadFile) then
+                local autoName = readfile(AutoloadFile)
+                if autoName and autoName ~= "" then
+                    local _, configData = ConfigSystem:LoadConfig(autoName)
+                    if configData then
+                        for id, val in pairs(configData) do
+                            if AllElements[id] then
+                                if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
+                                    AllElements[id]:Set(Color3.new(val[1], val[2], val[3]))
+                                elseif AllElements[id].Type == "Keybind" and val then
+                                    AllElements[id]:Set(Enum.KeyCode[val])
+                                else
+                                    AllElements[id]:Set(val)
+                                end
+                            end
+                        end
+                        CurrentConfigName = autoName
+                        updateCfgStatus()
+                        MakeNotify({ Title = "Config", Description = "Autoloaded", Content = """ .. autoName .. "" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 4 })
+                    end
+                end
+            end
+        end)
+    end)
 
     -- backward compat refs
     local LoadConfigDropdown = SelectConfigDropdown
     local DeleteConfigDropdown = SelectConfigDropdown
-    
-    CreateParagraph(ConfigTabContainer, "Note", "Configs are saved to local files in the OrvionConfigs folder.")
     
     -- Switch to first tab
     SwitchToConfigTab()
