@@ -1305,16 +1305,17 @@ function Orvion:CreateWindow(config)
         end
     end)
 
-    -- polling fallback for executors that don't fire Changed
+    -- polling via Heartbeat — most reliable in executors
     local _lastSearchText = ""
-    task.spawn(function()
-        while SearchTextBox and SearchTextBox.Parent do
-            local t = SearchTextBox.Text
-            if t ~= _lastSearchText then
-                _lastSearchText = t
-                buildSearchResults(t)
-            end
-            task.wait(0.1)
+    local _searchConn = RunService.Heartbeat:Connect(function()
+        if not SearchTextBox or not SearchTextBox.Parent then
+            _searchConn:Disconnect()
+            return
+        end
+        local t = SearchTextBox.Text
+        if t ~= _lastSearchText then
+            _lastSearchText = t
+            buildSearchResults(t)
         end
     end)
 
@@ -1956,7 +1957,7 @@ function Orvion:CreateWindow(config)
         FeatureFrame.BackgroundTransparency = 0.2
         FeatureFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         FeatureFrame.BorderSizePixel = 0
-        FeatureFrame.Position = UDim2.new(1, -3, 0.5, 0)
+        FeatureFrame.Position = UDim2.new(1, -10, 0.5, 0)
         FeatureFrame.Size = UDim2.new(0, 30, 0, 15)
         FeatureFrame.Name = "FeatureFrame"
         FeatureFrame.Parent = Toggle
