@@ -1182,6 +1182,7 @@ function Orvion:CreateWindow(config)
     end
 
     local function buildSearchResults(query)
+        if not NoResultsLabel then return end
         local q = string.lower(query)
         NoResultsLabel.Visible = false
         local anyVisible = false
