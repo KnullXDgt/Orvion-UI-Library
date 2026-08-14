@@ -1258,23 +1258,27 @@ function Orvion:CreateWindow(config)
 
                 local capturedEntry = entry
                 Item.Activated:Connect(function()
+                    -- 1. switch tab
                     local sf = TabSwitchFns[capturedEntry.tabName]
-                    if sf then
-                        sf()
-                    end
-                    if capturedEntry.collapsibleFrame then
-                        local hdr = capturedEntry.collapsibleFrame:FindFirstChild("HeaderBtn")
+                    if sf then sf() end
+                    -- 2. open section if needed
+                    if capturedEntry.openFn then
+                        pcall(capturedEntry.openFn)
+                    elseif capturedEntry.sectionFrame then
+                        local hdr = capturedEntry.sectionFrame:FindFirstChild("HeaderBtn")
                         if hdr then
                             local arrow = hdr:FindFirstChild("SectionArrow")
-                            if arrow and arrow.Rotation == -90 then
-                                hdr.MouseButton1Click:Fire()
+                            if arrow and math.abs(arrow.Rotation - (-90)) < 1 then
+                                hdr:Activate()
                             end
                         end
                     end
+                    -- 3. scroll to element
                     task.wait(0.05)
-                    if capturedEntry.elementFrame then
+                    local target = capturedEntry.sectionFrame or capturedEntry.elementFrame
+                    if target then
                         pcall(function()
-                            local ey = capturedEntry.elementFrame.AbsolutePosition.Y
+                            local ey = target.AbsolutePosition.Y
                             local cy = ContentScroll.AbsolutePosition.Y
                             ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
                         end)
@@ -1299,12 +1303,6 @@ function Orvion:CreateWindow(config)
         end
         openSearchResults()
     end
-
-    SearchTextBox.Changed:Connect(function(prop)
-        if prop == "Text" then
-            buildSearchResults(SearchTextBox.Text)
-        end
-    end)
 
     -- polling via Heartbeat — most reliable in executors
     local _lastSearchText = ""
@@ -1463,7 +1461,6 @@ function Orvion:CreateWindow(config)
     local AllElements = {}
     local SearchRegistry = {}
     local TabSwitchFns = {}
-    local TabNameByContainer = {}
 
     local function UpdateTabSize()
         local OffsetY = 0
@@ -1489,33 +1486,41 @@ function Orvion:CreateWindow(config)
 
     local function RegisterSearchElement(title, elementFrame, tabContainer)
         if not title or title == "" then return end
-        local collapsibleFrame = nil
-        local actualContainer = tabContainer
-        if tabContainer and tabContainer.Name == "InnerContainer" then
-            collapsibleFrame = tabContainer.Parent
-            actualContainer  = tabContainer.Parent and tabContainer.Parent.Parent
-        end
-        -- try direct lookup first
-        local tabName = TabNameByContainer[actualContainer]
-        -- fallback: walk up and check attribute
-        if not tabName then
-            local walker = actualContainer
-            while walker and walker ~= Main do
-                tabName = TabNameByContainer[walker]
-                if not tabName then
-                    tabName = walker:GetAttribute("OrvionTabName")
-                end
-                if tabName then break end
-                walker = walker.Parent
+        local sectionFrame = nil
+        -- find OrvionTabName attribute by walking up
+        local tabName = nil
+        local walker = tabContainer
+        while walker and walker ~= Main do
+            local attr = pcall(function()
+                tabName = walker:GetAttribute("OrvionTabName")
+            end)
+            if tabName then break end
+            -- also check if we pass through a SectionFrame (collapsible)
+            if walker.Name == "InnerContainer" then
+                sectionFrame = walker.Parent
             end
+            walker = walker.Parent
         end
         if not tabName then return end
         table.insert(SearchRegistry, {
-            title            = title:lower(),
-            displayTitle     = title,
-            elementFrame     = elementFrame,
-            tabName          = tabName,
-            collapsibleFrame = collapsibleFrame,
+            title        = title:lower(),
+            displayTitle = title,
+            elementFrame = elementFrame,
+            tabName      = tabName,
+            sectionFrame = sectionFrame,
+        })
+    end
+
+    local function RegisterSection(title, sectionFrame, tabName, openFn)
+        if not title or title == "" or not tabName then return end
+        table.insert(SearchRegistry, {
+            title        = title:lower(),
+            displayTitle = title,
+            elementFrame = sectionFrame,
+            tabName      = tabName,
+            sectionFrame = sectionFrame,
+            openFn       = openFn,
+            isSection    = true,
         })
     end
 
@@ -4064,6 +4069,23 @@ function Orvion:CreateWindow(config)
             updateSize()
         end)
 
+        -- register section for search
+        local tabName = pcall(function() end) and nil
+        do
+            local w = tabContainer
+            while w and w ~= Main do
+                local ok, v = pcall(function() return w:GetAttribute("OrvionTabName") end)
+                if ok and v then tabName = v break end
+                w = w.Parent
+            end
+        end
+        RegisterSection(title, SectionFrame, tabName, function()
+            if not isOpen then
+                isOpen = true
+                updateSize()
+            end
+        end)
+
         updateSize()
         return InnerContainer
     end
@@ -4156,7 +4178,6 @@ function Orvion:CreateWindow(config)
         )
 
         TabContents[tabName] = TabContentContainer
-        TabNameByContainer[TabContentContainer] = tabName
         TabContentContainer:SetAttribute("OrvionTabName", tabName)
 
         local function SwitchToTab()
