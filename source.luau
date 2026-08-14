@@ -1174,6 +1174,7 @@ function Orvion:CreateWindow(config)
     end)
 
     local searchResultsOpen = false
+    local NoResultsLabel = nil -- forward declaration, assigned below
 
     local function closeSearchResults()
         searchResultsOpen = false
