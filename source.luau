@@ -1193,7 +1193,11 @@ function Orvion:CreateWindow(config)
                 if q == "" then
                     item.Visible = false
                 else
-                    local match = string.find(string.lower(item.Name), q, 1, true) ~= nil
+                    -- match on Text (strip leading spaces) AND Name, whichever works
+                    local rawText = (item.Text or ""):gsub("^%s+", ""):lower()
+                    local rawName = (item.Name or ""):lower()
+                    local match = (rawText ~= "" and string.find(rawText, q, 1, true) ~= nil)
+                                or string.find(rawName, q, 1, true) ~= nil
                     item.Visible = match
                     if match then
                         anyVisible = true
@@ -1213,7 +1217,6 @@ function Orvion:CreateWindow(config)
             visibleCount = 1
         end
 
-        -- manually set CanvasSize based on visible items
         SearchResults.CanvasSize = UDim2.new(0, 0, 0, visibleCount * 28 + 4)
         local targetH = math.max(60, math.min(visibleCount * 28 + 4, 150))
         SearchResults.Size = UDim2.new(0, 120, 0, targetH)
