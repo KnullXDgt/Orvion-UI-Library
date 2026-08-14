@@ -1159,7 +1159,7 @@ function Orvion:CreateWindow(config)
 
     local SearchResults = Instance.new("ScrollingFrame")
     SearchResults.Name = "SearchResults"
-    SearchResults.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+    SearchResults.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
     SearchResults.BorderSizePixel = 0
     SearchResults.Position = UDim2.new(0, 9, 0, 75)
     SearchResults.Size = UDim2.new(0, 120, 0, 0)
@@ -1193,9 +1193,11 @@ function Orvion:CreateWindow(config)
     end
 
     local function openSearchResults()
-        local frameH = TabFrame.AbsoluteSize.Y
-        if frameH <= 0 then frameH = 200 end
-        local targetH = math.max(80, math.floor((frameH - 36) / 2))
+        local targetH = 100
+        pcall(function()
+            local fh = TabFrame.AbsoluteSize.Y
+            if fh > 50 then targetH = math.max(80, math.floor((fh - 36) / 2)) end
+        end)
         SearchResults.Size = UDim2.new(0, 120, 0, targetH)
         SearchResults.Visible = true
         searchResultsOpen = true
@@ -1228,7 +1230,7 @@ function Orvion:CreateWindow(config)
                 Item.BackgroundTransparency = 0.92
                 Item.BorderSizePixel = 0
                 Item.Size = UDim2.new(1, 0, 0, 26)
-                Item.ZIndex = 11
+                Item.ZIndex = 51
                 Item.AutoButtonColor = true
                 Item.Parent = SearchResults
 
@@ -1249,7 +1251,7 @@ function Orvion:CreateWindow(config)
                 ItemTag.AnchorPoint = Vector2.new(1, 0.5)
                 ItemTag.Position = UDim2.new(1, -4, 0.5, 0)
                 ItemTag.Size = UDim2.new(0, 50, 1, 0)
-                ItemTag.ZIndex = 12
+                ItemTag.ZIndex = 52
                 ItemTag.Parent = Item
 
                 local capturedEntry = entry
