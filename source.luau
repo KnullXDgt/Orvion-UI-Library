@@ -140,7 +140,7 @@ local function MakeDraggableMobileButton(button, object, screenGui)
         function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 Dragging = false
-                ClickStartTime = tick()
+                ClickStartTime = os.clock()
                 ClickStartPos = input.Position
                 DragStart = input.Position
                 -- use AbsolutePosition so mixed-scale positions don't cause jump
@@ -1311,7 +1311,7 @@ function Orvion:CreateWindow(config)
         local t = SearchTextBox.Text
         if t ~= _lastSearchText then
             _lastSearchText = t
-            buildSearchResults(t)
+            pcall(buildSearchResults, t)
         end
     end)
 
@@ -1612,7 +1612,7 @@ function Orvion:CreateWindow(config)
         local lastClick = 0
         ClickDetector.Activated:Connect(
             function()
-                local now = tick()
+                local now = os.clock()
                 if now - lastClick < 0.3 then
                     return
                 end
@@ -1686,7 +1686,7 @@ function Orvion:CreateWindow(config)
 
         local lastTBClick = 0
         TBClick.Activated:Connect(function()
-            local now = tick()
+            local now = os.clock()
             if now - lastTBClick < 0.3 then return end
             lastTBClick = now
             if not tbDragging() then
