@@ -135,12 +135,11 @@ local function MakeDraggableMobileButton(button, object, screenGui)
         object.Position = UDim2.new(0, newX, 0, newY)
     end
 
-    button.InputBegan:Connect(function(input)
+    pcall(function() button.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             Dragging = false
             ClickStartPos = input.Position
             DragStart = input.Position
-            -- store absolute position safely
             pcall(function()
                 StartPosition = Vector2.new(object.AbsolutePosition.X, object.AbsolutePosition.Y)
             end)
@@ -148,38 +147,29 @@ local function MakeDraggableMobileButton(button, object, screenGui)
                 StartPosition = Vector2.new(object.Position.X.Offset, object.Position.Y.Offset)
             end
         end
-    end)
+    end) end)
 
-    UserInputService.InputEnded:Connect(function(input)
+    pcall(function() UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             Dragging = false
         end
-    end)
+    end) end)
 
-    button.InputChanged:Connect(
-        function(input)
-            if
-                input.UserInputType == Enum.UserInputType.MouseMovement or
-                    input.UserInputType == Enum.UserInputType.Touch
-             then
-                if not Dragging then
-                    local dragDistance = (input.Position - ClickStartPos).Magnitude
-                    if dragDistance > 5 then
-                        Dragging = true
-                    end
-                end
-                DragInput = input
+    pcall(function() button.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if not Dragging and ClickStartPos then
+                local dragDistance = (input.Position - ClickStartPos).Magnitude
+                if dragDistance > 5 then Dragging = true end
             end
+            DragInput = input
         end
-    )
+    end) end)
 
-    UserInputService.InputChanged:Connect(
-        function(input)
-            if input == DragInput and Dragging then
-                UpdatePos(input)
-            end
+    pcall(function() UserInputService.InputChanged:Connect(function(input)
+        if input == DragInput and Dragging then
+            UpdatePos(input)
         end
-    )
+    end) end)
 
     return function()
         return Dragging
