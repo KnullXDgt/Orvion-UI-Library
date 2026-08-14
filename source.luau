@@ -2130,6 +2130,7 @@ function Orvion:CreateWindow(config)
 
         local toggleFunc = {
             Value = state,
+            _live = function() return state end,
             Type = "Toggle",
             Id = elementId
         }
@@ -4371,10 +4372,13 @@ function Orvion:CreateWindow(config)
         local configData = {}
         for id, element in pairs(AllElements) do
             local val = nil
-            if element.Type == "Slider" then
+            if element.Type == "Toggle" then
+                local live = element._live and element._live() or element.Value
+                val = live
+            elseif element.Type == "Slider" then
                 local live = element._data and element._data.Value or element.Value
                 local def = element._default
-                if def == nil or live ~= def then val = live end  -- skip default
+                if def == nil or live ~= def then val = live end
             elseif element.Type == "Dropdown" then
                 local live = element._data and element._data.Value or element.Value
                 if element._data and element._data.Multi then
