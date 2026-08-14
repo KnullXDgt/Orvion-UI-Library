@@ -144,6 +144,12 @@ local function MakeDraggableMobileButton(button, object, screenGui)
         end
     end)
 
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            Dragging = false
+        end
+    end)
+
     button.InputChanged:Connect(
         function(input)
             if
@@ -1176,140 +1182,67 @@ function Orvion:CreateWindow(config)
     local function closeSearchResults()
         searchResultsOpen = false
         SearchResults.Visible = false
-        SearchResults.Size = UDim2.new(0, 120, 0, 0)
-    end
-
-    local function openSearchResults()
-        local targetH = 100
-        pcall(function()
-            local fh = TabFrame.AbsoluteSize.Y
-            if fh > 50 then targetH = math.max(80, math.floor((fh - 36) / 2)) end
-        end)
-        SearchResults.Size = UDim2.new(0, 120, 0, targetH)
-        SearchResults.Visible = true
-        searchResultsOpen = true
     end
 
     local function buildSearchResults(query)
-        pcall(function()
-            for _, child in SearchResults:GetChildren() do
-                if child:IsA("TextButton") or child:IsA("TextLabel") then child:Destroy() end
-            end
-            if query == "" then closeSearchResults() return end
-            local q = query:lower()
-            local found = 0
-
-            local function makeItem(displayText, tabName, secFrame)
-                found = found + 1
-                local Item = Instance.new("TextButton")
-                Item.Font = Enum.Font.GothamBold
-                Item.Text = "  " .. displayText
-                Item.TextColor3 = Color3.fromRGB(220, 220, 220)
-                Item.TextSize = 11
-                Item.TextXAlignment = Enum.TextXAlignment.Left
-                Item.TextTruncate = Enum.TextTruncate.AtEnd
-                Item.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                Item.BackgroundTransparency = 0.92
-                Item.BorderSizePixel = 0
-                Item.Size = UDim2.new(1, 0, 0, 26)
-                Item.ZIndex = 51
-                Item.AutoButtonColor = true
-                Item.Parent = SearchResults
-                Instance.new("UICorner", Item).CornerRadius = UDim.new(0, 3)
-                local tag = Instance.new("TextLabel", Item)
-                tag.Font = Enum.Font.Gotham
-                tag.Text = tabName
-                tag.TextColor3 = Color3.fromRGB(120, 120, 140)
-                tag.TextSize = 9
-                tag.TextXAlignment = Enum.TextXAlignment.Right
-                tag.BackgroundTransparency = 1
-                tag.BorderSizePixel = 0
-                tag.AnchorPoint = Vector2.new(1, 0.5)
-                tag.Position = UDim2.new(1, -4, 0.5, 0)
-                tag.Size = UDim2.new(0, 50, 1, 0)
-                tag.ZIndex = 52
-                local capTab, capSec = tabName, secFrame
-                Item.Activated:Connect(function()
-                    pcall(function()
-                        local sf = TabSwitchFns[capTab]
-                        if sf then sf() end
-                        if capSec then
-                            local h = capSec:FindFirstChild("HeaderBtn")
-                            if h then
-                                local arr = h:FindFirstChild("SectionArrow")
-                                if arr and math.abs(arr.Rotation - (-90)) < 1 then h:Activate() end
-                            end
-                            task.wait(0.05)
-                            local ey = capSec.AbsolutePosition.Y
-                            local cy = ContentScroll.AbsolutePosition.Y
-                            ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
-                        end
-                        SearchTextBox.Text = ""
-                        closeSearchResults()
-                    end)
-                end)
-            end
-
-            for tabName, container in pairs(TabContents or {}) do
-                for _, child in ipairs(container:GetChildren()) do
-                    if child.Name == "Collapsible" then
-                        local hdr = child:FindFirstChild("HeaderBtn")
-                        local secTitle = hdr and (hdr.Text or ""):gsub("^%s+", "") or ""
-                        if secTitle ~= "" and secTitle:lower():find(q, 1, true) then
-                            makeItem(secTitle, tabName, child)
-                        end
-                        local inner = child:FindFirstChild("InnerContainer")
-                        if inner then
-                            for _, elem in ipairs(inner:GetChildren()) do
-                                for _, lname in ipairs({"ToggleTitle","ButtonTitle","InputTitle","DropdownTitle","SliderTitle","ParagraphTitle"}) do
-                                    local lbl = elem:FindFirstChild(lname)
-                                    if lbl and lbl.Text ~= "" and lbl.Text:lower():find(q, 1, true) then
-                                        makeItem(lbl.Text, tabName, child)
-                                        break
-                                    end
-                                end
-                            end
-                        end
-                    end
+        local q = string.lower(query)
+        local anyVisible = false
+        for _, item in ipairs(SearchResults:GetChildren()) do
+            if item:IsA("TextButton") then
+                if q == "" then
+                    item.Visible = false
+                else
+                    local match = string.find(string.lower(item.Name), q, 1, true) ~= nil
+                    item.Visible = match
+                    if match then anyVisible = true end
                 end
             end
-
-            if found == 0 then
-                local nl = Instance.new("TextLabel", SearchResults)
-                nl.Text = "  No results"
-                nl.Font = Enum.Font.Gotham
-                nl.TextColor3 = Color3.fromRGB(120, 120, 130)
-                nl.TextSize = 11
-                nl.TextXAlignment = Enum.TextXAlignment.Left
-                nl.BackgroundTransparency = 1
-                nl.BorderSizePixel = 0
-                nl.Size = UDim2.new(1, 0, 0, 26)
-                nl.ZIndex = 51
-                nl.Parent = SearchResults
+        end
+        if q == "" then
+            closeSearchResults()
+        elseif anyVisible then
+            SearchResults.Visible = true
+            searchResultsOpen = true
+            local targetH = 100
+            pcall(function()
+                local fh = TabFrame.AbsoluteSize.Y
+                if fh > 50 then targetH = math.max(80, math.floor((fh - 36) / 2)) end
+            end)
+            SearchResults.Size = UDim2.new(0, 120, 0, targetH)
+        else
+            SearchResults.Visible = true
+            searchResultsOpen = true
+            SearchResults.Size = UDim2.new(0, 120, 0, 30)
+            -- show no results label
+            for _, item in ipairs(SearchResults:GetChildren()) do
+                if item:IsA("TextLabel") and item.Name == "NoResults" then
+                    item.Visible = true
+                end
             end
-            openSearchResults()
-        end)
+        end
     end
 
-    -- polling via Heartbeat — most reliable in executors
-    local _lastSearchText = ""
-    local _searchConn
-    _searchConn = RunService.Heartbeat:Connect(function()
-        if not SearchTextBox or not SearchTextBox.Parent then
-            if _searchConn then _searchConn:Disconnect() end
-            return
-        end
-        local t = SearchTextBox.Text
-        if t ~= _lastSearchText then
-            _lastSearchText = t
-            pcall(buildSearchResults, t)
-        end
+
+    -- NoResults label (hidden by default)
+    local NoResultsLabel = Instance.new("TextLabel", SearchResults)
+    NoResultsLabel.Name = "NoResults"
+    NoResultsLabel.Text = "  No results"
+    NoResultsLabel.Font = Enum.Font.Gotham
+    NoResultsLabel.TextColor3 = Color3.fromRGB(120, 120, 130)
+    NoResultsLabel.TextSize = 11
+    NoResultsLabel.TextXAlignment = Enum.TextXAlignment.Left
+    NoResultsLabel.BackgroundTransparency = 1
+    NoResultsLabel.BorderSizePixel = 0
+    NoResultsLabel.Size = UDim2.new(1, 0, 0, 26)
+    NoResultsLabel.ZIndex = 51
+    NoResultsLabel.Visible = false
+
+    SearchTextBox:GetPropertyChangedSignal("Text"):Connect(function()
+        buildSearchResults(SearchTextBox.Text)
     end)
 
     SearchTextBox.FocusLost:Connect(function()
-        if SearchTextBox.Text == "" then
-            closeSearchResults()
-        end
+        if SearchTextBox.Text == "" then closeSearchResults() end
     end)
 
     -- Player footer
@@ -1632,17 +1565,10 @@ function Orvion:CreateWindow(config)
         TBClick.ZIndex = 102
         TBClick.Parent = ToggleBtn
 
-        local tbDragging = MakeDraggableMobileButton(TBClick, ToggleBtn, ScreenGui)
+        MakeDraggableMobileButton(TBClick, ToggleBtn, ScreenGui)
 
-        local lastTBClick = 0
-        TBClick.Activated:Connect(function()
-            local now = 0
-            if now - lastTBClick < 0.3 then return end
-            lastTBClick = now
-            if not tbDragging() then
-                DropShadowHolder.Visible = not DropShadowHolder.Visible
-
-            end
+        TBClick.MouseButton1Click:Connect(function()
+            DropShadowHolder.Visible = not DropShadowHolder.Visible
         end)
     end
 
@@ -4011,14 +3937,55 @@ function Orvion:CreateWindow(config)
             updateSize()
         end)
 
-        -- register section for search — direct TabContents lookup, no Roblox API
+        -- register section for search — pre-create button in SearchResults
         local tabName = nil
         for tname, tc in pairs(TabContents) do
-            if tc == tabContainer then
-                tabName = tname
-                break
-            end
+            if tc == tabContainer then tabName = tname break end
         end
+        if tabName and title and title ~= "" then
+            local secTitle = (title or ""):gsub("^%s+", "")
+            local SBtn = Instance.new("TextButton", SearchResults)
+            SBtn.Name = secTitle
+            SBtn.Font = Enum.Font.GothamBold
+            SBtn.Text = "  " .. secTitle
+            SBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+            SBtn.TextSize = 11
+            SBtn.TextXAlignment = Enum.TextXAlignment.Left
+            SBtn.TextTruncate = Enum.TextTruncate.AtEnd
+            SBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            SBtn.BackgroundTransparency = 0.92
+            SBtn.BorderSizePixel = 0
+            SBtn.Size = UDim2.new(1, 0, 0, 26)
+            SBtn.ZIndex = 51
+            SBtn.AutoButtonColor = true
+            SBtn.Visible = false
+            Instance.new("UICorner", SBtn).CornerRadius = UDim.new(0, 3)
+            local tag = Instance.new("TextLabel", SBtn)
+            tag.Font = Enum.Font.Gotham
+            tag.Text = tabName
+            tag.TextColor3 = Color3.fromRGB(120, 120, 140)
+            tag.TextSize = 9
+            tag.TextXAlignment = Enum.TextXAlignment.Right
+            tag.BackgroundTransparency = 1
+            tag.BorderSizePixel = 0
+            tag.AnchorPoint = Vector2.new(1, 0.5)
+            tag.Position = UDim2.new(1, -4, 0.5, 0)
+            tag.Size = UDim2.new(0, 50, 1, 0)
+            tag.ZIndex = 52
+            local capTab, capSec = tabName, SectionFrame
+            SBtn.MouseButton1Click:Connect(function()
+                local sf = TabSwitchFns[capTab]
+                if sf then sf() end
+                if not isOpen then isOpen = true updateSize() end
+                task.wait(0.05)
+                local ey = capSec.AbsolutePosition.Y
+                local cy = ContentScroll.AbsolutePosition.Y
+                ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
+                SearchTextBox.Text = ""
+                closeSearchResults()
+            end)
+        end
+
         updateSize()
         return InnerContainer
     end
