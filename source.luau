@@ -1953,7 +1953,6 @@ function Orvion:CreateWindow(config)
     end
 
     local function CreateToggle(tabContainer, title, content, defaultValue, callback, elementId)
-        elementId = elementId or string.gsub((title or ""), "[^%w]", "")
         if not tabContainer or not tabContainer:IsA("Frame") then
             return
         end
@@ -2149,7 +2148,6 @@ function Orvion:CreateWindow(config)
     end
 
     local function CreateInput(tabContainer, title, content, placeholder, callback, elementId)
-        elementId = elementId or string.gsub((title or ""), "[^%w]", "")
         if not tabContainer or not tabContainer:IsA("Frame") then
             return
         end
@@ -2259,7 +2257,6 @@ function Orvion:CreateWindow(config)
     end
     
     local function CreateDropdown(tabContainer, title, content, options, multi, defaultValue, callback, elementId)
-        elementId = elementId or string.gsub((title or ""), "[^%w]", "")
         if not tabContainer or not tabContainer:IsA("Frame") then
             return
         end
@@ -2838,7 +2835,6 @@ function Orvion:CreateWindow(config)
         if not tabContainer or not tabContainer:IsA("Frame") then
             return
         end
-        elementId = elementId or string.gsub((title or ""), "[^%w]", "")
         showKnob = showKnob ~= false
 
         local Slider = Instance.new("Frame")
