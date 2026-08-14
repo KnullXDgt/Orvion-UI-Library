@@ -2155,7 +2155,7 @@ function Orvion:CreateWindow(config)
         Input.BackgroundTransparency = 0.935
         Input.BorderColor3 = Color3.fromRGB(0, 0, 0)
         Input.BorderSizePixel = 0
-        Input.Size = UDim2.new(1, 0, 0, 44)
+        Input.Size = UDim2.new(1, 0, 0, 58)
         Input.Name = "Input"
         Input.Parent = tabContainer
 
@@ -2173,8 +2173,8 @@ function Orvion:CreateWindow(config)
         InputTitle.TextXAlignment = Enum.TextXAlignment.Left
         InputTitle.BackgroundTransparency = 0.999
         InputTitle.BorderSizePixel = 0
-        InputTitle.Position = UDim2.new(0, 10, 0, 10)
-        InputTitle.Size = UDim2.new(1, -180, 0, 13)
+        InputTitle.Position = UDim2.new(0, 8, 0, 6)
+        InputTitle.Size = UDim2.new(1, -16, 0, 14)
         InputTitle.Name = "InputTitle"
         InputTitle.Parent = Input
 
@@ -2183,9 +2183,9 @@ function Orvion:CreateWindow(config)
         InputFrame.BackgroundTransparency = 0.95
         InputFrame.BorderSizePixel = 0
         InputFrame.ClipsDescendants = true
-        InputFrame.AnchorPoint = Vector2.new(1, 0.5)
-        InputFrame.Position = UDim2.new(1, -7, 0.5, 0)
-        InputFrame.Size = UDim2.new(0, 148, 0, 30)
+        InputFrame.AnchorPoint = Vector2.new(0, 0)
+        InputFrame.Position = UDim2.new(0, 6, 0, 24)
+        InputFrame.Size = UDim2.new(1, -12, 0, 28)
         InputFrame.Name = "InputFrame"
         InputFrame.Parent = Input
 
