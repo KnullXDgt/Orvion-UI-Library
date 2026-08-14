@@ -2786,6 +2786,7 @@ function Orvion:CreateWindow(config)
                     end
                 end
             end
+            if callback then pcall(callback, dropdownData.Value) end
         end
 
         function dropdownFunc:Refresh(newOptions, newValue)
