@@ -1165,15 +1165,15 @@ function Orvion:CreateWindow(config)
     SearchResults.Name = "SearchResults"
     SearchResults.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
     SearchResults.BorderSizePixel = 0
-    SearchResults.Position = UDim2.new(0, 0, 0, 36)
-    SearchResults.Size = UDim2.new(1, 0, 0, 0)
+    SearchResults.Position = UDim2.new(0, 9, 0, 75)
+    SearchResults.Size = UDim2.new(0, 120, 0, 0)
     SearchResults.ScrollBarThickness = 2
     SearchResults.ScrollBarImageColor3 = Color3.fromRGB(150, 150, 170)
     SearchResults.ClipsDescendants = true
-    SearchResults.ZIndex = 10
+    SearchResults.ZIndex = 50
     SearchResults.Visible = false
     SearchResults.CanvasSize = UDim2.new(0, 0, 0, 0)
-    SearchResults.Parent = TabFrame
+    SearchResults.Parent = Main
 
     local SearchResultsCorner = Instance.new("UICorner")
     SearchResultsCorner.CornerRadius = UDim.new(0, 4)
@@ -1193,7 +1193,7 @@ function Orvion:CreateWindow(config)
     local function closeSearchResults()
         if not searchResultsOpen then return end
         searchResultsOpen = false
-        TweenService:Create(SearchResults, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, 0)}):Play()
+        TweenService:Create(SearchResults, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 120, 0, 0)}):Play()
         task.wait(0.2)
         SearchResults.Visible = false
     end
@@ -1202,10 +1202,10 @@ function Orvion:CreateWindow(config)
         local frameH = TabFrame.AbsoluteSize.Y
         if frameH <= 0 then frameH = 200 end
         local targetH = math.max(80, math.floor((frameH - 36) / 2))
-        SearchResults.Size = UDim2.new(1, 0, 0, 0)
+        SearchResults.Size = UDim2.new(0, 120, 0, 0)
         SearchResults.Visible = true
         searchResultsOpen = true
-        TweenService:Create(SearchResults, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, targetH)}):Play()
+        TweenService:Create(SearchResults, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 120, 0, targetH)}):Play()
     end
 
     local function buildSearchResults(query)
@@ -1977,7 +1977,7 @@ function Orvion:CreateWindow(config)
         ToggleCircle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
         ToggleCircle.BorderColor3 = Color3.fromRGB(0, 0, 0)
         ToggleCircle.BorderSizePixel = 0
-        ToggleCircle.Position = defaultValue and UDim2.new(0, 15, 0, 0) or UDim2.new(0, 0, 0, 0)
+        ToggleCircle.Position = defaultValue and UDim2.new(0, 16, 0, 0) or UDim2.new(0, 0, 0, 0)
         ToggleCircle.Size = UDim2.new(0, 14, 0, 14)
         ToggleCircle.Name = "ToggleCircle"
         ToggleCircle.Parent = FeatureFrame
@@ -2002,7 +2002,7 @@ function Orvion:CreateWindow(config)
                 TweenService:Create(
                     ToggleCircle,
                     TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-                    {Position = UDim2.new(0, 15, 0, 0), BackgroundColor3 = themeColor}
+                    {Position = UDim2.new(0, 16, 0, 0), BackgroundColor3 = themeColor}
                 ):Play()
                 TweenService:Create(
                     FrameStroke,
@@ -2410,9 +2410,9 @@ function Orvion:CreateWindow(config)
 
                 local cfW    = ContentFrame.AbsoluteSize.X
                 local halfCF = math.floor(cfW / 2)
-                local rightW = cfW - halfCF - 4
-                local targetH = math.floor(Main.AbsoluteSize.Y - 8)
-                DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 4)
+                local rightW = cfW - halfCF - 6
+                local targetH = math.floor(Main.AbsoluteSize.Y - 12)
+                DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 6)
                 DropdownList.Size = UDim2.new(0, rightW, 0, 0)
                 DropdownList.Visible = true
 
