@@ -2137,7 +2137,24 @@ function Orvion:CreateWindow(config)
         }
 
         function toggleFunc:Set(value)
-            SetState(value)
+            state = value
+            local themeColor = ConfigSystem.ThemeColors[ConfigSystem.CurrentTheme]
+            pcall(function()
+                if value then
+                    ToggleTitle.TextColor3 = themeColor
+                    ToggleCircle.Position = UDim2.new(1, -14, 0.5, -7)
+                    ToggleCircle.BackgroundColor3 = themeColor
+                    FrameStroke.Color = themeColor
+                    FeatureFrame.BackgroundTransparency = 0.2
+                else
+                    ToggleTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
+                    ToggleCircle.Position = UDim2.new(0, 0, 0.5, -7)
+                    ToggleCircle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+                    FrameStroke.Color = Color3.fromRGB(100, 100, 100)
+                    FeatureFrame.BackgroundTransparency = 0.2
+                end
+            end)
+            if callback then pcall(callback, value) end
         end
 
         if elementId then
