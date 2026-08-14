@@ -784,6 +784,7 @@ function Orvion:CreateWindow(config)
     DropShadowHolder.ZIndex = 0
     DropShadowHolder.Name = "DropShadowHolder"
     DropShadowHolder.Parent = ScreenGui
+    DropShadowHolder.Visible = false
 
     if Center then
         DropShadowHolder.Position = UDim2.new(0.5, -Size.X.Offset / 2, 0.5, -Size.Y.Offset / 2)
@@ -4509,42 +4510,11 @@ function Orvion:CreateWindow(config)
         MakeNotify({ Title = "Config", Description = "Reset", Content = "All elements reset to default.", Color = Color3.fromRGB(150,150,170), Delay = 2 })
     end)
 
-    -- Autoload on startup
-    task.spawn(function()
-        task.wait(5)
-        pcall(function()
-            if isfile(AutoloadFile) then
-                local autoName = readfile(AutoloadFile)
-                if autoName and autoName ~= "" then
-                    local _, configData = ConfigSystem:LoadConfig(autoName)
-                    if configData then
-                        task.wait(0.1)
-                        for id, val in pairs(configData) do
-                            if AllElements[id] then
-                                if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
-                                    AllElements[id]:Set(Color3.new(val[1], val[2], val[3]))
-                                elseif AllElements[id].Type == "Keybind" and val then
-                                    AllElements[id]:Set(Enum.KeyCode[val])
-                                else
-                                    AllElements[id]:Set(val)
-                                end
-                            end
-                        end
-                        CurrentConfigName = autoName
-                        updateCfgStatus()
-                        MakeNotify({ Title = "Config", Description = "Autoloaded", Content = "\"" .. autoName .. "\" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 4 })
-                    end
-                end
-            end
-        end)
-    end)
-
     -- backward compat refs
     local LoadConfigDropdown = SelectConfigDropdown
     local DeleteConfigDropdown = SelectConfigDropdown
     
-    -- Switch to first tab
-    SwitchToConfigTab()
+    -- Switch to first tab is handled by Window:Show()
 
     -- Window Methods
     local Window = {}
@@ -4668,6 +4638,38 @@ function Orvion:CreateWindow(config)
     
     function Window:Destroy()
         ScreenGui:Destroy()
+    end
+
+    function Window:Show()
+        DropShadowHolder.Visible = true
+        task.spawn(function()
+            task.wait(5)
+            pcall(function()
+                if isfile(AutoloadFile) then
+                    local autoName = readfile(AutoloadFile)
+                    if autoName and autoName ~= "" then
+                        local _, configData = ConfigSystem:LoadConfig(autoName)
+                        if configData then
+                            task.wait(0.1)
+                            for id, val in pairs(configData) do
+                                if AllElements[id] then
+                                    if AllElements[id].Type == "ColorPicker" and type(val) == "table" then
+                                        AllElements[id]:Set(Color3.new(val[1], val[2], val[3]))
+                                    elseif AllElements[id].Type == "Keybind" and val then
+                                        AllElements[id]:Set(Enum.KeyCode[val])
+                                    else
+                                        AllElements[id]:Set(val)
+                                    end
+                                end
+                            end
+                            CurrentConfigName = autoName
+                            updateCfgStatus()
+                            MakeNotify({ Title = "Config", Description = "Autoloaded", Content = "\"" .. autoName .. "\" loaded!", Color = Color3.fromRGB(150,150,170), Delay = 3 })
+                        end
+                    end
+                end
+            end)
+        end)
     end
     
     return Window
