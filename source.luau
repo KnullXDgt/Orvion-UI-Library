@@ -414,7 +414,7 @@ function ConfigSystem:SaveConfig(name, data)
             Title = "Config",
             Description = "Error",
             Content = "Failed to save config: " .. tostring(encoded),
-            Color = Color3.fromRGB(255, 50, 50),
+            Color = Color3.fromRGB(150, 150, 170),
             Delay = 3
         }
     end
@@ -459,7 +459,7 @@ function ConfigSystem:LoadConfig(name)
         Title = "Config",
         Description = "Error",
         Content = "Config '" .. name .. "' not found or corrupted!",
-        Color = Color3.fromRGB(255, 50, 50),
+        Color = Color3.fromRGB(150, 150, 170),
         Delay = 3
     }, nil
 end
@@ -495,7 +495,7 @@ function ConfigSystem:DeleteConfig(name)
         Title = "Config",
         Description = "Error",
         Content = "Config '" .. name .. "' not found!",
-        Color = Color3.fromRGB(255, 50, 50),
+        Color = Color3.fromRGB(150, 150, 170),
         Delay = 3
     }
 end
@@ -528,7 +528,7 @@ local function MakeNotify(NotifyConfig)
     NotifyConfig.Title = NotifyConfig.Title or "Notification"
     NotifyConfig.Description = NotifyConfig.Description or "Description"
     NotifyConfig.Content = NotifyConfig.Content or "Content"
-    NotifyConfig.Color = NotifyConfig.Color or Color3.fromRGB(255, 0, 255)
+    NotifyConfig.Color = NotifyConfig.Color or Color3.fromRGB(150, 150, 170)
     NotifyConfig.Time = NotifyConfig.Time or 0.5
     NotifyConfig.Delay = NotifyConfig.Delay or 5
 
@@ -4253,7 +4253,7 @@ function Orvion:CreateWindow(config)
     local function doSaveConfig()
         local targetName = CurrentConfigName ~= "" and CurrentConfigName or SelectedConfigName
         if not targetName or targetName == "" then
-            MakeNotify({ Title = "Config", Description = "Error", Content = "Enter or select a config name first!", Color = Color3.fromRGB(255, 50, 50), Delay = 3 })
+            MakeNotify({ Title = "Config", Description = "Error", Content = "Enter or select a config name first!", Color = Color3.fromRGB(150, 150, 170), Delay = 3 })
             return
         end
         local configData = {}
@@ -4275,7 +4275,7 @@ function Orvion:CreateWindow(config)
     local function doLoadConfig()
         local targetName = SelectedConfigName ~= "" and SelectedConfigName or CurrentConfigName
         if not targetName or targetName == "" then
-            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(255, 50, 50), Delay = 3 })
+            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(150, 150, 170), Delay = 3 })
             return
         end
         local notifyData, configData = ConfigSystem:LoadConfig(targetName)
@@ -4298,7 +4298,7 @@ function Orvion:CreateWindow(config)
     local function doDeleteConfig()
         local targetName = SelectedConfigName ~= "" and SelectedConfigName or CurrentConfigName
         if not targetName or targetName == "" then
-            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(255, 50, 50), Delay = 3 })
+            MakeNotify({ Title = "Config", Description = "Error", Content = "Select a config first!", Color = Color3.fromRGB(150, 150, 170), Delay = 3 })
             return
         end
         local notifyData = ConfigSystem:DeleteConfig(targetName)
