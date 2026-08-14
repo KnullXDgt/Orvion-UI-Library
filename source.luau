@@ -2068,7 +2068,6 @@ function Orvion:CreateWindow(config)
 
         local function SetState(value)
             state = value
-            toggleFunc.Value = value
             local themeColor = ConfigSystem.ThemeColors[ConfigSystem.CurrentTheme]
             if value then
                 TweenService:Create(
