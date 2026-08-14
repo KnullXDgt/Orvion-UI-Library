@@ -1920,7 +1920,7 @@ function Orvion:CreateWindow(config)
         FeatureFrame.BackgroundTransparency = 0.999
         FeatureFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         FeatureFrame.BorderSizePixel = 0
-        FeatureFrame.Position = UDim2.new(1, -5, 0.5, 0)
+        FeatureFrame.Position = UDim2.new(1, -7, 0.5, 0)
         FeatureFrame.Size = UDim2.new(0, 20, 0, 20)
         FeatureFrame.Name = "FeatureFrame"
         FeatureFrame.Parent = Button
@@ -2155,7 +2155,7 @@ function Orvion:CreateWindow(config)
         Input.BackgroundTransparency = 0.935
         Input.BorderColor3 = Color3.fromRGB(0, 0, 0)
         Input.BorderSizePixel = 0
-        Input.Size = UDim2.new(1, 0, 0, 62)
+        Input.Size = UDim2.new(1, 0, 0, 64)
         Input.Name = "Input"
         Input.Parent = tabContainer
 
@@ -2175,14 +2175,28 @@ function Orvion:CreateWindow(config)
         InputTitle.Size = UDim2.new(1, -16, 0, 14)
         InputTitle.Name = "InputTitle"
         InputTitle.Parent = Input
-
+        if content and content ~= "" then
+            local InputContent = Instance.new("TextLabel")
+            InputContent.Font = Enum.Font.Gotham
+            InputContent.Text = content
+            InputContent.TextColor3 = Color3.fromRGB(180, 180, 180)
+            InputContent.TextTransparency = 0.3
+            InputContent.TextSize = 11
+            InputContent.TextXAlignment = Enum.TextXAlignment.Left
+            InputContent.BackgroundTransparency = 0.999
+            InputContent.BorderSizePixel = 0
+            InputContent.Position = UDim2.new(0, 8, 0, 22)
+            InputContent.Size = UDim2.new(1, -16, 0, 12)
+            InputContent.Name = "InputContent"
+            InputContent.Parent = Input
+        end
         local InputFrame = Instance.new("Frame")
         InputFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         InputFrame.BackgroundTransparency = 0.95
         InputFrame.BorderSizePixel = 0
         InputFrame.ClipsDescendants = true
         InputFrame.AnchorPoint = Vector2.new(0, 0)
-        InputFrame.Position = UDim2.new(0, 6, 0, 26)
+        InputFrame.Position = UDim2.new(0, 6, 0, 28)
         InputFrame.Size = UDim2.new(1, -12, 0, 30)
         InputFrame.Name = "InputFrame"
         InputFrame.Parent = Input
