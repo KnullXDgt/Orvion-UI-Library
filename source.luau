@@ -4388,4 +4388,8 @@ function Orvion:CreateWindow(config)
     return Window
 end
 
+function Orvion:Notify(config)
+    MakeNotify(config)
+end
+
 return Orvion
