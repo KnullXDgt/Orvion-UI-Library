@@ -2068,6 +2068,7 @@ function Orvion:CreateWindow(config)
 
         local function SetState(value)
             state = value
+            toggleFunc.Value = value
             local themeColor = ConfigSystem.ThemeColors[ConfigSystem.CurrentTheme]
             if value then
                 TweenService:Create(
@@ -2133,6 +2134,7 @@ function Orvion:CreateWindow(config)
             Value = state,
             Set = SetState,
             _reset = function() SetState(false) end,
+            _live = function() return state end,
             Type = "Toggle",
             Id = elementId
         }
@@ -3078,6 +3080,7 @@ function Orvion:CreateWindow(config)
         local sliderFunc = {
             Value = sliderData.Value,
             _data = sliderData,
+            _default = defaultValue,
             Type = "Slider",
             Id = elementId
         }
@@ -4275,7 +4278,7 @@ function Orvion:CreateWindow(config)
     -- Config tab setup
     local CurrentConfigName = ""
     local SelectedConfigName = ""
-    local AutoloadFile = ConfigFolder .. "/_autoload.txt"
+    local AutoloadFile = ConfigFolder .. "/Autoload.txt"
 
     -- Status header frame with gear icon + two-line status
     local CfgHeaderFrame = Instance.new("Frame", ConfigTabContainer)
@@ -4343,7 +4346,7 @@ function Orvion:CreateWindow(config)
         function(value)
             CurrentConfigName = value
         end,
-        "ConfigNameInput"
+        "ConfigName"
     )
 
     local SelectConfigDropdown = CreateDropdown(
@@ -4373,11 +4376,12 @@ function Orvion:CreateWindow(config)
         for id, element in pairs(AllElements) do
             local val = nil
             if element.Type == "Toggle" then
-                val = element.Value
-                if val == false then val = nil end  -- skip default false
+                local live = element._live and element._live() or element.Value
+                if live == true then val = true end  -- only save if ON
             elseif element.Type == "Slider" then
                 local live = element._data and element._data.Value or element.Value
-                val = live
+                local def = element._default
+                if def == nil or live ~= def then val = live end  -- skip default
             elseif element.Type == "Dropdown" then
                 local live = element._data and element._data.Value or element.Value
                 if element._data and element._data.Multi then
