@@ -123,8 +123,8 @@ local function MakeDraggableMobileButton(button, object, screenGui)
 
     local function UpdatePos(input)
         local Delta = input.Position - DragStart
-        local newX = StartPosition.X.Offset + Delta.X
-        local newY = StartPosition.Y.Offset + Delta.Y
+        local newX = StartPosition.X + Delta.X
+        local newY = StartPosition.Y + Delta.Y
 
         local screenSize = screenGui.AbsoluteSize
         local buttonSize = object.AbsoluteSize
@@ -143,7 +143,8 @@ local function MakeDraggableMobileButton(button, object, screenGui)
                 ClickStartTime = tick()
                 ClickStartPos = input.Position
                 DragStart = input.Position
-                StartPosition = object.Position
+                -- use AbsolutePosition so mixed-scale positions don't cause jump
+                StartPosition = Vector2.new(object.AbsolutePosition.X, object.AbsolutePosition.Y)
 
                 input.Changed:Connect(
                     function()
