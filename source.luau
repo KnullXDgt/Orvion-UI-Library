@@ -4663,6 +4663,12 @@ function Orvion:CreateWindow(config)
         ScreenGui:Destroy()
     end
 
+    function Window:SetActiveTab(tabName)
+        if TabSwitchFns[tabName] then
+            TabSwitchFns[tabName]()
+        end
+    end
+
     function Window:Show()
         DropShadowHolder.Visible = true
         task.spawn(function()
