@@ -1175,7 +1175,9 @@ function Orvion:CreateWindow(config)
 
     local searchResultsOpen = false
     local NoResultsLabel = nil
-    local SearchSections = {} -- pure Lua table, no instance comparison needed
+    local SearchSections = {}
+    local TabContents = {}    -- forward declaration
+    local TabSwitchFns = {}   -- forward declaration
 
     local function closeSearchResults()
         searchResultsOpen = false
@@ -1552,11 +1554,11 @@ function Orvion:CreateWindow(config)
     ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
     ContentLayout.Parent = ContentScroll
 
-    local TabContents = {}
+    TabContents = {}
     local CurrentTab = nil
     local TabCount = 0
     local AllElements = {}
-    local TabSwitchFns = {}
+    TabSwitchFns = {}
 
     local function UpdateTabSize()
         local OffsetY = 0
