@@ -118,7 +118,6 @@ local function MakeDraggableMobileButton(button, object, screenGui)
     local DragInput = nil
     local DragStart = nil
     local StartPosition = nil
-    local ClickStartTime = 0
     local ClickStartPos = nil
 
     local function UpdatePos(input)
@@ -136,26 +135,14 @@ local function MakeDraggableMobileButton(button, object, screenGui)
         object.Position = UDim2.new(0, newX, 0, newY)
     end
 
-    button.InputBegan:Connect(
-        function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                Dragging = false
-                ClickStartTime = (os and os.clock and os.clock()) or (tick and tick()) or 0
-                ClickStartPos = input.Position
-                DragStart = input.Position
-                -- use AbsolutePosition so mixed-scale positions don't cause jump
-                StartPosition = Vector2.new(object.AbsolutePosition.X, object.AbsolutePosition.Y)
-
-                pcall(function()
-                    input.Changed:Connect(function()
-                        if input.UserInputState == Enum.UserInputState.End then
-                            Dragging = false
-                        end
-                    end)
-                end)
-            end
+    button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            Dragging = false
+            ClickStartPos = input.Position
+            DragStart = input.Position
+            StartPosition = Vector2.new(object.AbsolutePosition.X, object.AbsolutePosition.Y)
         end
-    )
+    end)
 
     button.InputChanged:Connect(
         function(input)
@@ -1204,24 +1191,19 @@ function Orvion:CreateWindow(config)
     end
 
     local function buildSearchResults(query)
-        for _, child in SearchResults:GetChildren() do
-            if child:IsA("TextButton") or child:IsA("TextLabel") then
-                child:Destroy()
+        pcall(function()
+            for _, child in SearchResults:GetChildren() do
+                if child:IsA("TextButton") or child:IsA("TextLabel") then child:Destroy() end
             end
-        end
-        if query == "" then
-            closeSearchResults()
-            return
-        end
-        local q = query:lower()
-        local found = 0
-        local reg = SearchRegistry or {}
-        for _, entry in ipairs(reg) do
-            if entry.title:find(q, 1, true) then
+            if query == "" then closeSearchResults() return end
+            local q = query:lower()
+            local found = 0
+
+            local function makeItem(displayText, tabName, secFrame)
                 found = found + 1
                 local Item = Instance.new("TextButton")
                 Item.Font = Enum.Font.GothamBold
-                Item.Text = "  " .. entry.displayTitle
+                Item.Text = "  " .. displayText
                 Item.TextColor3 = Color3.fromRGB(220, 220, 220)
                 Item.TextSize = 11
                 Item.TextXAlignment = Enum.TextXAlignment.Left
@@ -1233,73 +1215,80 @@ function Orvion:CreateWindow(config)
                 Item.ZIndex = 51
                 Item.AutoButtonColor = true
                 Item.Parent = SearchResults
-
-                local ItemCorner = Instance.new("UICorner")
-                ItemCorner.CornerRadius = UDim.new(0, 3)
-                ItemCorner.Parent = Item
-
-                -- tab name tag kanan
-                local ItemTag = Instance.new("TextLabel")
-                ItemTag.Font = Enum.Font.Gotham
-                ItemTag.Text = entry.tabName
-                ItemTag.TextColor3 = Color3.fromRGB(120, 120, 140)
-                ItemTag.TextSize = 9
-                ItemTag.TextXAlignment = Enum.TextXAlignment.Right
-                ItemTag.TextTruncate = Enum.TextTruncate.AtEnd
-                ItemTag.BackgroundTransparency = 1
-                ItemTag.BorderSizePixel = 0
-                ItemTag.AnchorPoint = Vector2.new(1, 0.5)
-                ItemTag.Position = UDim2.new(1, -4, 0.5, 0)
-                ItemTag.Size = UDim2.new(0, 50, 1, 0)
-                ItemTag.ZIndex = 52
-                ItemTag.Parent = Item
-
-                local capturedEntry = entry
+                Instance.new("UICorner", Item).CornerRadius = UDim.new(0, 3)
+                local tag = Instance.new("TextLabel", Item)
+                tag.Font = Enum.Font.Gotham
+                tag.Text = tabName
+                tag.TextColor3 = Color3.fromRGB(120, 120, 140)
+                tag.TextSize = 9
+                tag.TextXAlignment = Enum.TextXAlignment.Right
+                tag.BackgroundTransparency = 1
+                tag.BorderSizePixel = 0
+                tag.AnchorPoint = Vector2.new(1, 0.5)
+                tag.Position = UDim2.new(1, -4, 0.5, 0)
+                tag.Size = UDim2.new(0, 50, 1, 0)
+                tag.ZIndex = 52
+                local capTab, capSec = tabName, secFrame
                 Item.Activated:Connect(function()
-                    -- 1. switch tab
-                    local sf = TabSwitchFns[capturedEntry.tabName]
-                    if sf then sf() end
-                    -- 2. open section if needed
-                    if capturedEntry.openFn then
-                        pcall(capturedEntry.openFn)
-                    elseif capturedEntry.sectionFrame then
-                        local hdr = capturedEntry.sectionFrame:FindFirstChild("HeaderBtn")
-                        if hdr then
-                            local arrow = hdr:FindFirstChild("SectionArrow")
-                            if arrow and math.abs(arrow.Rotation - (-90)) < 1 then
-                                hdr:Activate()
+                    pcall(function()
+                        local sf = TabSwitchFns[capTab]
+                        if sf then sf() end
+                        if capSec then
+                            local h = capSec:FindFirstChild("HeaderBtn")
+                            if h then
+                                local arr = h:FindFirstChild("SectionArrow")
+                                if arr and math.abs(arr.Rotation - (-90)) < 1 then h:Activate() end
+                            end
+                            task.wait(0.05)
+                            local ey = capSec.AbsolutePosition.Y
+                            local cy = ContentScroll.AbsolutePosition.Y
+                            ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
+                        end
+                        SearchTextBox.Text = ""
+                        closeSearchResults()
+                    end)
+                end)
+            end
+
+            for tabName, container in pairs(TabContents or {}) do
+                for _, child in ipairs(container:GetChildren()) do
+                    if child.Name == "Collapsible" then
+                        local hdr = child:FindFirstChild("HeaderBtn")
+                        local secTitle = hdr and (hdr.Text or ""):gsub("^%s+", "") or ""
+                        if secTitle ~= "" and secTitle:lower():find(q, 1, true) then
+                            makeItem(secTitle, tabName, child)
+                        end
+                        local inner = child:FindFirstChild("InnerContainer")
+                        if inner then
+                            for _, elem in ipairs(inner:GetChildren()) do
+                                for _, lname in ipairs({"ToggleTitle","ButtonTitle","InputTitle","DropdownTitle","SliderTitle","ParagraphTitle"}) do
+                                    local lbl = elem:FindFirstChild(lname)
+                                    if lbl and lbl.Text ~= "" and lbl.Text:lower():find(q, 1, true) then
+                                        makeItem(lbl.Text, tabName, child)
+                                        break
+                                    end
+                                end
                             end
                         end
                     end
-                    -- 3. scroll to element
-                    task.wait(0.05)
-                    local target = capturedEntry.sectionFrame or capturedEntry.elementFrame
-                    if target then
-                        pcall(function()
-                            local ey = target.AbsolutePosition.Y
-                            local cy = ContentScroll.AbsolutePosition.Y
-                            ContentScroll.CanvasPosition = Vector2.new(0, math.max(0, ey - cy))
-                        end)
-                    end
-                    SearchTextBox.Text = ""
-                    closeSearchResults()
-                end)
+                end
             end
-        end
-        if found == 0 then
-            local NoItem = Instance.new("TextLabel")
-            NoItem.Text = "  No results"
-            NoItem.Font = Enum.Font.Gotham
-            NoItem.TextColor3 = Color3.fromRGB(120, 120, 130)
-            NoItem.TextSize = 11
-            NoItem.TextXAlignment = Enum.TextXAlignment.Left
-            NoItem.BackgroundTransparency = 1
-            NoItem.BorderSizePixel = 0
-            NoItem.Size = UDim2.new(1, 0, 0, 26)
-            NoItem.ZIndex = 11
-            NoItem.Parent = SearchResults
-        end
-        openSearchResults()
+
+            if found == 0 then
+                local nl = Instance.new("TextLabel", SearchResults)
+                nl.Text = "  No results"
+                nl.Font = Enum.Font.Gotham
+                nl.TextColor3 = Color3.fromRGB(120, 120, 130)
+                nl.TextSize = 11
+                nl.TextXAlignment = Enum.TextXAlignment.Left
+                nl.BackgroundTransparency = 1
+                nl.BorderSizePixel = 0
+                nl.Size = UDim2.new(1, 0, 0, 26)
+                nl.ZIndex = 51
+                nl.Parent = SearchResults
+            end
+            openSearchResults()
+        end)
     end
 
     -- polling via Heartbeat — most reliable in executors
@@ -1457,7 +1446,6 @@ function Orvion:CreateWindow(config)
     local CurrentTab = nil
     local TabCount = 0
     local AllElements = {}
-    local SearchRegistry = {}
     local TabSwitchFns = {}
 
     local function UpdateTabSize()
@@ -1480,46 +1468,6 @@ function Orvion:CreateWindow(config)
             end
             ContentScroll.CanvasSize = UDim2.new(0, 0, 0, OffsetY)
         end
-    end
-
-    local function RegisterSearchElement(title, elementFrame, tabContainer)
-        if not title or title == "" then return end
-        local sectionFrame = nil
-        -- find OrvionTabName attribute by walking up
-        local tabName = nil
-        local walker = tabContainer
-        while walker and walker ~= Main do
-            local attr = pcall(function()
-                tabName = walker:GetAttribute("OrvionTabName")
-            end)
-            if tabName then break end
-            -- also check if we pass through a SectionFrame (collapsible)
-            if walker.Name == "InnerContainer" then
-                sectionFrame = walker.Parent
-            end
-            walker = walker.Parent
-        end
-        if not tabName then return end
-        table.insert(SearchRegistry, {
-            title        = title:lower(),
-            displayTitle = title,
-            elementFrame = elementFrame,
-            tabName      = tabName,
-            sectionFrame = sectionFrame,
-        })
-    end
-
-    local function RegisterSection(title, sectionFrame, tabName, openFn)
-        if not title or title == "" or not tabName then return end
-        table.insert(SearchRegistry, {
-            title        = title:lower(),
-            displayTitle = title,
-            elementFrame = sectionFrame,
-            tabName      = tabName,
-            sectionFrame = sectionFrame,
-            openFn       = openFn,
-            isSection    = true,
-        })
     end
 
     TabScroll.ChildAdded:Connect(UpdateTabSize)
@@ -1614,7 +1562,7 @@ function Orvion:CreateWindow(config)
         local lastClick = 0
         ClickDetector.Activated:Connect(
             function()
-                local now = os.clock()
+                local now = 0
                 if now - lastClick < 0.3 then
                     return
                 end
@@ -1688,7 +1636,7 @@ function Orvion:CreateWindow(config)
 
         local lastTBClick = 0
         TBClick.Activated:Connect(function()
-            local now = os.clock()
+            local now = 0
             if now - lastTBClick < 0.3 then return end
             lastTBClick = now
             if not tbDragging() then
@@ -1761,7 +1709,6 @@ function Orvion:CreateWindow(config)
         ParagraphContent.TextWrapped = true
         Paragraph.Size = UDim2.new(1, 0, 0, math.max(46, textSize.Y + 33))
 
-        RegisterSearchElement(title, Paragraph, tabContainer)
         task.wait(0.1)
         UpdateContentSize()
 
@@ -1875,7 +1822,6 @@ function Orvion:CreateWindow(config)
             end
         )
 
-        RegisterSearchElement(title, Button, tabContainer)
         task.wait(0.1)
         UpdateContentSize()
 
@@ -2055,7 +2001,6 @@ function Orvion:CreateWindow(config)
             end
         )
 
-        RegisterSearchElement(title, Toggle, tabContainer)
         task.wait(0.1)
         UpdateContentSize()
 
@@ -2190,7 +2135,6 @@ function Orvion:CreateWindow(config)
             end
         )
 
-        RegisterSearchElement(title, Input, tabContainer)
         task.wait(0.1)
         UpdateContentSize()
 
@@ -4075,13 +4019,6 @@ function Orvion:CreateWindow(config)
                 break
             end
         end
-        RegisterSection(title, SectionFrame, tabName, function()
-            if not isOpen then
-                isOpen = true
-                updateSize()
-            end
-        end)
-
         updateSize()
         return InnerContainer
     end
