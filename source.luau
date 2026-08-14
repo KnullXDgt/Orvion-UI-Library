@@ -4298,7 +4298,7 @@ function Orvion:CreateWindow(config)
     CfgStatusLabel.Font = Enum.Font.GothamBold
     CfgStatusLabel.Text = "Current: None  |  Autoload: None"
     CfgStatusLabel.TextColor3 = Color3.fromRGB(180, 180, 200)
-    CfgStatusLabel.TextSize = 13
+    CfgStatusLabel.TextSize = 12
     CfgStatusLabel.TextXAlignment = Enum.TextXAlignment.Left
     CfgStatusLabel.TextWrapped = true
     CfgStatusLabel.BackgroundTransparency = 1
