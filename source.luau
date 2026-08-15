@@ -193,33 +193,18 @@ local function MakeResizable(resizeHandle, targetObject, minSize, maxSize, onRes
                 startSize = targetObject.AbsoluteSize
                 startMousePos = input.Position
 
-                input.Changed:Connect(
-                    function()
-                        if input.UserInputState == Enum.UserInputState.End then
-                            isResizing = false
-                        end
+                input.Changed:Connect(function()
+                    if not isResizing then return end
+                    if input.UserInputState == Enum.UserInputState.End then
+                        isResizing = false
+                        return
                     end
-                )
-            end
-        end
-    )
-
-    UserInputService.InputChanged:Connect(
-        function(input)
-            if
-                isResizing and
-                    (input.UserInputType == Enum.UserInputType.MouseMovement or
-                        input.UserInputType == Enum.UserInputType.Touch)
-             then
-                local delta = input.Position - startMousePos
-                local newWidth = math.clamp(startSize.X + delta.X, minSize.X, maxSize.X)
-                local newHeight = math.clamp(startSize.Y + delta.Y, minSize.Y, maxSize.Y)
-
-                targetObject.Size = UDim2.new(0, newWidth, 0, newHeight)
-
-                if onResize then
-                    onResize(Vector2.new(newWidth, newHeight))
-                end
+                    local delta = input.Position - startMousePos
+                    local newWidth  = math.clamp(startSize.X + delta.X, minSize.X, maxSize.X)
+                    local newHeight = math.clamp(startSize.Y + delta.Y, minSize.Y, maxSize.Y)
+                    targetObject.Size = UDim2.new(0, newWidth, 0, newHeight)
+                    if onResize then onResize(Vector2.new(newWidth, newHeight)) end
+                end)
             end
         end
     )
@@ -1028,7 +1013,7 @@ function Orvion:CreateWindow(config)
         ResizeHandle.Name = "ResizeHandle"
         ResizeHandle.Text = ""
         ResizeHandle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-        ResizeHandle.BackgroundTransparency = 0.5
+        ResizeHandle.BackgroundTransparency = 1
         ResizeHandle.BorderSizePixel = 0
         ResizeHandle.Size = UDim2.new(0, 20, 0, 20)
         ResizeHandle.Position = UDim2.new(1, -20, 1, -20)
@@ -1043,8 +1028,8 @@ function Orvion:CreateWindow(config)
         ResizeIcon.Name = "ResizeIcon"
         ResizeIcon.Image = "rbxassetid://76259878130194"
         ResizeIcon.BackgroundTransparency = 1
-        ResizeIcon.Size = UDim2.new(1, 0, 1, 0)
-        ResizeIcon.Position = UDim2.new(0, 0, 0, 0)
+        ResizeIcon.Size = UDim2.new(0, 14, 0, 14)
+        ResizeIcon.Position = UDim2.new(0.5, -7, 0.5, -7)
         ResizeIcon.Parent = ResizeHandle
 
         MakeResizable(
