@@ -866,7 +866,7 @@ function Orvion:CreateWindow(config)
 
     local TitleWrapper = Instance.new("Frame")
     TitleWrapper.BackgroundTransparency = 1
-    TitleWrapper.Size = UDim2.new(0, 250, 1, 0)
+    TitleWrapper.Size = UDim2.new(0, 190, 1, 0)
     TitleWrapper.Position = UDim2.new(0, 10, 0, 0)
     TitleWrapper.Parent = Top
 
@@ -907,8 +907,8 @@ function Orvion:CreateWindow(config)
     BadgeContainer.Name = "BadgeContainer"
     BadgeContainer.AnchorPoint = Vector2.new(1, 0.5)
     BadgeContainer.BackgroundTransparency = 1
-    BadgeContainer.Size = UDim2.new(0, 220, 1, 0)
-    BadgeContainer.Position = UDim2.new(1, -70, 0.5, 0)
+    BadgeContainer.Size = UDim2.new(0, 160, 1, 0)
+    BadgeContainer.Position = UDim2.new(1, -77, 0.5, 0)
     BadgeContainer.Parent = Top
 
     local BadgeLayout = Instance.new("UIListLayout")
