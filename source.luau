@@ -908,7 +908,7 @@ function Orvion:CreateWindow(config)
     BadgeContainer.AnchorPoint = Vector2.new(1, 0.5)
     BadgeContainer.BackgroundTransparency = 1
     BadgeContainer.Size = UDim2.new(0, 220, 1, 0)
-    BadgeContainer.Position = UDim2.new(1, -67, 0.5, 0)
+    BadgeContainer.Position = UDim2.new(1, -137, 0.5, 0)
     BadgeContainer.Parent = Top
 
     local BadgeLayout = Instance.new("UIListLayout")
@@ -1029,14 +1029,14 @@ function Orvion:CreateWindow(config)
         ResizeIcon.Image = "rbxassetid://76259878130194"
         ResizeIcon.BackgroundTransparency = 1
         ResizeIcon.AnchorPoint = Vector2.new(1, 1)
-        ResizeIcon.Size = UDim2.new(1, 0, 1, 0)
+        ResizeIcon.Size = UDim2.new(0, 10, 0, 10)
         ResizeIcon.Position = UDim2.new(1, 0, 1, 0)
         ResizeIcon.Parent = ResizeHandle
 
         MakeResizable(
             ResizeHandle,
             DropShadowHolder,
-            Vector2.new(400, 300),
+            Vector2.new(250, 150),
             Vector2.new(1200, 900),
             function(newSize)
                 Main.Size = UDim2.new(1, -47, 1, -47)
