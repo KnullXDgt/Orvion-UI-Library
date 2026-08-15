@@ -1817,12 +1817,14 @@ function Orvion:CreateWindow(config)
         ParagraphContent.Name = "ParagraphContent"
         ParagraphContent.Parent = Paragraph
 
+        local scrollWidth = ContentScroll.AbsoluteSize.X
+        local textWidth = scrollWidth > 0 and (scrollWidth - 40) or 290
         local textSize =
             TextService:GetTextSize(
             content,
             12,
             Enum.Font.GothamBold,
-            Vector2.new(ContentScroll.AbsoluteSize.X - 40, math.huge)
+            Vector2.new(textWidth, math.huge)
         )
 
         ParagraphContent.Size = UDim2.new(1, -20, 0, textSize.Y)
