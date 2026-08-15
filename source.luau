@@ -1035,25 +1035,16 @@ function Orvion:CreateWindow(config)
         ResizeHandle.AutoButtonColor = false
         ResizeHandle.Parent = Main
 
-        local ResizeIcon = Instance.new("ImageLabel")
-        ResizeIcon.Image = "rbxassetid://76259878130194"
-        ResizeIcon.BackgroundTransparency = 1
-        ResizeIcon.Size = UDim2.new(1, 0, 1, 0)
-        ResizeIcon.Position = UDim2.new(0, 0, 0, 0)
-        ResizeIcon.ZIndex = ResizeHandle.ZIndex + 1
-        ResizeIcon.Parent = ResizeHandle
-
         local ResizeCorner = Instance.new("UICorner")
         ResizeCorner.CornerRadius = UDim.new(0, 3)
         ResizeCorner.Parent = ResizeHandle
 
         local ResizeIcon = Instance.new("ImageLabel")
         ResizeIcon.Name = "ResizeIcon"
-        ResizeIcon.Image = "rbxassetid://16932740082"
+        ResizeIcon.Image = "rbxassetid://76259878130194"
         ResizeIcon.BackgroundTransparency = 1
-        ResizeIcon.Size = UDim2.new(0.7, 0, 0.7, 0)
-        ResizeIcon.Position = UDim2.new(0.15, 0, 0.15, 0)
-        ResizeIcon.Rotation = 90
+        ResizeIcon.Size = UDim2.new(1, 0, 1, 0)
+        ResizeIcon.Position = UDim2.new(0, 0, 0, 0)
         ResizeIcon.Parent = ResizeHandle
 
         MakeResizable(
