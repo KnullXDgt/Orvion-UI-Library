@@ -879,39 +879,59 @@ function Orvion:CreateWindow(config)
     DecideFrame.ZIndex = 2
     DecideFrame.Parent = Main
 
+    local TitleWrapper = Instance.new("Frame")
+    TitleWrapper.BackgroundTransparency = 1
+    TitleWrapper.Size = UDim2.new(0, 250, 1, 0)
+    TitleWrapper.Position = UDim2.new(0, 10, 0, 0)
+    TitleWrapper.Parent = Top
+
+    local TitleWrapLayout = Instance.new("UIListLayout")
+    TitleWrapLayout.FillDirection = Enum.FillDirection.Horizontal
+    TitleWrapLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+    TitleWrapLayout.Padding = UDim.new(0, 6)
+    TitleWrapLayout.Parent = TitleWrapper
+
     local TitleLabel = Instance.new("TextLabel")
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.Text = Title
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 14
-    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    TitleLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    TitleLabel.AutomaticSize = Enum.AutomaticSize.X
     TitleLabel.BackgroundTransparency = 0.999
-    TitleLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
     TitleLabel.BorderSizePixel = 0
-    TitleLabel.Size = UDim2.new(1, -150, 1, 0)
-    TitleLabel.Position = UDim2.new(0, 10, 0, 0)
-    TitleLabel.Parent = Top
+    TitleLabel.Size = UDim2.new(0, 0, 1, 0)
+    TitleLabel.LayoutOrder = 1
+    TitleLabel.Parent = TitleWrapper
+
+    local Subtitle = config.Subtitle or ""
+    if Subtitle ~= "" then
+        local SubtitleLabel = Instance.new("TextLabel")
+        SubtitleLabel.Font = Enum.Font.Gotham
+        SubtitleLabel.Text = Subtitle
+        SubtitleLabel.TextColor3 = Color3.fromRGB(150, 150, 170)
+        SubtitleLabel.TextSize = 12
+        SubtitleLabel.AutomaticSize = Enum.AutomaticSize.X
+        SubtitleLabel.BackgroundTransparency = 0.999
+        SubtitleLabel.BorderSizePixel = 0
+        SubtitleLabel.Size = UDim2.new(0, 0, 1, 0)
+        SubtitleLabel.LayoutOrder = 2
+        SubtitleLabel.Parent = TitleWrapper
+    end
 
     local BadgeContainer = Instance.new("Frame")
     BadgeContainer.Name = "BadgeContainer"
+    BadgeContainer.AnchorPoint = Vector2.new(1, 0.5)
     BadgeContainer.BackgroundTransparency = 1
-    BadgeContainer.Size = UDim2.new(0, 0, 1, 0)
-    BadgeContainer.Position = UDim2.new(0, TitleLabel.TextBounds.X + 15, 0, 0)
+    BadgeContainer.Size = UDim2.new(0, 220, 1, 0)
+    BadgeContainer.Position = UDim2.new(1, -50, 0.5, 0)
     BadgeContainer.Parent = Top
 
     local BadgeLayout = Instance.new("UIListLayout")
     BadgeLayout.FillDirection = Enum.FillDirection.Horizontal
-    BadgeLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+    BadgeLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
     BadgeLayout.VerticalAlignment = Enum.VerticalAlignment.Center
     BadgeLayout.Padding = UDim.new(0, 6)
     BadgeLayout.Parent = BadgeContainer
-
-    local function UpdateBadgePosition()
-        BadgeContainer.Position = UDim2.new(0, TitleLabel.TextBounds.X + 15, 0, 0)
-    end
-
-    TitleLabel:GetPropertyChangedSignal("TextBounds"):Connect(UpdateBadgePosition)
 
     for _, badgeText in ipairs(Badges) do
         local Badge = Instance.new("TextLabel")
@@ -919,20 +939,20 @@ function Orvion:CreateWindow(config)
         Badge.Font = Enum.Font.GothamBold
         Badge.Text = badgeText
         Badge.TextColor3 = Color3.fromRGB(255, 255, 255)
-        Badge.TextSize = 10
+        Badge.TextSize = 12
         Badge.BackgroundColor3 = ConfigSystem.ThemeColors[ConfigSystem.CurrentTheme]
         Badge.BackgroundTransparency = 0.3
         Badge.BorderSizePixel = 0
         Badge.Size =
             UDim2.new(
             0,
-            TextService:GetTextSize(badgeText, 10, Enum.Font.GothamBold, Vector2.new(999, 999)).X + 10,
+            TextService:GetTextSize(badgeText, 12, Enum.Font.GothamBold, Vector2.new(999, 999)).X + 16,
             0,
-            18
+            22
         )
 
         local BadgeCorner = Instance.new("UICorner")
-        BadgeCorner.CornerRadius = UDim.new(0, 4)
+        BadgeCorner.CornerRadius = UDim.new(0, 6)
         BadgeCorner.Parent = Badge
 
         Badge.Parent = BadgeContainer
@@ -1000,31 +1020,7 @@ function Orvion:CreateWindow(config)
     MinIcon.Size = UDim2.new(1, -9, 1, -9)
     MinIcon.Parent = Min
 
-    local MaxRestore = Instance.new("TextButton")
-    MaxRestore.Font = Enum.Font.SourceSans
-    MaxRestore.Text = ""
-    MaxRestore.TextColor3 = Color3.fromRGB(0, 0, 0)
-    MaxRestore.TextSize = 14
-    MaxRestore.AnchorPoint = Vector2.new(1, 0.5)
-    MaxRestore.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    MaxRestore.BackgroundTransparency = 0.999
-    MaxRestore.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    MaxRestore.BorderSizePixel = 0
-    MaxRestore.Position = UDim2.new(1, -78, 0.5, 0)
-    MaxRestore.Size = UDim2.new(0, 25, 0, 25)
-    MaxRestore.Name = "MaxRestore"
-    MaxRestore.Parent = Top
 
-    local MaxIcon = Instance.new("ImageLabel")
-    MaxIcon.Image = "rbxassetid://9886659406"
-    MaxIcon.AnchorPoint = Vector2.new(0.5, 0.5)
-    MaxIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    MaxIcon.BackgroundTransparency = 0.999
-    MaxIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    MaxIcon.BorderSizePixel = 0
-    MaxIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
-    MaxIcon.Size = UDim2.new(1, -8, 1, -8)
-    MaxIcon.Parent = MaxRestore
 
     local ResizeHandle = nil
     if Resizable then
@@ -1616,26 +1612,6 @@ function Orvion:CreateWindow(config)
         function()
             CircleClick(Min, Mouse.X, Mouse.Y)
             DropShadowHolder.Visible = false
-        end
-    )
-
-    local OldPos = DropShadowHolder.Position
-    local OldSize = DropShadowHolder.Size
-
-    MaxRestore.Activated:Connect(
-        function()
-            CircleClick(MaxRestore, Mouse.X, Mouse.Y)
-            if MaxIcon.Image == "rbxassetid://9886659406" then
-                MaxIcon.Image = "rbxassetid://9886659001"
-                OldPos = DropShadowHolder.Position
-                OldSize = DropShadowHolder.Size
-                TweenService:Create(DropShadowHolder, TweenInfo.new(0.3), {Position = UDim2.new(0, 0, 0, 0)}):Play()
-                TweenService:Create(DropShadowHolder, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 1, 0)}):Play()
-            else
-                MaxIcon.Image = "rbxassetid://9886659406"
-                TweenService:Create(DropShadowHolder, TweenInfo.new(0.3), {Position = OldPos}):Play()
-                TweenService:Create(DropShadowHolder, TweenInfo.new(0.3), {Size = OldSize}):Play()
-            end
         end
     )
 
