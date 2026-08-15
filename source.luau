@@ -190,7 +190,7 @@ local function MakeResizable(resizeHandle, targetObject, minSize, maxSize, onRes
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 isResizing = true
                 resizeStartPos = targetObject.Position
-                startSize = targetObject.AbsoluteSize
+                startSize = Vector2.new(targetObject.Size.X.Offset, targetObject.Size.Y.Offset)
                 startMousePos = input.Position
 
                 input.Changed:Connect(function()
@@ -908,7 +908,7 @@ function Orvion:CreateWindow(config)
     BadgeContainer.AnchorPoint = Vector2.new(1, 0.5)
     BadgeContainer.BackgroundTransparency = 1
     BadgeContainer.Size = UDim2.new(0, 220, 1, 0)
-    BadgeContainer.Position = UDim2.new(1, -65, 0.5, 0)
+    BadgeContainer.Position = UDim2.new(1, -67, 0.5, 0)
     BadgeContainer.Parent = Top
 
     local BadgeLayout = Instance.new("UIListLayout")
@@ -1028,8 +1028,9 @@ function Orvion:CreateWindow(config)
         ResizeIcon.Name = "ResizeIcon"
         ResizeIcon.Image = "rbxassetid://76259878130194"
         ResizeIcon.BackgroundTransparency = 1
-        ResizeIcon.Size = UDim2.new(0, 14, 0, 14)
-        ResizeIcon.Position = UDim2.new(0.5, -7, 0.5, -7)
+        ResizeIcon.AnchorPoint = Vector2.new(1, 1)
+        ResizeIcon.Size = UDim2.new(1, 0, 1, 0)
+        ResizeIcon.Position = UDim2.new(1, 0, 1, 0)
         ResizeIcon.Parent = ResizeHandle
 
         MakeResizable(
