@@ -2038,12 +2038,6 @@ function Orvion:CreateWindow(config)
         local FrameCorner = Instance.new("UICorner")
         FrameCorner.Parent = FeatureFrame
 
-        local FrameStroke = Instance.new("UIStroke")
-        FrameStroke.Color = Color3.fromRGB(100, 100, 100)
-        FrameStroke.Thickness = 1.5
-        FrameStroke.Transparency = 0
-        FrameStroke.Parent = FeatureFrame
-
         local ToggleCircle = Instance.new("Frame")
         ToggleCircle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
         ToggleCircle.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -2073,12 +2067,7 @@ function Orvion:CreateWindow(config)
                 TweenService:Create(
                     ToggleCircle,
                     TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-                    {Position = UDim2.new(1, -14, 0.5, -7), BackgroundColor3 = themeColor}
-                ):Play()
-                TweenService:Create(
-                    FrameStroke,
-                    TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-                    {Color = themeColor}
+                    {Position = UDim2.new(1, -14, 0.5, -7), BackgroundColor3 = Color3.fromRGB(255, 255, 255)}
                 ):Play()
                 TweenService:Create(
                     FeatureFrame,
@@ -2095,11 +2084,6 @@ function Orvion:CreateWindow(config)
                     ToggleCircle,
                     TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
                     {Position = UDim2.new(0, 0, 0.5, -7), BackgroundColor3 = Color3.fromRGB(200, 200, 200)}
-                ):Play()
-                TweenService:Create(
-                    FrameStroke,
-                    TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-                    {Color = Color3.fromRGB(100, 100, 100)}
                 ):Play()
                 TweenService:Create(
                     FeatureFrame,
@@ -2138,14 +2122,12 @@ function Orvion:CreateWindow(config)
                 if value then
                     ToggleTitle.TextColor3 = themeColor
                     ToggleCircle.Position = UDim2.new(1, -14, 0.5, -7)
-                    ToggleCircle.BackgroundColor3 = themeColor
-                    FrameStroke.Color = themeColor
+                    ToggleCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                     FeatureFrame.BackgroundTransparency = 0.2
                 else
                     ToggleTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
                     ToggleCircle.Position = UDim2.new(0, 0, 0.5, -7)
                     ToggleCircle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
-                    FrameStroke.Color = Color3.fromRGB(100, 100, 100)
                     FeatureFrame.BackgroundTransparency = 0.2
                 end
             end)
