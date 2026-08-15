@@ -4511,7 +4511,7 @@ function Orvion:CreateWindow(config)
         { Title = "Clear Autoload", Callback = doClearAutoload }
     )
 
-    CreateButton(CfgSection, "Reset All Elements", "Reset semua element ke default", "rbxassetid://16932740082", function()
+    CreateButton(CfgSection, "Reset All Elements", "Reset all elements to default", "rbxassetid://16932740082", function()
         for id, element in pairs(AllElements) do
             pcall(function()
                 if element.Type == "Toggle" then
