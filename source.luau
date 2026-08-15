@@ -760,7 +760,7 @@ function Orvion:CreateWindow(config)
     local Size = config.Size or UDim2.fromOffset(470, 270)
     local Center = config.Center ~= false
     local Draggable = config.Draggable ~= false
-    local Resizable = config.Resize or false
+    local Resizable = config.Resizable or config.Resize or false
     local MinimizeKey = config.MinimizeKey or Enum.KeyCode.RightShift
     if config.ConfigFolder then ConfigFolder = config.ConfigFolder end
     local MinimizeButton = config.MinimizeButton or false
@@ -909,7 +909,7 @@ function Orvion:CreateWindow(config)
         SubtitleLabel.Font = Enum.Font.Gotham
         SubtitleLabel.Text = Subtitle
         SubtitleLabel.TextColor3 = Color3.fromRGB(150, 150, 170)
-        SubtitleLabel.TextSize = 12
+        SubtitleLabel.TextSize = 14
         SubtitleLabel.AutomaticSize = Enum.AutomaticSize.X
         SubtitleLabel.BackgroundTransparency = 0.999
         SubtitleLabel.BorderSizePixel = 0
@@ -923,7 +923,7 @@ function Orvion:CreateWindow(config)
     BadgeContainer.AnchorPoint = Vector2.new(1, 0.5)
     BadgeContainer.BackgroundTransparency = 1
     BadgeContainer.Size = UDim2.new(0, 220, 1, 0)
-    BadgeContainer.Position = UDim2.new(1, -50, 0.5, 0)
+    BadgeContainer.Position = UDim2.new(1, -65, 0.5, 0)
     BadgeContainer.Parent = Top
 
     local BadgeLayout = Instance.new("UIListLayout")
@@ -1030,10 +1030,18 @@ function Orvion:CreateWindow(config)
         ResizeHandle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
         ResizeHandle.BackgroundTransparency = 0.5
         ResizeHandle.BorderSizePixel = 0
-        ResizeHandle.Size = UDim2.new(0, 15, 0, 15)
-        ResizeHandle.Position = UDim2.new(1, -15, 1, -15)
+        ResizeHandle.Size = UDim2.new(0, 20, 0, 20)
+        ResizeHandle.Position = UDim2.new(1, -20, 1, -20)
         ResizeHandle.AutoButtonColor = false
         ResizeHandle.Parent = Main
+
+        local ResizeIcon = Instance.new("ImageLabel")
+        ResizeIcon.Image = "rbxassetid://76259878130194"
+        ResizeIcon.BackgroundTransparency = 1
+        ResizeIcon.Size = UDim2.new(1, 0, 1, 0)
+        ResizeIcon.Position = UDim2.new(0, 0, 0, 0)
+        ResizeIcon.ZIndex = ResizeHandle.ZIndex + 1
+        ResizeIcon.Parent = ResizeHandle
 
         local ResizeCorner = Instance.new("UICorner")
         ResizeCorner.CornerRadius = UDim.new(0, 3)
@@ -4279,7 +4287,7 @@ function Orvion:CreateWindow(config)
     CfgTitle.TextXAlignment = Enum.TextXAlignment.Left
     CfgTitle.BackgroundTransparency = 1
     CfgTitle.BorderSizePixel = 0
-    CfgTitle.Position = UDim2.new(0, 32, 0, 5)
+    CfgTitle.Position = UDim2.new(0, 32, 0, 13)
     CfgTitle.Size = UDim2.new(1, -36, 0, 14)
     CfgTitle.ZIndex = 2
 
@@ -4292,7 +4300,7 @@ function Orvion:CreateWindow(config)
     CfgStatusLabel.TextWrapped = true
     CfgStatusLabel.BackgroundTransparency = 1
     CfgStatusLabel.BorderSizePixel = 0
-    CfgStatusLabel.Position = UDim2.new(0, 32, 0, 19)
+    CfgStatusLabel.Position = UDim2.new(0, 32, 0, 29)
     CfgStatusLabel.Size = UDim2.new(1, -36, 0, 24)
     CfgStatusLabel.ZIndex = 2
 
