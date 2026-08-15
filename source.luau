@@ -1743,11 +1743,6 @@ function Orvion:CreateWindow(config)
         TBCorner.CornerRadius = UDim.new(0, 10)
         TBCorner.Parent = ToggleBtn
 
-        local TBStroke = Instance.new("UIStroke")
-        TBStroke.Color = Color3.fromRGB(80, 80, 100)
-        TBStroke.Thickness = 1.2
-        TBStroke.Parent = ToggleBtn
-
         local TBImg = Instance.new("ImageLabel")
         TBImg.Image = ToggleButtonImage
         TBImg.BackgroundTransparency = 1
