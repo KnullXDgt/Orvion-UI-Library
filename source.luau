@@ -4359,7 +4359,7 @@ function Orvion:CreateWindow(config)
         CfgSection,
         "Config Name",
         "",
-        "MyConfig",
+        "Write your input here...",
         function(value)
             CurrentConfigName = value
         end,
