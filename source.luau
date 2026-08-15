@@ -2031,7 +2031,7 @@ function Orvion:CreateWindow(config)
         FeatureFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
         FeatureFrame.BorderSizePixel = 0
         FeatureFrame.Position = UDim2.new(1, -10, 0.5, 0)
-        FeatureFrame.Size = UDim2.new(0, 30, 0, 15)
+        FeatureFrame.Size = UDim2.new(0, 36, 0, 18)
         FeatureFrame.Name = "FeatureFrame"
         FeatureFrame.Parent = Toggle
 
@@ -2042,7 +2042,7 @@ function Orvion:CreateWindow(config)
         ToggleCircle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
         ToggleCircle.BorderColor3 = Color3.fromRGB(0, 0, 0)
         ToggleCircle.BorderSizePixel = 0
-        ToggleCircle.Position = defaultValue and UDim2.new(1, -14, 0.5, -7) or UDim2.new(0, 0, 0.5, -7)
+        ToggleCircle.Position = defaultValue and UDim2.new(1, -15, 0.5, -7) or UDim2.new(0, 1, 0.5, -7)
         ToggleCircle.Size = UDim2.new(0, 14, 0, 14)
         ToggleCircle.Name = "ToggleCircle"
         ToggleCircle.Parent = FeatureFrame
@@ -2067,12 +2067,12 @@ function Orvion:CreateWindow(config)
                 TweenService:Create(
                     ToggleCircle,
                     TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-                    {Position = UDim2.new(1, -14, 0.5, -7), BackgroundColor3 = Color3.fromRGB(255, 255, 255)}
+                    {Position = UDim2.new(1, -15, 0.5, -7), BackgroundColor3 = Color3.fromRGB(255, 255, 255)}
                 ):Play()
                 TweenService:Create(
                     FeatureFrame,
                     TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-                    {BackgroundTransparency = 0.2}
+                    {BackgroundColor3 = themeColor, BackgroundTransparency = 0}
                 ):Play()
             else
                 TweenService:Create(
@@ -2083,12 +2083,12 @@ function Orvion:CreateWindow(config)
                 TweenService:Create(
                     ToggleCircle,
                     TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-                    {Position = UDim2.new(0, 0, 0.5, -7), BackgroundColor3 = Color3.fromRGB(200, 200, 200)}
+                    {Position = UDim2.new(0, 1, 0.5, -7), BackgroundColor3 = Color3.fromRGB(200, 200, 200)}
                 ):Play()
                 TweenService:Create(
                     FeatureFrame,
                     TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-                    {BackgroundTransparency = 0.2}
+                    {BackgroundColor3 = Color3.fromRGB(60, 60, 60), BackgroundTransparency = 0.2}
                 ):Play()
             end
             if fireCallback ~= false and callback then
@@ -2121,13 +2121,15 @@ function Orvion:CreateWindow(config)
             pcall(function()
                 if value then
                     ToggleTitle.TextColor3 = themeColor
-                    ToggleCircle.Position = UDim2.new(1, -14, 0.5, -7)
+                    ToggleCircle.Position = UDim2.new(1, -15, 0.5, -7)
                     ToggleCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                    FeatureFrame.BackgroundTransparency = 0.2
+                    FeatureFrame.BackgroundColor3 = themeColor
+                    FeatureFrame.BackgroundTransparency = 0
                 else
                     ToggleTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
-                    ToggleCircle.Position = UDim2.new(0, 0, 0.5, -7)
+                    ToggleCircle.Position = UDim2.new(0, 1, 0.5, -7)
                     ToggleCircle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+                    FeatureFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
                     FeatureFrame.BackgroundTransparency = 0.2
                 end
             end)
