@@ -2384,7 +2384,8 @@ function Orvion:CreateWindow(config)
         local dropdownData = {
             Options = options or {},
             Value = multi and (defaultValue or {}) or defaultValue or nil,
-            Multi = multi or false,
+            Multi = multi ~= false and multi ~= nil,
+            MaxSelect = type(multi) == "number" and multi or math.huge,
             Open = false,
             OptionFrames = {}
         }
@@ -2570,7 +2571,7 @@ function Orvion:CreateWindow(config)
                         local index = table.find(dropdownData.Value, optionName)
                         if index then
                             table.remove(dropdownData.Value, index)
-                        else
+                        elseif #dropdownData.Value < dropdownData.MaxSelect then
                             table.insert(dropdownData.Value, optionName)
                         end
                         UpdateOptionVisual()
