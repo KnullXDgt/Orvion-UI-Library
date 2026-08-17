@@ -5,7 +5,7 @@ local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
-local CoreGui = game:GetService("CoreGui") or LocalPlayer.PlayerGui
+local CoreGui = (gethui and gethui()) or game:GetService("CoreGui") or LocalPlayer.PlayerGui
 local HttpService = game:GetService("HttpService")
 local TextService = game:GetService("TextService")
 local RunService = game:GetService("RunService")
@@ -518,7 +518,7 @@ local function MakeNotify(NotifyConfig)
                 local NotifyGui = Instance.new("ScreenGui")
                 NotifyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
                 NotifyGui.Name = "NotifyGui"
-                NotifyGui.Parent = CoreGui
+                NotifyGui.Parent = (gethui and gethui()) or CoreGui
             end
 
             if not CoreGui.NotifyGui:FindFirstChild("NotifyLayout") then
@@ -760,7 +760,7 @@ function Orvion:CreateWindow(config)
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.Name = "OrvionUI"
-    ScreenGui.Parent = CoreGui
+    ScreenGui.Parent = (gethui and gethui()) or CoreGui
 
     local DropShadowHolder = Instance.new("Frame")
     DropShadowHolder.BackgroundTransparency = 1
@@ -1720,7 +1720,10 @@ function Orvion:CreateWindow(config)
         TBClick.ZIndex = 102
         TBClick.Parent = ToggleBtn
 
-        MakeDraggableMobileButton(TBClick, ToggleBtn, ScreenGui)
+        -- Only apply drag on mobile/touch, not PC mouse
+        if not UserInputService.MouseEnabled then
+            MakeDraggableMobileButton(TBClick, ToggleBtn, ScreenGui)
+        end
 
         TBClick.MouseButton1Click:Connect(function()
             DropShadowHolder.Visible = not DropShadowHolder.Visible
