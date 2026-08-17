@@ -2561,49 +2561,43 @@ function Orvion:CreateWindow(config)
                 local rightW = cfW - halfCF - 4
                 local targetH = math.floor(Main.AbsoluteSize.Y - 16)
                 DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 8)
-                DropdownList.Size = UDim2.new(0, rightW, 0, targetH)
+                DropdownList.Size = UDim2.new(0, rightW, 0, 0)
                 DropdownList.Visible = true
+                TweenService:Create(DropdownList, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+                    {Size = UDim2.new(0, rightW, 0, targetH)}):Play()
 
-                -- Bounds check: only close if click is inside Main (window area)
-                -- Close only when clicking ContentFrame or TabFrame (not title bar, not game area)
+                -- DropCatch: click-catcher inside Main, below DropdownList (ZIndex 9 < 10)
                 task.delay(0.15, function()
                     if not dropdownData.Open then return end
-                    dropCloseConn = UserInputService.InputBegan:Connect(function(input)
-                        if not dropdownData.Open then
-                            if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
-                            return
-                        end
-                        if input.UserInputType ~= Enum.UserInputType.MouseButton1
-                           and input.UserInputType ~= Enum.UserInputType.Touch then return end
-                        local px = input.Position.X
-                        local py = input.Position.Y
-                        -- Skip if on DropdownList
-                        local dPos = DropdownList.AbsolutePosition
-                        local dSize = DropdownList.AbsoluteSize
-                        if px >= dPos.X and px <= dPos.X + dSize.X
-                           and py >= dPos.Y and py <= dPos.Y + dSize.Y then return end
-                        -- Close only if click is in ContentFrame or TabFrame
-                        local cfPos = ContentFrame.AbsolutePosition
-                        local cfSize = ContentFrame.AbsoluteSize
-                        local inContent = px >= cfPos.X and px <= cfPos.X + cfSize.X
-                            and py >= cfPos.Y and py <= cfPos.Y + cfSize.Y
-                        local tfPos = TabFrame.AbsolutePosition
-                        local tfSize = TabFrame.AbsoluteSize
-                        local inTab = px >= tfPos.X and px <= tfPos.X + tfSize.X
-                            and py >= tfPos.Y and py <= tfPos.Y + tfSize.Y
-                        if not (inContent or inTab) then return end
+                    local DropCatch = Instance.new("TextButton")
+                    DropCatch.Name = "DropCatch"
+                    DropCatch.Text = ""
+                    DropCatch.BackgroundTransparency = 1
+                    DropCatch.BorderSizePixel = 0
+                    DropCatch.Size = UDim2.new(1, 0, 1, 0)
+                    DropCatch.ZIndex = DropdownList.ZIndex - 1
+                    DropCatch.Parent = Main
+                    dropCloseConn = DropCatch.Activated:Connect(function()
+                        if not dropdownData.Open then return end
                         dropdownData.Open = false
                         ResetSearch()
-                        DropdownList.Visible = false
+                        TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In),
+                            {Size = UDim2.new(0, rightW, 0, 0)}):Play()
+                        task.delay(0.18, function() DropdownList.Visible = false end)
+                        DropCatch:Destroy()
                         if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
                     end)
                 end)
             else
                 if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                local dc = Main:FindFirstChild("DropCatch")
+                if dc then dc:Destroy() end
                 local cfW3 = ContentFrame.AbsoluteSize.X
-                local rW3 = cfW3 - math.floor(cfW3 / 2)
+                local rightW3 = cfW3 - math.floor(cfW3 / 2) - 4
                 ResetSearch()
-                DropdownList.Visible = false
+                TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In),
+                    {Size = UDim2.new(0, rightW3, 0, 0)}):Play()
+                task.delay(0.18, function() DropdownList.Visible = false end)
             end
         end
 
