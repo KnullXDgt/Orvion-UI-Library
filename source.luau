@@ -2565,6 +2565,7 @@ function Orvion:CreateWindow(config)
                 DropdownList.Visible = true
 
                 -- Bounds check: only close if click is inside Main (window area)
+                -- Original Kairo approach + DropShadowHolder window bounds
                 task.delay(0.15, function()
                     if not dropdownData.Open then return end
                     dropCloseConn = UserInputService.InputBegan:Connect(function(input)
@@ -2576,27 +2577,25 @@ function Orvion:CreateWindow(config)
                            and input.UserInputType ~= Enum.UserInputType.Touch then return end
                         local px = input.Position.X
                         local py = input.Position.Y
+                        -- Skip if on DropdownList
                         local dPos = DropdownList.AbsolutePosition
                         local dSize = DropdownList.AbsoluteSize
                         if px >= dPos.X and px <= dPos.X + dSize.X
                            and py >= dPos.Y and py <= dPos.Y + dSize.Y then return end
-                        local mPos = Main.AbsolutePosition
-                        local mSize = Main.AbsoluteSize
-                        if px < mPos.X or px > mPos.X + mSize.X
-                           or py < mPos.Y or py > mPos.Y + mSize.Y then return end
-                        local startPos = Vector2.new(input.Position.X, input.Position.Y)
-                        local endConn
-                        endConn = UserInputService.InputEnded:Connect(function(endInput)
-                            if endInput ~= input then return end
-                            if endConn then endConn:Disconnect(); endConn = nil end
-                            local endPos = Vector2.new(endInput.Position.X, endInput.Position.Y)
-                            if (endPos - startPos).Magnitude < 12 then
-                                dropdownData.Open = false
-                                ResetSearch()
-                                DropdownList.Visible = false
-                                if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
-                            end
-                        end)
+                        -- Skip if on Dropdown row (button)
+                        local selPos = Dropdown.AbsolutePosition
+                        local selSize = Dropdown.AbsoluteSize
+                        if px >= selPos.X and px <= selPos.X + selSize.X
+                           and py >= selPos.Y and py <= selPos.Y + selSize.Y then return end
+                        -- Skip if outside DropShadowHolder (Orvion window)
+                        local shPos = DropShadowHolder.AbsolutePosition
+                        local shSize = DropShadowHolder.AbsoluteSize
+                        if px < shPos.X or px > shPos.X + shSize.X
+                           or py < shPos.Y or py > shPos.Y + shSize.Y then return end
+                        dropdownData.Open = false
+                        ResetSearch()
+                        DropdownList.Visible = false
+                        if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
                     end)
                 end)
             else
