@@ -1848,7 +1848,7 @@ function Orvion:CreateWindow(config)
 
         local paragraphFunc = {}
         function paragraphFunc:Set(newContent)
-            pcall(function() ParagraphContent.Text = tostring(newContent) end)
+            ParagraphContent.Text = tostring(newContent)
         end
         return paragraphFunc
     end
