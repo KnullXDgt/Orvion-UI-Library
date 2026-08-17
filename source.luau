@@ -2564,8 +2564,7 @@ function Orvion:CreateWindow(config)
                 DropdownList.Size = UDim2.new(0, rightW, 0, targetH)
                 DropdownList.Visible = true
 
-                -- GetGuiObjectsAtPosition: only close if tap is on Orvion UI, not game buttons
-                local screenGui = DropShadowHolder.Parent
+                -- Bounds check: only close if click is inside Main (window area)
                 task.delay(0.15, function()
                     if not dropdownData.Open then return end
                     dropCloseConn = UserInputService.InputBegan:Connect(function(input)
@@ -2576,24 +2575,14 @@ function Orvion:CreateWindow(config)
                         if input.UserInputType ~= Enum.UserInputType.MouseButton1
                            and input.UserInputType ~= Enum.UserInputType.Touch then return end
                         local px, py = input.Position.X, input.Position.Y
-                        -- Skip if click is inside DropdownList
                         local dPos = DropdownList.AbsolutePosition
                         local dSize = DropdownList.AbsoluteSize
                         if px >= dPos.X and px <= dPos.X + dSize.X
                            and py >= dPos.Y and py <= dPos.Y + dSize.Y then return end
-                        -- Only close if tap is on Orvion ScreenGui elements
-                        local onOrvion = false
-                        pcall(function()
-                            local objs = game:GetService("Players").LocalPlayer.PlayerGui:GetGuiObjectsAtPosition(px, py)
-                            for _, obj in ipairs(objs) do
-                                if obj:IsDescendantOf(screenGui) then
-                                    onOrvion = true
-                                    break
-                                end
-                            end
-                        end)
-                        if not onOrvion then return end
-                        -- It's a click/tap on Orvion UI (not drag, not game buttons) → close
+                        local mPos = Main.AbsolutePosition
+                        local mSize = Main.AbsoluteSize
+                        if px < mPos.X or px > mPos.X + mSize.X
+                           or py < mPos.Y or py > mPos.Y + mSize.Y then return end
                         local startPos = input.Position
                         local endConn
                         endConn = input.Changed:Connect(function()
