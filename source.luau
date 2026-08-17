@@ -1711,6 +1711,7 @@ function Orvion:CreateWindow(config)
         TBImg.Position = UDim2.new(0, 0, 0, 0)
         TBImg.ScaleType = Enum.ScaleType.Fit
         TBImg.ZIndex = 101
+        TBImg.Active = false      -- jangan intercept input
         TBImg.Parent = ToggleBtn
 
         local TBSurface = Instance.new("Frame", ToggleBtn)
