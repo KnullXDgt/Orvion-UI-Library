@@ -1846,11 +1846,7 @@ function Orvion:CreateWindow(config)
 
         UpdateContentSize()
 
-        local paragraphFunc = {}
-        function paragraphFunc:Set(newContent)
-            ParagraphContent.Text = tostring(newContent)
-        end
-        return paragraphFunc
+        return Paragraph
     end
 
     local function CreateButton(tabContainer, title, content, iconId, callback)
