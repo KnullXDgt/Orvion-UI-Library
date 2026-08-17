@@ -2590,6 +2590,8 @@ function Orvion:CreateWindow(config)
                         -- Skip if outside DropShadowHolder (Orvion window)
                         local shPos = DropShadowHolder.AbsolutePosition
                         local shSize = DropShadowHolder.AbsoluteSize
+                        -- DEBUG: show positions
+                        Orvion:Notify({ Title="Debug", Subtitle="pos", Content="px="..math.floor(px).." py="..math.floor(py).."\nsh="..math.floor(shPos.X)..","..math.floor(shPos.Y).." sz="..math.floor(shSize.X)..","..math.floor(shSize.Y), Color=Color3.fromRGB(150,150,170), Delay=5 })
                         if px < shPos.X or px > shPos.X + shSize.X
                            or py < shPos.Y or py > shPos.Y + shSize.Y then return end
                         dropdownData.Open = false
