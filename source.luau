@@ -1844,7 +1844,6 @@ function Orvion:CreateWindow(config)
         ParagraphContent.TextWrapped = true
         Paragraph.Size = UDim2.new(1, 0, 0, math.max(46, textSize.Y + 50))
 
-        task.wait(0.1)
         UpdateContentSize()
 
         local paragraphFunc = {}
