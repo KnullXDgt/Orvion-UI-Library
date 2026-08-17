@@ -637,9 +637,28 @@ local function MakeNotify(NotifyConfig)
             TextLabel.BackgroundTransparency = 0.999
             TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
             TextLabel.BorderSizePixel = 0
-            TextLabel.Size = UDim2.new(1, 0, 1, 0)
+            TextLabel.Size = UDim2.new(0, 0, 1, 0)
+            TextLabel.AutomaticSize = Enum.AutomaticSize.X
             TextLabel.Parent = Top
             TextLabel.Position = UDim2.new(0, 10, 0, 0)
+
+            if NotifyConfig.Subtitle and NotifyConfig.Subtitle ~= "" then
+                local SubLabel = Instance.new("TextLabel")
+                SubLabel.Font = Enum.Font.Gotham
+                SubLabel.Text = NotifyConfig.Subtitle
+                SubLabel.TextColor3 = Color3.fromRGB(150, 150, 170)
+                SubLabel.TextSize = 14
+                SubLabel.TextXAlignment = Enum.TextXAlignment.Left
+                SubLabel.BackgroundTransparency = 0.999
+                SubLabel.BorderSizePixel = 0
+                SubLabel.AutomaticSize = Enum.AutomaticSize.X
+                SubLabel.Size = UDim2.new(0, 0, 1, 0)
+                SubLabel.Position = UDim2.new(0, 10, 0, 0)
+                SubLabel.Parent = Top
+                task.defer(function()
+                    SubLabel.Position = UDim2.new(0, TextLabel.AbsoluteSize.X + 18, 0, 0)
+                end)
+            end
 
             UIStroke.Color = Color3.fromRGB(255, 255, 255)
             UIStroke.Thickness = 0.3
