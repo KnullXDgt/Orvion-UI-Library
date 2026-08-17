@@ -1728,7 +1728,7 @@ function Orvion:CreateWindow(config)
         local tbStartPos = nil
         local tbClickStart = nil
 
-        TBSurface.InputBegan:Connect(function(input)
+        pcall(function() TBSurface.InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or
                input.UserInputType == Enum.UserInputType.Touch then
                 tbDragging = true
@@ -1737,9 +1737,9 @@ function Orvion:CreateWindow(config)
                 tbDragStart = input.Position
                 tbStartPos = Vector2.new(ToggleBtn.AbsolutePosition.X, ToggleBtn.AbsolutePosition.Y)
             end
-        end)
+        end) end)
 
-        UserInputService.InputChanged:Connect(function(input)
+        pcall(function() UserInputService.InputChanged:Connect(function(input)
             if not tbDragging then return end
             if input.UserInputType ~= Enum.UserInputType.MouseMovement and
                input.UserInputType ~= Enum.UserInputType.Touch then return end
@@ -1757,11 +1757,9 @@ function Orvion:CreateWindow(config)
                     math.clamp(tbStartPos.Y + delta.Y, pad, ss.Y - bs.Y - pad)
                 )
             end
-        end)
+        end) end)
 
-        -- InputEnded pada TBSurface sendiri: hanya fire untuk input yang mulai di TBSurface
-        -- → tidak terpicu oleh klik di collapsible/button lain
-        TBSurface.InputEnded:Connect(function(input)
+        pcall(function() TBSurface.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or
                input.UserInputType == Enum.UserInputType.Touch then
                 if tbDragging then
@@ -1772,14 +1770,13 @@ function Orvion:CreateWindow(config)
                     tbDragged = false
                 end
             end
-        end)
+        end) end)
 
-        -- Global reset saja (tanpa toggle) untuk jaga-jaga drag keluar frame
-        UserInputService.InputEnded:Connect(function(input)
+        pcall(function() UserInputService.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 then
                 tbDragging = false
             end
-        end)
+        end) end)
     end
 
     -- Element Creation Functions
