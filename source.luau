@@ -1720,10 +1720,13 @@ function Orvion:CreateWindow(config)
         TBClick.ZIndex = 102
         TBClick.Parent = ToggleBtn
 
-        -- Toggle button: click only, no drag (drag causes icon to stick to pointer on PC)
+        -- Draggable + click: drag moves button, click toggles UI
+        local isDragging = MakeDraggableMobileButton(TBClick, ToggleBtn, ScreenGui)
 
-        TBClick.MouseButton1Click:Connect(function()
-            DropShadowHolder.Visible = not DropShadowHolder.Visible
+        TBClick.Activated:Connect(function()
+            if not isDragging() then
+                DropShadowHolder.Visible = not DropShadowHolder.Visible
+            end
         end)
     end
 
