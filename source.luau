@@ -655,9 +655,8 @@ local function MakeNotify(NotifyConfig)
                 SubLabel.Size = UDim2.new(0, 0, 1, 0)
                 SubLabel.Position = UDim2.new(0, 10, 0, 0)
                 SubLabel.Parent = Top
-                task.defer(function()
-                    SubLabel.Position = UDim2.new(0, TextLabel.AbsoluteSize.X + 18, 0, 0)
-                end)
+                local tw = TextService:GetTextSize(NotifyConfig.Title or "", 14, Enum.Font.GothamBold, Vector2.new(math.huge, math.huge)).X
+                SubLabel.Position = UDim2.new(0, tw + 18, 0, 0)
             end
 
             UIStroke.Color = Color3.fromRGB(255, 255, 255)
