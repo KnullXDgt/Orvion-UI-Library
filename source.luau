@@ -1762,11 +1762,13 @@ function Orvion:CreateWindow(config)
         UserInputService.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or
                input.UserInputType == Enum.UserInputType.Touch then
-                tbDragging = false
-                if not tbDragged then
-                    DropShadowHolder.Visible = not DropShadowHolder.Visible
+                if tbDragging then  -- hanya act jika press mulai dari TBSurface
+                    tbDragging = false
+                    if not tbDragged then
+                        DropShadowHolder.Visible = not DropShadowHolder.Visible
+                    end
+                    tbDragged = false
                 end
-                tbDragged = false
             end
         end)
     end
