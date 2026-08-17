@@ -2564,11 +2564,11 @@ function Orvion:CreateWindow(config)
                 DropdownList.Size = UDim2.new(0, rightW, 0, targetH)
                 DropdownList.Visible = true
 
-                -- UserInputService + gameProcessed: skip game buttons, skip drags
+                -- GetGuiObjectsAtPosition: only close if tap is on Orvion UI, not game buttons
+                local screenGui = DropShadowHolder.Parent
                 task.delay(0.15, function()
                     if not dropdownData.Open then return end
-                    dropCloseConn = UserInputService.InputBegan:Connect(function(input, gameProcessed)
-                        if gameProcessed then return end
+                    dropCloseConn = UserInputService.InputBegan:Connect(function(input)
                         if not dropdownData.Open then
                             if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
                             return
@@ -2576,18 +2576,38 @@ function Orvion:CreateWindow(config)
                         if input.UserInputType ~= Enum.UserInputType.MouseButton1
                            and input.UserInputType ~= Enum.UserInputType.Touch then return end
                         local px, py = input.Position.X, input.Position.Y
+                        -- Skip if click is inside DropdownList
                         local dPos = DropdownList.AbsolutePosition
                         local dSize = DropdownList.AbsoluteSize
                         if px >= dPos.X and px <= dPos.X + dSize.X
                            and py >= dPos.Y and py <= dPos.Y + dSize.Y then return end
-                        local mPos = Main.AbsolutePosition
-                        local mSize = Main.AbsoluteSize
-                        if px < mPos.X or px > mPos.X + mSize.X
-                           or py < mPos.Y or py > mPos.Y + mSize.Y then return end
-                        dropdownData.Open = false
-                        ResetSearch()
-                        DropdownList.Visible = false
-                        if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                        -- Only close if tap is on Orvion ScreenGui elements
+                        local onOrvion = false
+                        pcall(function()
+                            local objs = game:GetService("Players").LocalPlayer.PlayerGui:GetGuiObjectsAtPosition(px, py)
+                            for _, obj in ipairs(objs) do
+                                if obj:IsDescendantOf(screenGui) then
+                                    onOrvion = true
+                                    break
+                                end
+                            end
+                        end)
+                        if not onOrvion then return end
+                        -- It's a click/tap on Orvion UI (not drag, not game buttons) → close
+                        local startPos = input.Position
+                        local endConn
+                        endConn = input.Changed:Connect(function()
+                            if input.UserInputState == Enum.UserInputState.End then
+                                if endConn then endConn:Disconnect(); endConn = nil end
+                                local moved = (Vector2.new(input.Position.X, input.Position.Y) - Vector2.new(startPos.X, startPos.Y)).Magnitude
+                                if moved < 12 then
+                                    dropdownData.Open = false
+                                    ResetSearch()
+                                    DropdownList.Visible = false
+                                    if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                                end
+                            end
+                        end)
                     end)
                 end)
             else
