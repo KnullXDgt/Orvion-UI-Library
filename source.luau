@@ -2564,31 +2564,34 @@ function Orvion:CreateWindow(config)
                 DropdownList.Size = UDim2.new(0, rightW, 0, targetH)
                 DropdownList.Visible = true
 
-                -- Click-catcher: hanya dalam bounds DropShadowHolder (window area)
-                -- Activated = tidak fire saat drag, cross-platform
-                local DropCatch = Instance.new("TextButton")
-                DropCatch.Name = "DropCatch"
-                DropCatch.Text = ""
-                DropCatch.BackgroundTransparency = 1
-                DropCatch.BorderSizePixel = 0
-                DropCatch.Size = UDim2.new(1, 0, 1, 0)
-                DropCatch.ZIndex = DropdownList.ZIndex - 1
-                DropCatch.Parent = Main
-                -- Delay: prevent same tap that opened dropdown from immediately closing it
+                -- UserInputService + gameProcessed: skip game buttons, skip drags
                 task.delay(0.15, function()
                     if not dropdownData.Open then return end
-                    dropCloseConn = DropCatch.Activated:Connect(function()
+                    dropCloseConn = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+                        if gameProcessed then return end
+                        if not dropdownData.Open then
+                            if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                            return
+                        end
+                        if input.UserInputType ~= Enum.UserInputType.MouseButton1
+                           and input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        local px, py = input.Position.X, input.Position.Y
+                        local dPos = DropdownList.AbsolutePosition
+                        local dSize = DropdownList.AbsoluteSize
+                        if px >= dPos.X and px <= dPos.X + dSize.X
+                           and py >= dPos.Y and py <= dPos.Y + dSize.Y then return end
+                        local mPos = Main.AbsolutePosition
+                        local mSize = Main.AbsoluteSize
+                        if px < mPos.X or px > mPos.X + mSize.X
+                           or py < mPos.Y or py > mPos.Y + mSize.Y then return end
                         dropdownData.Open = false
                         ResetSearch()
                         DropdownList.Visible = false
-                        DropCatch:Destroy()
                         if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
                     end)
                 end)
             else
                 if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
-                local existing = Main:FindFirstChild("DropCatch")
-                if existing then existing:Destroy() end
                 local cfW3 = ContentFrame.AbsoluteSize.X
                 local rW3 = cfW3 - math.floor(cfW3 / 2)
                 ResetSearch()
