@@ -1842,7 +1842,9 @@ function Orvion:CreateWindow(config)
 
         ParagraphContent.Size = UDim2.new(1, -20, 0, textSize.Y)
         ParagraphContent.TextWrapped = true
+        ParagraphContent.AutomaticSize = Enum.AutomaticSize.Y
         Paragraph.Size = UDim2.new(1, 0, 0, math.max(46, textSize.Y + 50))
+        Paragraph.AutomaticSize = Enum.AutomaticSize.Y
 
         UpdateContentSize()
 
