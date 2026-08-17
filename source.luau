@@ -1849,13 +1849,8 @@ function Orvion:CreateWindow(config)
 
         local paragraphFunc = {}
         function paragraphFunc:Set(newContent)
-            local scrollW = ContentScroll.AbsoluteSize.X
-            local tW = scrollW > 0 and (scrollW - 40) or 290
-            local tSize = TextService:GetTextSize(newContent, 12, Enum.Font.GothamBold, Vector2.new(tW, math.huge))
-            ParagraphContent.Text = newContent
-            ParagraphContent.Size = UDim2.new(1, -20, 0, tSize.Y)
-            Paragraph.Size = UDim2.new(1, 0, 0, math.max(46, tSize.Y + 50))
-            task.defer(function() UpdateContentSize() end)
+            pcall(function() ParagraphContent.Text = tostring(newContent) end)
+            pcall(function() UpdateContentSize() end)
         end
         return paragraphFunc
     end
