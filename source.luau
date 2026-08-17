@@ -1717,6 +1717,7 @@ function Orvion:CreateWindow(config)
         TBSurface.BackgroundTransparency = 1
         TBSurface.Size = UDim2.new(1, 0, 1, 0)
         TBSurface.ZIndex = 102
+        TBSurface.Active = true  -- wajib agar Frame capture input di PC
 
         -- Frame (bukan TextButton) = no Roblox drag ghost on PC
         local isDragging = MakeDraggableMobileButton(TBSurface, ToggleBtn, ScreenGui)
