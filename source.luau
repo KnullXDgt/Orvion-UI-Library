@@ -2559,13 +2559,11 @@ function Orvion:CreateWindow(config)
             end
         end
 
+        local dropCloseConn = nil
+
         local function ToggleDropdown()
             dropdownData.Open = not dropdownData.Open
             if dropdownData.Open then
-                -- Remove any existing outside-click blocker
-                local existingOC = Main:FindFirstChild("DropOutsideClick")
-                if existingOC then existingOC:Destroy() end
-
                 local cfW    = ContentFrame.AbsoluteSize.X
                 local halfCF = math.floor(cfW / 2)
                 local rightW = cfW - halfCF - 4
@@ -2574,25 +2572,32 @@ function Orvion:CreateWindow(config)
                 DropdownList.Size = UDim2.new(0, rightW, 0, targetH)
                 DropdownList.Visible = true
 
-                -- Outside click blocker
-                local OutsideClick = Instance.new("TextButton")
-                OutsideClick.Name = "DropOutsideClick"
-                OutsideClick.Text = ""
-                OutsideClick.BackgroundTransparency = 1
-                OutsideClick.Size = UDim2.new(1, 0, 1, 0)
-                OutsideClick.ZIndex = DropdownList.ZIndex - 1
-                OutsideClick.Parent = Main
-                OutsideClick.Activated:Connect(function()
-                    dropdownData.Open = false
-                    local cfW2 = ContentFrame.AbsoluteSize.X
-                    local rW2 = cfW2 - math.floor(cfW2 / 2)
-                    ResetSearch()
-                    DropdownList.Visible = false
-                    OutsideClick:Destroy()
+                -- Close only when clicking inside Orvion window (not game buttons)
+                if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                dropCloseConn = UserInputService.InputBegan:Connect(function(input)
+                    if not dropdownData.Open then
+                        if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                        return
+                    end
+                    if input.UserInputType ~= Enum.UserInputType.MouseButton1
+                       and input.UserInputType ~= Enum.UserInputType.Touch then return end
+                    local dPos = DropdownList.AbsolutePosition
+                    local dSize = DropdownList.AbsoluteSize
+                    local px, py = input.Position.X, input.Position.Y
+                    if px >= dPos.X and px <= dPos.X + dSize.X
+                       and py >= dPos.Y and py <= dPos.Y + dSize.Y then return end
+                    local mPos = Main.AbsolutePosition
+                    local mSize = Main.AbsoluteSize
+                    if px >= mPos.X and px <= mPos.X + mSize.X
+                       and py >= mPos.Y and py <= mPos.Y + mSize.Y then
+                        dropdownData.Open = false
+                        ResetSearch()
+                        DropdownList.Visible = false
+                        if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                    end
                 end)
             else
-                local oc = Main:FindFirstChild("DropOutsideClick")
-                if oc then oc:Destroy() end
+                if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
                 local cfW3 = ContentFrame.AbsoluteSize.X
                 local rW3 = cfW3 - math.floor(cfW3 / 2)
                 ResetSearch()
@@ -4198,8 +4203,6 @@ function Orvion:CreateWindow(config)
 
         local function updateSize()
             -- close any open dropdown when collapsing
-            local oc = Main:FindFirstChild("DropOutsideClick")
-            if oc then oc:Destroy() end
             local dl = Main:FindFirstChild("DropdownList")
             if dl then dl.Visible = false end
 
