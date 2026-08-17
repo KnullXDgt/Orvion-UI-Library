@@ -2472,7 +2472,7 @@ function Orvion:CreateWindow(config)
         SearchInput.Font = Enum.Font.Gotham
         SearchInput.PlaceholderText = "Search..."
         SearchInput.Text = ""
-        SearchInput.TextSize = 11
+        SearchInput.TextSize = 12
         SearchInput.TextColor3 = Color3.fromRGB(230, 230, 230)
         SearchInput.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
         SearchInput.TextXAlignment = Enum.TextXAlignment.Center
@@ -2573,7 +2573,7 @@ function Orvion:CreateWindow(config)
                 DropCatch.BorderSizePixel = 0
                 DropCatch.Size = UDim2.new(1, 0, 1, 0)
                 DropCatch.ZIndex = DropdownList.ZIndex - 1
-                DropCatch.Parent = DropShadowHolder
+                DropCatch.Parent = Main
                 -- Delay: prevent same tap that opened dropdown from immediately closing it
                 task.delay(0.15, function()
                     if not dropdownData.Open then return end
@@ -2587,7 +2587,7 @@ function Orvion:CreateWindow(config)
                 end)
             else
                 if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
-                local existing = DropShadowHolder:FindFirstChild("DropCatch")
+                local existing = Main:FindFirstChild("DropCatch")
                 if existing then existing:Destroy() end
                 local cfW3 = ContentFrame.AbsoluteSize.X
                 local rW3 = cfW3 - math.floor(cfW3 / 2)
