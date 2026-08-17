@@ -2578,10 +2578,21 @@ function Orvion:CreateWindow(config)
                     local px, py = input.Position.X, input.Position.Y
                     if px >= dPos.X and px <= dPos.X + dSize.X
                        and py >= dPos.Y and py <= dPos.Y + dSize.Y then return end
-                    dropdownData.Open = false
-                    ResetSearch()
-                    DropdownList.Visible = false
-                    if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                    -- Track start pos — only close if it was a click, not a drag
+                    local startPos = input.Position
+                    local endedConn
+                    endedConn = input.Changed:Connect(function()
+                        if input.UserInputState == Enum.UserInputState.End then
+                            if endedConn then endedConn:Disconnect(); endedConn = nil end
+                            local moved = (Vector2.new(input.Position.X, input.Position.Y) - Vector2.new(startPos.X, startPos.Y)).Magnitude
+                            if moved < 15 then
+                                dropdownData.Open = false
+                                ResetSearch()
+                                DropdownList.Visible = false
+                                if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                            end
+                        end
+                    end)
                 end)
             else
                 if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
