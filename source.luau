@@ -1713,19 +1713,20 @@ function Orvion:CreateWindow(config)
         TBImg.ZIndex = 101
         TBImg.Parent = ToggleBtn
 
-        local TBClick = Instance.new("TextButton")
-        TBClick.Text = ""
-        TBClick.BackgroundTransparency = 1
-        TBClick.Size = UDim2.new(1, 0, 1, 0)
-        TBClick.ZIndex = 102
-        TBClick.Parent = ToggleBtn
+        local TBSurface = Instance.new("Frame", ToggleBtn)
+        TBSurface.BackgroundTransparency = 1
+        TBSurface.Size = UDim2.new(1, 0, 1, 0)
+        TBSurface.ZIndex = 102
 
-        -- Draggable + click: drag moves button, click toggles UI
-        local isDragging = MakeDraggableMobileButton(TBClick, ToggleBtn, ScreenGui)
+        -- Frame (bukan TextButton) = no Roblox drag ghost on PC
+        local isDragging = MakeDraggableMobileButton(TBSurface, ToggleBtn, ScreenGui)
 
-        TBClick.Activated:Connect(function()
-            if not isDragging() then
-                DropShadowHolder.Visible = not DropShadowHolder.Visible
+        TBSurface.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or
+               input.UserInputType == Enum.UserInputType.Touch then
+                if not isDragging() then
+                    DropShadowHolder.Visible = not DropShadowHolder.Visible
+                end
             end
         end)
     end
