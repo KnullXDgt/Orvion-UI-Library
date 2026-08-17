@@ -2551,7 +2551,6 @@ function Orvion:CreateWindow(config)
             end
         end
 
-        local dropCloseConn = nil
 
         local function ToggleDropdown()
             dropdownData.Open = not dropdownData.Open
@@ -2566,32 +2565,8 @@ function Orvion:CreateWindow(config)
                 TweenService:Create(DropdownList, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
                     {Size = UDim2.new(0, rightW, 0, targetH)}):Play()
 
-                -- DropCatch: click-catcher inside Main, below DropdownList (ZIndex 9 < 10)
-                task.delay(0.15, function()
-                    if not dropdownData.Open then return end
-                    local DropCatch = Instance.new("TextButton")
-                    DropCatch.Name = "DropCatch"
-                    DropCatch.Text = ""
-                    DropCatch.BackgroundTransparency = 1
-                    DropCatch.BorderSizePixel = 0
-                    DropCatch.Size = UDim2.new(1, 0, 1, 0)
-                    DropCatch.ZIndex = DropdownList.ZIndex - 1
-                    DropCatch.Parent = Main
-                    dropCloseConn = DropCatch.Activated:Connect(function()
-                        if not dropdownData.Open then return end
-                        dropdownData.Open = false
-                        ResetSearch()
-                        TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In),
-                            {Size = UDim2.new(0, rightW, 0, 0)}):Play()
-                        task.delay(0.18, function() DropdownList.Visible = false end)
-                        DropCatch:Destroy()
-                        if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
-                    end)
-                end)
+
             else
-                if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
-                local dc = Main:FindFirstChild("DropCatch")
-                if dc then dc:Destroy() end
                 local cfW3 = ContentFrame.AbsoluteSize.X
                 local rightW3 = cfW3 - math.floor(cfW3 / 2) - 4
                 ResetSearch()
