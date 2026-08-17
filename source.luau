@@ -2762,42 +2762,8 @@ function Orvion:CreateWindow(config)
             end
         )
 
-        local dropdownConnection
-        dropdownConnection =
-            UserInputService.InputBegan:Connect(
-            function(input)
-                if
-                    input.UserInputType == Enum.UserInputType.MouseButton1 or
-                        input.UserInputType == Enum.UserInputType.Touch
-                 then
-                    if dropdownData.Open and DropdownList.Visible then
-                        local mousePos = input.Position
-                        local dropdownPos = DropdownList.AbsolutePosition
-                        local dropdownSize = DropdownList.AbsoluteSize
-                        local selectFramePos = SelectOptionsFrame.AbsolutePosition
-                        local selectFrameSize = SelectOptionsFrame.AbsoluteSize
-
-                        if
-                            not (mousePos.X >= dropdownPos.X and mousePos.X <= dropdownPos.X + dropdownSize.X and
-                                mousePos.Y >= dropdownPos.Y and
-                                mousePos.Y <= dropdownPos.Y + dropdownSize.Y) and
-                                not (mousePos.X >= selectFramePos.X and
-                                    mousePos.X <= selectFramePos.X + selectFrameSize.X and
-                                    mousePos.Y >= selectFramePos.Y and
-                                    mousePos.Y <= selectFramePos.Y + selectFrameSize.Y)
-                         then
-                            ToggleDropdown()
-                        end
-                    end
-                end
-            end
-        )
-
         Dropdown.Destroying:Connect(
             function()
-                if dropdownConnection then
-                    dropdownConnection:Disconnect()
-                end
                 for id, data in pairs(ConfigSystem.DropdownOptionFrames) do
                     if data.Frame and data.Frame:IsDescendantOf(DropdownList) then
                         ConfigSystem.DropdownOptionFrames[id] = nil
