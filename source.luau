@@ -504,7 +504,7 @@ end
 local function MakeNotify(NotifyConfig)
     local NotifyConfig = NotifyConfig or {}
     NotifyConfig.Title = NotifyConfig.Title or "Notification"
-    NotifyConfig.Description = NotifyConfig.Description or "Description"
+    NotifyConfig.Description = NotifyConfig.Description or ""
     NotifyConfig.Content = NotifyConfig.Content or "Content"
     NotifyConfig.Color = NotifyConfig.Color or Color3.fromRGB(150, 150, 170)
     NotifyConfig.Time = NotifyConfig.Time or 0.5
