@@ -2469,13 +2469,13 @@ function Orvion:CreateWindow(config)
         SearchFrame.Parent = DropdownList
 
         local SearchInput = Instance.new("TextBox")
-        SearchInput.Font = Enum.Font.GothamBold
+        SearchInput.Font = Enum.Font.Gotham
         SearchInput.PlaceholderText = "Search..."
         SearchInput.Text = ""
-        SearchInput.TextSize = 13
+        SearchInput.TextSize = 11
         SearchInput.TextColor3 = Color3.fromRGB(230, 230, 230)
         SearchInput.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
-        SearchInput.TextXAlignment = Enum.TextXAlignment.Left
+        SearchInput.TextXAlignment = Enum.TextXAlignment.Center
         SearchInput.BackgroundTransparency = 1
         SearchInput.BorderSizePixel = 0
         SearchInput.Size = UDim2.new(1, -16, 1, -8)
@@ -2574,12 +2574,16 @@ function Orvion:CreateWindow(config)
                 DropCatch.Size = UDim2.new(1, 0, 1, 0)
                 DropCatch.ZIndex = DropdownList.ZIndex - 1
                 DropCatch.Parent = DropShadowHolder
-                dropCloseConn = DropCatch.Activated:Connect(function()
-                    dropdownData.Open = false
-                    ResetSearch()
-                    DropdownList.Visible = false
-                    DropCatch:Destroy()
-                    if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                -- Delay: prevent same tap that opened dropdown from immediately closing it
+                task.delay(0.15, function()
+                    if not dropdownData.Open then return end
+                    dropCloseConn = DropCatch.Activated:Connect(function()
+                        dropdownData.Open = false
+                        ResetSearch()
+                        DropdownList.Visible = false
+                        DropCatch:Destroy()
+                        if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
+                    end)
                 end)
             else
                 if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
