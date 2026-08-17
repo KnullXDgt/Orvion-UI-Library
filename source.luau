@@ -644,7 +644,7 @@ local function MakeNotify(NotifyConfig)
 
             if NotifyConfig.Subtitle and NotifyConfig.Subtitle ~= "" then
                 local SubLabel = Instance.new("TextLabel")
-                SubLabel.Font = Enum.Font.Gotham
+                SubLabel.Font = Enum.Font.GothamBold
                 SubLabel.Text = NotifyConfig.Subtitle
                 SubLabel.TextColor3 = Color3.fromRGB(150, 150, 170)
                 SubLabel.TextSize = 14
