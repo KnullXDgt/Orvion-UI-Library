@@ -2567,6 +2567,7 @@ function Orvion:CreateWindow(config)
                 -- Bounds check: only close if click is inside Main (window area)
                 task.delay(0.15, function()
                     if not dropdownData.Open then return end
+                    local inset = game:GetService("GuiService"):GetGuiInset()
                     dropCloseConn = UserInputService.InputBegan:Connect(function(input)
                         if not dropdownData.Open then
                             if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
@@ -2574,8 +2575,6 @@ function Orvion:CreateWindow(config)
                         end
                         if input.UserInputType ~= Enum.UserInputType.MouseButton1
                            and input.UserInputType ~= Enum.UserInputType.Touch then return end
-                        -- Convert input coords to GUI space (GuiInset adjustment)
-                        local inset = game:GetService("GuiService"):GetGuiInset()
                         local px = input.Position.X - inset.X
                         local py = input.Position.Y - inset.Y
                         local dPos = DropdownList.AbsolutePosition
@@ -2586,18 +2585,17 @@ function Orvion:CreateWindow(config)
                         local mSize = Main.AbsoluteSize
                         if px < mPos.X or px > mPos.X + mSize.X
                            or py < mPos.Y or py > mPos.Y + mSize.Y then return end
-                        local startPos = input.Position
+                        local startPos = Vector2.new(input.Position.X, input.Position.Y)
                         local endConn
-                        endConn = input.Changed:Connect(function()
-                            if input.UserInputState == Enum.UserInputState.End then
-                                if endConn then endConn:Disconnect(); endConn = nil end
-                                local moved = (Vector2.new(input.Position.X, input.Position.Y) - Vector2.new(startPos.X, startPos.Y)).Magnitude
-                                if moved < 12 then
-                                    dropdownData.Open = false
-                                    ResetSearch()
-                                    DropdownList.Visible = false
-                                    if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
-                                end
+                        endConn = UserInputService.InputEnded:Connect(function(endInput)
+                            if endInput ~= input then return end
+                            if endConn then endConn:Disconnect(); endConn = nil end
+                            local endPos = Vector2.new(endInput.Position.X, endInput.Position.Y)
+                            if (endPos - startPos).Magnitude < 12 then
+                                dropdownData.Open = false
+                                ResetSearch()
+                                DropdownList.Visible = false
+                                if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
                             end
                         end)
                     end)
