@@ -1759,16 +1759,25 @@ function Orvion:CreateWindow(config)
             end
         end)
 
-        UserInputService.InputEnded:Connect(function(input)
+        -- InputEnded pada TBSurface sendiri: hanya fire untuk input yang mulai di TBSurface
+        -- → tidak terpicu oleh klik di collapsible/button lain
+        TBSurface.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or
                input.UserInputType == Enum.UserInputType.Touch then
-                if tbDragging then  -- hanya act jika press mulai dari TBSurface
+                if tbDragging then
                     tbDragging = false
                     if not tbDragged then
                         DropShadowHolder.Visible = not DropShadowHolder.Visible
                     end
                     tbDragged = false
                 end
+            end
+        end)
+
+        -- Global reset saja (tanpa toggle) untuk jaga-jaga drag keluar frame
+        UserInputService.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                tbDragging = false
             end
         end)
     end
