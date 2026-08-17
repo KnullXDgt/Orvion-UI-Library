@@ -2565,7 +2565,7 @@ function Orvion:CreateWindow(config)
                 DropdownList.Visible = true
 
                 -- Bounds check: only close if click is inside Main (window area)
-                -- Original Kairo approach + DropShadowHolder window bounds
+                -- Close only when clicking ContentFrame or TabFrame (not title bar, not game area)
                 task.delay(0.15, function()
                     if not dropdownData.Open then return end
                     dropCloseConn = UserInputService.InputBegan:Connect(function(input)
@@ -2582,18 +2582,16 @@ function Orvion:CreateWindow(config)
                         local dSize = DropdownList.AbsoluteSize
                         if px >= dPos.X and px <= dPos.X + dSize.X
                            and py >= dPos.Y and py <= dPos.Y + dSize.Y then return end
-                        -- Skip if on Dropdown row (button)
-                        local selPos = Dropdown.AbsolutePosition
-                        local selSize = Dropdown.AbsoluteSize
-                        if px >= selPos.X and px <= selPos.X + selSize.X
-                           and py >= selPos.Y and py <= selPos.Y + selSize.Y then return end
-                        -- Skip if outside DropShadowHolder (Orvion window)
-                        local shPos = DropShadowHolder.AbsolutePosition
-                        local shSize = DropShadowHolder.AbsoluteSize
-                        -- DEBUG: show positions
-                        Orvion:Notify({ Title="Debug", Subtitle="pos", Content="px="..math.floor(px).." py="..math.floor(py).."\nsh="..math.floor(shPos.X)..","..math.floor(shPos.Y).." sz="..math.floor(shSize.X)..","..math.floor(shSize.Y), Color=Color3.fromRGB(150,150,170), Delay=5 })
-                        if px < shPos.X or px > shPos.X + shSize.X
-                           or py < shPos.Y or py > shPos.Y + shSize.Y then return end
+                        -- Close only if click is in ContentFrame or TabFrame
+                        local cfPos = ContentFrame.AbsolutePosition
+                        local cfSize = ContentFrame.AbsoluteSize
+                        local inContent = px >= cfPos.X and px <= cfPos.X + cfSize.X
+                            and py >= cfPos.Y and py <= cfPos.Y + cfSize.Y
+                        local tfPos = TabFrame.AbsolutePosition
+                        local tfSize = TabFrame.AbsoluteSize
+                        local inTab = px >= tfPos.X and px <= tfPos.X + tfSize.X
+                            and py >= tfPos.Y and py <= tfPos.Y + tfSize.Y
+                        if not (inContent or inTab) then return end
                         dropdownData.Open = false
                         ResetSearch()
                         DropdownList.Visible = false
