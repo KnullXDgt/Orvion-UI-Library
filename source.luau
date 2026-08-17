@@ -1717,17 +1717,55 @@ function Orvion:CreateWindow(config)
         TBSurface.BackgroundTransparency = 1
         TBSurface.Size = UDim2.new(1, 0, 1, 0)
         TBSurface.ZIndex = 102
-        TBSurface.Active = true  -- wajib agar Frame capture input di PC
+        TBSurface.Active = true
 
-        -- Frame (bukan TextButton) = no Roblox drag ghost on PC
-        local isDragging = MakeDraggableMobileButton(TBSurface, ToggleBtn, ScreenGui)
+        -- Drag logic via UserInputService (bukan element.InputChanged)
+        -- → mouse capture tidak putus saat cursor keluar element
+        local tbDragging = false
+        local tbDragged = false
+        local tbDragStart = nil
+        local tbStartPos = nil
+        local tbClickStart = nil
 
-        TBSurface.InputEnded:Connect(function(input)
+        TBSurface.InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or
                input.UserInputType == Enum.UserInputType.Touch then
-                if not isDragging() then
+                tbDragging = true
+                tbDragged = false
+                tbClickStart = input.Position
+                tbDragStart = input.Position
+                tbStartPos = Vector2.new(ToggleBtn.AbsolutePosition.X, ToggleBtn.AbsolutePosition.Y)
+            end
+        end)
+
+        UserInputService.InputChanged:Connect(function(input)
+            if not tbDragging then return end
+            if input.UserInputType ~= Enum.UserInputType.MouseMovement and
+               input.UserInputType ~= Enum.UserInputType.Touch then return end
+            if not tbDragged and tbClickStart and (input.Position - tbClickStart).Magnitude > 5 then
+                tbDragged = true
+            end
+            if tbDragged and tbDragStart and tbStartPos then
+                local delta = input.Position - tbDragStart
+                local ss = ScreenGui.AbsoluteSize
+                local bs = ToggleBtn.AbsoluteSize
+                local pad = 10
+                ToggleBtn.Position = UDim2.new(0,
+                    math.clamp(tbStartPos.X + delta.X, pad, ss.X - bs.X - pad),
+                    0,
+                    math.clamp(tbStartPos.Y + delta.Y, pad, ss.Y - bs.Y - pad)
+                )
+            end
+        end)
+
+        UserInputService.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or
+               input.UserInputType == Enum.UserInputType.Touch then
+                tbDragging = false
+                if not tbDragged then
                     DropShadowHolder.Visible = not DropShadowHolder.Visible
                 end
+                tbDragged = false
             end
         end)
     end
