@@ -2559,19 +2559,24 @@ function Orvion:CreateWindow(config)
                 local halfCF = math.floor(cfW / 2)
                 local rightW = cfW - halfCF - 4
                 local targetH = math.floor(Main.AbsoluteSize.Y - 16)
-                DropdownList.Position = UDim2.new(0, 138 + halfCF, 0, 8)
-                DropdownList.Size = UDim2.new(0, rightW, 0, 0)
+                DropdownList.Position = UDim2.new(0, 138 + halfCF + rightW, 0, 8)
+                DropdownList.Size = UDim2.new(0, 0, 0, targetH)
                 DropdownList.Visible = true
-                TweenService:Create(DropdownList, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
-                    {Size = UDim2.new(0, rightW, 0, targetH)}):Play()
+                TweenService:Create(DropdownList, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                    Size = UDim2.new(0, rightW, 0, targetH),
+                    Position = UDim2.new(0, 138 + halfCF, 0, 8)
+                }):Play()
 
 
             else
                 local cfW3 = ContentFrame.AbsoluteSize.X
-                local rightW3 = cfW3 - math.floor(cfW3 / 2) - 4
+                local halfCF3 = math.floor(cfW3 / 2)
+                local rightW3 = cfW3 - halfCF3 - 4
                 ResetSearch()
-                TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In),
-                    {Size = UDim2.new(0, rightW3, 0, 0)}):Play()
+                TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
+                    Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
+                    Position = UDim2.new(0, 138 + halfCF3 + rightW3, 0, 8)
+                }):Play()
                 task.delay(0.18, function() DropdownList.Visible = false end)
             end
         end
