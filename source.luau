@@ -2574,7 +2574,10 @@ function Orvion:CreateWindow(config)
                         end
                         if input.UserInputType ~= Enum.UserInputType.MouseButton1
                            and input.UserInputType ~= Enum.UserInputType.Touch then return end
-                        local px, py = input.Position.X, input.Position.Y
+                        -- Convert input coords to GUI space (GuiInset adjustment)
+                        local inset = game:GetService("GuiService"):GetGuiInset()
+                        local px = input.Position.X - inset.X
+                        local py = input.Position.Y - inset.Y
                         local dPos = DropdownList.AbsolutePosition
                         local dSize = DropdownList.AbsoluteSize
                         if px >= dPos.X and px <= dPos.X + dSize.X
