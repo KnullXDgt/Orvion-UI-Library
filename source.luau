@@ -588,6 +588,15 @@ local function MakeNotify(NotifyConfig)
             NotifyFrameReal.Parent = NotifyFrame
 
             UICorner.Parent = NotifyFrameReal
+
+            -- Accent pill kiri
+            local AccentPill = Instance.new("Frame")
+            AccentPill.BackgroundColor3 = NotifyConfig.Color
+            AccentPill.Size = UDim2.new(0, 3, 1, 0)
+            AccentPill.Position = UDim2.new(0, 0, 0, 0)
+            AccentPill.BorderSizePixel = 0
+            AccentPill.ZIndex = 4
+            AccentPill.Parent = NotifyFrameReal
             UICorner.CornerRadius = UDim.new(0, 8)
 
             DropShadowHolder.BackgroundTransparency = 1
@@ -688,7 +697,8 @@ local function MakeNotify(NotifyConfig)
             TextLabel2.TextYAlignment = Enum.TextYAlignment.Top
             TextLabel2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             TextLabel2.BackgroundTransparency = 0.999
-            TextLabel2.TextColor3 = Color3.fromRGB(150, 150, 150)
+            TextLabel2.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TextLabel2.TextTransparency = 0.35
             TextLabel2.BorderColor3 = Color3.fromRGB(0, 0, 0)
             TextLabel2.BorderSizePixel = 0
             TextLabel2.Position = UDim2.new(0, 10, 0, 27)
@@ -712,7 +722,7 @@ local function MakeNotify(NotifyConfig)
                 waitbruh = true
                 TweenService:Create(
                     NotifyFrameReal,
-                    TweenInfo.new(tonumber(NotifyConfig.Time), Enum.EasingStyle.Back, Enum.EasingDirection.InOut),
+                    TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.In),
                     {Position = UDim2.new(0, 400, 0, 0)}
                 ):Play()
                 task.wait(tonumber(NotifyConfig.Time) / 1.2)
@@ -727,7 +737,7 @@ local function MakeNotify(NotifyConfig)
 
             TweenService:Create(
                 NotifyFrameReal,
-                TweenInfo.new(tonumber(NotifyConfig.Time), Enum.EasingStyle.Back, Enum.EasingDirection.InOut),
+                TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
                 {Position = UDim2.new(0, 0, 0, 0)}
             ):Play()
             task.wait(tonumber(NotifyConfig.Delay))
