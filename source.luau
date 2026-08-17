@@ -2567,7 +2567,6 @@ function Orvion:CreateWindow(config)
                 -- Bounds check: only close if click is inside Main (window area)
                 task.delay(0.15, function()
                     if not dropdownData.Open then return end
-                    local inset = game:GetService("GuiService"):GetGuiInset()
                     dropCloseConn = UserInputService.InputBegan:Connect(function(input)
                         if not dropdownData.Open then
                             if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
@@ -2575,8 +2574,8 @@ function Orvion:CreateWindow(config)
                         end
                         if input.UserInputType ~= Enum.UserInputType.MouseButton1
                            and input.UserInputType ~= Enum.UserInputType.Touch then return end
-                        local px = input.Position.X - inset.X
-                        local py = input.Position.Y - inset.Y
+                        local px = input.Position.X
+                        local py = input.Position.Y
                         local dPos = DropdownList.AbsolutePosition
                         local dSize = DropdownList.AbsoluteSize
                         if px >= dPos.X and px <= dPos.X + dSize.X
