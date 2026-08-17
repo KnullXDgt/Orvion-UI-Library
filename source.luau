@@ -2486,14 +2486,6 @@ function Orvion:CreateWindow(config)
         SearchInput.Name = "SearchInput"
         SearchInput.Parent = SearchFrame
 
-        local SearchSep = Instance.new("Frame")
-        SearchSep.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-        SearchSep.BorderSizePixel = 0
-        SearchSep.Size = UDim2.new(1, -10, 0, 1)
-        SearchSep.Position = UDim2.new(0, 5, 0, 33)
-        SearchSep.ZIndex = 12
-        SearchSep.Parent = DropdownList
-
         local function ResetSearch()
             SearchInput.Text = ""
             for _, child in ListScroll:GetChildren() do
@@ -2574,7 +2566,7 @@ function Orvion:CreateWindow(config)
 
                 -- Close only when clicking inside Orvion window (not game buttons)
                 if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
-                dropCloseConn = UserInputService.InputBegan:Connect(function(input)
+                dropCloseConn = Main.InputBegan:Connect(function(input)
                     if not dropdownData.Open then
                         if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
                         return
@@ -2586,15 +2578,10 @@ function Orvion:CreateWindow(config)
                     local px, py = input.Position.X, input.Position.Y
                     if px >= dPos.X and px <= dPos.X + dSize.X
                        and py >= dPos.Y and py <= dPos.Y + dSize.Y then return end
-                    local mPos = Main.AbsolutePosition
-                    local mSize = Main.AbsoluteSize
-                    if px >= mPos.X and px <= mPos.X + mSize.X
-                       and py >= mPos.Y and py <= mPos.Y + mSize.Y then
-                        dropdownData.Open = false
-                        ResetSearch()
-                        DropdownList.Visible = false
-                        if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
-                    end
+                    dropdownData.Open = false
+                    ResetSearch()
+                    DropdownList.Visible = false
+                    if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
                 end)
             else
                 if dropCloseConn then dropCloseConn:Disconnect(); dropCloseConn = nil end
