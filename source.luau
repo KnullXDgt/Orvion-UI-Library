@@ -2257,9 +2257,6 @@ function Orvion:CreateWindow(config)
         InputTextBox.FocusLost:Connect(function()
             inputFunc:Set(InputTextBox.Text)
         end)
-        InputTextBox:GetPropertyChangedSignal("Text"):Connect(function()
-            if callback then pcall(callback, InputTextBox.Text) end
-        end)
 
         task.wait(0.1)
         UpdateContentSize()
