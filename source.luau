@@ -2447,8 +2447,8 @@ function Orvion:CreateWindow(config)
         ListScroll.BackgroundTransparency = 0.999
         ListScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
         ListScroll.BorderSizePixel = 0
-        ListScroll.Size = UDim2.new(1, -10, 1, -10)
-        ListScroll.Position = UDim2.new(0, 5, 0, 5)
+        ListScroll.Size = UDim2.new(1, -10, 1, -50)
+        ListScroll.Position = UDim2.new(0, 5, 0, 40)
         ListScroll.Name = "ListScroll"
         ListScroll.ZIndex = 11
         ListScroll.Parent = DropdownList
@@ -2457,6 +2457,65 @@ function Orvion:CreateWindow(config)
         ListLayout.Padding = UDim.new(0, 3)
         ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
         ListLayout.Parent = ListScroll
+
+        -- ====== SEARCH INPUT ======
+        local SearchFrame = Instance.new("Frame")
+        SearchFrame.BackgroundTransparency = 1
+        SearchFrame.BorderSizePixel = 0
+        SearchFrame.Size = UDim2.new(1, 0, 0, 34)
+        SearchFrame.Position = UDim2.new(0, 0, 0, 0)
+        SearchFrame.ZIndex = 12
+        SearchFrame.Name = "SearchFrame"
+        SearchFrame.Parent = DropdownList
+
+        local SearchInput = Instance.new("TextBox")
+        SearchInput.Font = Enum.Font.GothamBold
+        SearchInput.PlaceholderText = "Search..."
+        SearchInput.Text = ""
+        SearchInput.TextSize = 13
+        SearchInput.TextColor3 = Color3.fromRGB(230, 230, 230)
+        SearchInput.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+        SearchInput.TextXAlignment = Enum.TextXAlignment.Left
+        SearchInput.BackgroundTransparency = 1
+        SearchInput.BorderSizePixel = 0
+        SearchInput.Size = UDim2.new(1, -16, 1, -8)
+        SearchInput.Position = UDim2.new(0, 10, 0, 4)
+        SearchInput.ZIndex = 13
+        SearchInput.ClearTextOnFocus = false
+        SearchInput.MultiLine = false
+        SearchInput.Name = "SearchInput"
+        SearchInput.Parent = SearchFrame
+
+        local SearchSep = Instance.new("Frame")
+        SearchSep.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        SearchSep.BorderSizePixel = 0
+        SearchSep.Size = UDim2.new(1, -10, 0, 1)
+        SearchSep.Position = UDim2.new(0, 5, 0, 33)
+        SearchSep.ZIndex = 12
+        SearchSep.Parent = DropdownList
+
+        local function ResetSearch()
+            SearchInput.Text = ""
+            for _, child in ListScroll:GetChildren() do
+                if child:IsA("Frame") and child.Name == "Option" then
+                    child.Visible = true
+                end
+            end
+        end
+
+        SearchInput:GetPropertyChangedSignal("Text"):Connect(function()
+            local query = SearchInput.Text:lower()
+            local totalH = 0
+            for _, child in ListScroll:GetChildren() do
+                if child:IsA("Frame") and child.Name == "Option" then
+                    local optText = child:FindFirstChild("OptionText")
+                    local match = query == "" or (optText and optText.Text:lower():find(query, 1, true) ~= nil)
+                    child.Visible = match
+                    if match then totalH = totalH + child.Size.Y.Offset + 3 end
+                end
+            end
+            ListScroll.CanvasSize = UDim2.new(0, 0, 0, totalH)
+        end)
 
         table.insert(ConfigSystem.DropdownElements, Dropdown)
 
@@ -2527,6 +2586,7 @@ function Orvion:CreateWindow(config)
                     dropdownData.Open = false
                     local cfW2 = ContentFrame.AbsoluteSize.X
                     local rW2 = cfW2 - math.floor(cfW2 / 2)
+                    ResetSearch()
                     DropdownList.Visible = false
                     OutsideClick:Destroy()
                 end)
@@ -2535,6 +2595,7 @@ function Orvion:CreateWindow(config)
                 if oc then oc:Destroy() end
                 local cfW3 = ContentFrame.AbsoluteSize.X
                 local rW3 = cfW3 - math.floor(cfW3 / 2)
+                ResetSearch()
                 DropdownList.Visible = false
             end
         end
