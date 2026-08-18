@@ -1568,6 +1568,7 @@ function Orvion:CreateWindow(config)
     ContentScroll.ScrollBarImageColor3 = Color3.fromRGB(80, 80, 80)
     ContentScroll.ScrollBarThickness = 0
     ContentScroll.Active = true
+    ContentScroll.ZIndex = 10
     ContentScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ContentScroll.BackgroundTransparency = 0.999
     ContentScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -2322,7 +2323,8 @@ function Orvion:CreateWindow(config)
         DropdownButton.BorderSizePixel = 0
         DropdownButton.Size = UDim2.new(1, 0, 1, 0)
         DropdownButton.ZIndex = 13
-        DropdownButton.Parent = SelectOptionsFrame
+        DropdownButton.Name = "DropdownButton"
+        DropdownButton.Parent = Dropdown
 
         local DropdownTitle = Instance.new("TextLabel")
         DropdownTitle.Font = Enum.Font.GothamBold
@@ -2597,10 +2599,10 @@ function Orvion:CreateWindow(config)
                 contentCatch.Text = ""
                 contentCatch.BackgroundTransparency = 1
                 contentCatch.BorderSizePixel = 0
-                contentCatch.Position = ContentFrame.Position
-                contentCatch.Size = ContentFrame.Size
-                contentCatch.ZIndex = DropdownList.ZIndex - 1
-                contentCatch.Parent = Main
+                contentCatch.Position = UDim2.new(0, 0, 0, 0)
+                contentCatch.Size = UDim2.new(1, 0, 1, 0)
+                contentCatch.ZIndex = 9
+                contentCatch.Parent = ContentFrame
 
                 tabCatch = Instance.new("TextButton")
                 tabCatch.Name = "TabCatch"
