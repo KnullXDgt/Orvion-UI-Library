@@ -1906,7 +1906,7 @@ close this window?"
         TBSurface.Active = true
 
         -- Drag logic via UserInputService (bukan element.InputChanged)
-        -- → mouse capture tidak putus saat cursor keluar element
+        -- -> mouse capture tidak putus saat cursor keluar element
         local tbDragging = false
         local tbDragged = false
         local tbDragStart = nil
