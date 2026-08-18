@@ -2553,6 +2553,10 @@ function Orvion:CreateWindow(config)
 
 
         local function ToggleDropdown()
+            if dropdownData._justClosed then
+                dropdownData._justClosed = false
+                return
+            end
             dropdownData.Open = not dropdownData.Open
             if dropdownData.Open then
                 local cfW    = ContentFrame.AbsoluteSize.X
@@ -2568,6 +2572,7 @@ function Orvion:CreateWindow(config)
                 }):Play()
                 Orvion._activeDropdownClose = function()
                     if not dropdownData.Open then return end
+                    dropdownData._justClosed = true
                     dropdownData.Open = false
                     ResetSearch()
                     local cW = ContentFrame.AbsoluteSize.X
@@ -4159,8 +4164,7 @@ function Orvion:CreateWindow(config)
         local isOpen = defaultOpen
 
         local function updateSize()
-            -- close any open dropdown when collapsing
-            if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+            
 
             local contentH = InnerLayout.AbsoluteContentSize.Y + 8
             if isOpen then
@@ -4183,6 +4187,15 @@ function Orvion:CreateWindow(config)
         HeaderBtn.Activated:Connect(function()
             isOpen = not isOpen
             updateSize()
+        end)
+
+        SectionFrame.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1
+               or input.UserInputType == Enum.UserInputType.Touch then
+                if Orvion._activeDropdownClose then
+                    Orvion._activeDropdownClose()
+                end
+            end
         end)
 
         -- register in SearchSections for live search
