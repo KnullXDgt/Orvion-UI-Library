@@ -2552,6 +2552,8 @@ function Orvion:CreateWindow(config)
         end
 
 
+        local csConn = nil -- ContentScroll close listener
+        local tfConn = nil -- TabFrame close listener
         local function ToggleDropdown()
             if dropdownData._justClosed then
                 dropdownData._justClosed = false
@@ -2570,21 +2572,34 @@ function Orvion:CreateWindow(config)
                     Size = UDim2.new(0, rightW, 0, targetH),
                     Position = UDim2.new(0, 138 + halfCF, 0, 8)
                 }):Play()
+                -- Stores close fn for this dropdown (instant, no anim)
                 Orvion._activeDropdownClose = function()
                     if not dropdownData.Open then return end
                     dropdownData._justClosed = true
                     dropdownData.Open = false
                     ResetSearch()
-                    local cW = ContentFrame.AbsoluteSize.X
-                    local hC = math.floor(cW / 2)
-                    local rW = cW - hC - 4
-                    TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
-                        Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
-                        Position = UDim2.new(0, 138 + hC + rW, 0, 8)
-                    }):Play()
-                    task.delay(0.18, function() DropdownList.Visible = false end)
+                    DropdownList.Visible = false
                     Orvion._activeDropdownClose = nil
+                    if csConn then csConn:Disconnect(); csConn = nil end
+                    if tfConn then tfConn:Disconnect(); tfConn = nil end
                 end
+
+                -- Close any other open dropdown first (instant, before opening this one)
+                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+
+                -- Connect ContentScroll + TabFrame: close this dropdown on any tap
+                csConn = ContentScroll.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1
+                       or input.UserInputType == Enum.UserInputType.Touch then
+                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                    end
+                end)
+                tfConn = TabFrame.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1
+                       or input.UserInputType == Enum.UserInputType.Touch then
+                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                    end
+                end)
 
 
             else
@@ -2593,6 +2608,8 @@ function Orvion:CreateWindow(config)
                 local rightW3 = cfW3 - halfCF3 - 4
                 ResetSearch()
                 Orvion._activeDropdownClose = nil
+                if csConn then csConn:Disconnect(); csConn = nil end
+                if tfConn then tfConn:Disconnect(); tfConn = nil end
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
                     Position = UDim2.new(0, 138 + halfCF3 + rightW3, 0, 8)
@@ -4189,14 +4206,7 @@ function Orvion:CreateWindow(config)
             updateSize()
         end)
 
-        SectionFrame.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1
-               or input.UserInputType == Enum.UserInputType.Touch then
-                if Orvion._activeDropdownClose then
-                    Orvion._activeDropdownClose()
-                end
-            end
-        end)
+
 
         -- register in SearchSections for live search
         local rawName = (tabContainer and tabContainer.Name) or ""
@@ -4336,7 +4346,6 @@ function Orvion:CreateWindow(config)
 
         TabButton.Activated:Connect(
             function()
-                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                 CircleClick(TabButton, Mouse.X, Mouse.Y)
                 SwitchToTab()
             end
