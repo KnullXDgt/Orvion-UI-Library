@@ -786,7 +786,7 @@ function Orvion:CreateWindow(config)
     end
 
     local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
     ScreenGui.Name = "OrvionUI"
     ScreenGui.Parent = (gethui and gethui()) or CoreGui
 
@@ -1568,7 +1568,7 @@ function Orvion:CreateWindow(config)
     ContentScroll.ScrollBarImageColor3 = Color3.fromRGB(80, 80, 80)
     ContentScroll.ScrollBarThickness = 0
     ContentScroll.Active = true
-    ContentScroll.ZIndex = 10
+    ContentScroll.ZIndex = 8
     ContentScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ContentScroll.BackgroundTransparency = 0.999
     ContentScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -2602,12 +2602,12 @@ function Orvion:CreateWindow(config)
                 contentCatch.BorderSizePixel = 0
                 contentCatch.Position = UDim2.new(0, 0, 0, 0)
                 contentCatch.Size = UDim2.new(1, -148, 1, 0)
-                contentCatch.ZIndex = 11
+                contentCatch.ZIndex = 9
                 contentCatch.Parent = ContentFrame
 
-                tabCatch = Instance.new("TextButton")
+                tabCatch = Instance.new("Frame")
                 tabCatch.Name = "TabCatch"
-                tabCatch.Text = ""
+                tabCatch.Active = true
                 tabCatch.BackgroundTransparency = 1
                 tabCatch.BorderSizePixel = 0
                 tabCatch.Position = TabFrame.Position
@@ -2621,8 +2621,11 @@ function Orvion:CreateWindow(config)
                         if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                     end
                 end)
-                tfConn = tabCatch.Activated:Connect(function()
-                    if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                tfConn = tabCatch.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1
+                       or input.UserInputType == Enum.UserInputType.Touch then
+                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                    end
                 end)
 
 
