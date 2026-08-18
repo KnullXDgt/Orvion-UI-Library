@@ -2321,8 +2321,8 @@ function Orvion:CreateWindow(config)
         DropdownButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
         DropdownButton.BorderSizePixel = 0
         DropdownButton.Size = UDim2.new(1, 0, 1, 0)
-        DropdownButton.Name = "DropdownButton"
-        DropdownButton.Parent = Dropdown
+        DropdownButton.ZIndex = 13
+        DropdownButton.Parent = SelectOptionsFrame
 
         local DropdownTitle = Instance.new("TextLabel")
         DropdownTitle.Font = Enum.Font.GothamBold
