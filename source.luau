@@ -1685,36 +1685,7 @@ function Orvion:CreateWindow(config)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
-        -- Close dropdown on release: fires even during scroll, defer so Activated fires first
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType ~= Enum.UserInputType.MouseButton1 and
-           input.UserInputType ~= Enum.UserInputType.Touch then return end
-        if not Orvion._activeDropdownClose then return end
-        local px = input.Position.X
-        local py = input.Position.Y
-        local sf = Orvion._activeSelectFrame
-        if sf then
-            local sfPos = sf.AbsolutePosition
-            local sfSize = sf.AbsoluteSize
-            if px >= sfPos.X and px <= sfPos.X + sfSize.X and
-               py >= sfPos.Y and py <= sfPos.Y + sfSize.Y then return end
-        end
-        local dl = Orvion._activeDropdownList
-        if dl and dl.Visible then
-            local dlPos = dl.AbsolutePosition
-            local dlSize = dl.AbsoluteSize
-            if px >= dlPos.X and px <= dlPos.X + dlSize.X and
-               py >= dlPos.Y and py <= dlPos.Y + dlSize.Y then return end
-        end
-        local csPos = ContentScroll.AbsolutePosition
-        local csSize = ContentScroll.AbsoluteSize
-        if px >= csPos.X and px <= csPos.X + csSize.X and
-           py >= csPos.Y and py <= csPos.Y + csSize.Y then
-            task.defer(function()
-                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
-            end)
-        end
-    end)
+
 
     local ContentLayout = Instance.new("UIListLayout")
     ContentLayout.Padding = UDim.new(0, 8)
@@ -2690,7 +2661,6 @@ function Orvion:CreateWindow(config)
 
 
         local csConn = nil
-        local tfConn = nil
         local function ToggleDropdown()
             if dropdownData._justClosed then
                 dropdownData._justClosed = false
@@ -2709,21 +2679,35 @@ function Orvion:CreateWindow(config)
                     Size = UDim2.new(0, rightW, 0, targetH),
                     Position = UDim2.new(0, 138 + halfCF, 0, 8)
                 }):Play()
-                -- Stores close fn + active DropdownList reference
-                Orvion._activeDropdownList = DropdownList
-                Orvion._activeSelectFrame = SelectOptionsFrame
+                -- Stores close fn for this dropdown
                 Orvion._activeDropdownClose = function()
                     if not dropdownData.Open then return end
+                    dropdownData._justClosed = true
                     dropdownData.Open = false
                     ResetSearch()
                     DropdownList.Visible = false
                     Orvion._activeDropdownClose = nil
-                    Orvion._activeDropdownList = nil
-                    Orvion._activeSelectFrame = nil
-                    ContentScroll.ScrollingEnabled = true
+                    if csConn then csConn:Disconnect(); csConn = nil end
+                    local dOvr = Main:FindFirstChild("DropOverlay")
+                    if dOvr then dOvr:Destroy() end
                 end
 
-                ContentScroll.ScrollingEnabled = false
+                -- Transparent overlay: blocks other UI + auto-closes on tap
+                task.delay(0.15, function()
+                    if not dropdownData.Open then return end
+                    local overlay = Instance.new("TextButton")
+                    overlay.Name = "DropOverlay"
+                    overlay.BackgroundTransparency = 1
+                    overlay.BorderSizePixel = 0
+                    overlay.Size = UDim2.new(1, 0, 1, 0)
+                    overlay.ZIndex = 9
+                    overlay.Text = ""
+                    overlay.AutoButtonColor = false
+                    overlay.Parent = Main
+                    csConn = overlay.Activated:Connect(function()
+                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                    end)
+                end)
 
 
             else
@@ -2732,9 +2716,9 @@ function Orvion:CreateWindow(config)
                 local rightW3 = cfW3 - halfCF3 - 4
                 ResetSearch()
                 Orvion._activeDropdownClose = nil
-                Orvion._activeDropdownList = nil
-                Orvion._activeSelectFrame = nil
-                ContentScroll.ScrollingEnabled = true
+                if csConn then csConn:Disconnect(); csConn = nil end
+                local dOvr = Main:FindFirstChild("DropOverlay")
+                if dOvr then dOvr:Destroy() end
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
                     Position = UDim2.new(0, 138 + halfCF3 + rightW3, 0, 8)
