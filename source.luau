@@ -892,7 +892,7 @@ function Orvion:CreateWindow(config)
     end
 
     local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
     ScreenGui.Name = "OrvionUI"
     ScreenGui.Parent = (gethui and gethui()) or CoreGui
 
@@ -4359,6 +4359,7 @@ function Orvion:CreateWindow(config)
         TabCorner.Parent = Tab
 
         local TabButton = Instance.new("TextButton")
+        TabButton.ZIndex = 10
         TabButton.Font = Enum.Font.GothamBold
         TabButton.Text = ""
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
