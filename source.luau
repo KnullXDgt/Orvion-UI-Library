@@ -1579,11 +1579,21 @@ function Orvion:CreateWindow(config)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
-    -- Close open dropdown on background tap in ContentScroll
+    -- Close open dropdown on background tap (skip if tap is on DropdownList)
     ContentScroll.InputBegan:Connect(function(input)
         if input.UserInputType ~= Enum.UserInputType.MouseButton1 and
            input.UserInputType ~= Enum.UserInputType.Touch then return end
-        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+        if not Orvion._activeDropdownClose then return end
+        local dl = Orvion._activeDropdownList
+        if dl and dl.Visible then
+            local px = input.Position.X
+            local py = input.Position.Y
+            local dlPos = dl.AbsolutePosition
+            local dlSize = dl.AbsoluteSize
+            if px >= dlPos.X and px <= dlPos.X + dlSize.X and
+               py >= dlPos.Y and py <= dlPos.Y + dlSize.Y then return end
+        end
+        Orvion._activeDropdownClose()
     end)
 
     local ContentLayout = Instance.new("UIListLayout")
@@ -2585,7 +2595,8 @@ function Orvion:CreateWindow(config)
                 -- Close any other open dropdown first (instant, before opening this one)
                 if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
 
-                -- Stores close fn for this dropdown (instant, no anim)
+                -- Stores close fn + active DropdownList reference
+                Orvion._activeDropdownList = DropdownList
                 Orvion._activeDropdownClose = function()
                     if not dropdownData.Open then return end
                     dropdownData._justClosed = true
@@ -2593,6 +2604,7 @@ function Orvion:CreateWindow(config)
                     ResetSearch()
                     DropdownList.Visible = false
                     Orvion._activeDropdownClose = nil
+                    Orvion._activeDropdownList = nil
                     ContentScroll.ScrollingEnabled = true
                 end
 
@@ -2605,6 +2617,7 @@ function Orvion:CreateWindow(config)
                 local rightW3 = cfW3 - halfCF3 - 4
                 ResetSearch()
                 Orvion._activeDropdownClose = nil
+                Orvion._activeDropdownList = nil
                 ContentScroll.ScrollingEnabled = true
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
