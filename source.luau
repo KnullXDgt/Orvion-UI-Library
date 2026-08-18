@@ -2682,7 +2682,6 @@ function Orvion:CreateWindow(config)
                 -- Stores close fn for this dropdown
                 Orvion._activeDropdownClose = function()
                     if not dropdownData.Open then return end
-                    dropdownData._justClosed = true
                     dropdownData.Open = false
                     ResetSearch()
                     DropdownList.Visible = false
