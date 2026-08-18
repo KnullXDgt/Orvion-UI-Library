@@ -1649,7 +1649,132 @@ function Orvion:CreateWindow(config)
     Close.Activated:Connect(
         function()
             CircleClick(Close, Mouse.X, Mouse.Y)
-            DropShadowHolder.Visible = false
+
+            -- Close confirmation modal
+            local Overlay = Instance.new("Frame")
+            Overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+            Overlay.BackgroundTransparency = 0.45
+            Overlay.BorderSizePixel = 0
+            Overlay.Size = UDim2.new(1, 0, 1, 0)
+            Overlay.ZIndex = 50
+            Overlay.Name = "CloseOverlay"
+            Overlay.Parent = Main
+
+            local Dialog = Instance.new("Frame")
+            Dialog.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+            Dialog.BorderSizePixel = 0
+            Dialog.AnchorPoint = Vector2.new(0.5, 0.5)
+            Dialog.Position = UDim2.new(0.5, 0, 0.5, 0)
+            Dialog.Size = UDim2.new(0, 220, 0, 148)
+            Dialog.ZIndex = 51
+            Dialog.Parent = Overlay
+            local DCorner = Instance.new("UICorner")
+            DCorner.CornerRadius = UDim.new(0, 10)
+            DCorner.Parent = Dialog
+            local DStroke = Instance.new("UIStroke")
+            DStroke.Color = Color3.fromRGB(150, 150, 170)
+            DStroke.Thickness = 1.5
+            DStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            DStroke.Parent = Dialog
+
+            local DTitle = Instance.new("TextLabel")
+            DTitle.Font = Enum.Font.GothamBold
+            DTitle.Text = "Close Window"
+            DTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+            DTitle.TextSize = 15
+            DTitle.BackgroundTransparency = 1
+            DTitle.Size = UDim2.new(1, 0, 0, 32)
+            DTitle.Position = UDim2.new(0, 0, 0, 8)
+            DTitle.TextXAlignment = Enum.TextXAlignment.Center
+            DTitle.ZIndex = 52
+            DTitle.Parent = Dialog
+
+            local DSep = Instance.new("Frame")
+            DSep.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+            DSep.BorderSizePixel = 0
+            DSep.Size = UDim2.new(1, -24, 0, 1)
+            DSep.Position = UDim2.new(0, 12, 0, 40)
+            DSep.ZIndex = 52
+            DSep.Parent = Dialog
+
+            local DBody = Instance.new("TextLabel")
+            DBody.Font = Enum.Font.Gotham
+            DBody.Text = "Are you sure you want to
+close this window?"
+            DBody.TextColor3 = Color3.fromRGB(220, 220, 220)
+            DBody.TextSize = 12
+            DBody.BackgroundTransparency = 1
+            DBody.Size = UDim2.new(1, -16, 0, 36)
+            DBody.Position = UDim2.new(0, 8, 0, 48)
+            DBody.TextXAlignment = Enum.TextXAlignment.Center
+            DBody.TextWrapped = true
+            DBody.ZIndex = 52
+            DBody.Parent = Dialog
+
+            local DSub = Instance.new("TextLabel")
+            DSub.Font = Enum.Font.Gotham
+            DSub.Text = "You will not be able to open it again"
+            DSub.TextColor3 = Color3.fromRGB(120, 120, 130)
+            DSub.TextSize = 11
+            DSub.BackgroundTransparency = 1
+            DSub.Size = UDim2.new(1, -16, 0, 20)
+            DSub.Position = UDim2.new(0, 8, 0, 84)
+            DSub.TextXAlignment = Enum.TextXAlignment.Center
+            DSub.TextWrapped = true
+            DSub.ZIndex = 52
+            DSub.Parent = Dialog
+
+            -- Buttons
+            local BtnNo = Instance.new("TextButton")
+            BtnNo.Font = Enum.Font.GothamBold
+            BtnNo.Text = "No"
+            BtnNo.TextColor3 = Color3.fromRGB(220, 220, 220)
+            BtnNo.TextSize = 12
+            BtnNo.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+            BtnNo.BorderSizePixel = 0
+            BtnNo.Size = UDim2.new(0, 88, 0, 30)
+            BtnNo.Position = UDim2.new(0, 14, 1, -40)
+            BtnNo.ZIndex = 52
+            BtnNo.AutoButtonColor = false
+            BtnNo.Parent = Dialog
+            local BtnNoCorner = Instance.new("UICorner")
+            BtnNoCorner.CornerRadius = UDim.new(0, 6)
+            BtnNoCorner.Parent = BtnNo
+
+            local BtnYes = Instance.new("TextButton")
+            BtnYes.Font = Enum.Font.GothamBold
+            BtnYes.Text = "Yes"
+            BtnYes.TextColor3 = Color3.fromRGB(150, 150, 170)
+            BtnYes.TextSize = 12
+            BtnYes.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+            BtnYes.BorderSizePixel = 0
+            BtnYes.Size = UDim2.new(0, 88, 0, 30)
+            BtnYes.Position = UDim2.new(1, -102, 1, -40)
+            BtnYes.ZIndex = 52
+            BtnYes.AutoButtonColor = false
+            BtnYes.Parent = Dialog
+            local BtnYesCorner = Instance.new("UICorner")
+            BtnYesCorner.CornerRadius = UDim.new(0, 6)
+            BtnYesCorner.Parent = BtnYes
+            local BtnYesStroke = Instance.new("UIStroke")
+            BtnYesStroke.Color = Color3.fromRGB(150, 150, 170)
+            BtnYesStroke.Thickness = 1
+            BtnYesStroke.Parent = BtnYes
+
+            BtnNo.Activated:Connect(function()
+                Overlay:Destroy()
+            end)
+
+            BtnYes.Activated:Connect(function()
+                -- Reset all active toggles to stop loops
+                for _, element in pairs(ConfigSystem.Elements) do
+                    if element.Type == "Toggle" and element._live() then
+                        pcall(function() element.Set(false) end)
+                    end
+                end
+                task.wait(0.1)
+                ScreenGui:Destroy()
+            end)
         end
     )
 
