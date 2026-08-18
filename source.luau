@@ -2552,8 +2552,10 @@ function Orvion:CreateWindow(config)
         end
 
 
-        local csConn = nil -- ContentScroll close listener
-        local tfConn = nil -- TabFrame close listener
+        local csConn = nil
+        local tfConn = nil
+        local contentCatch = nil
+        local tabCatch = nil
         local function ToggleDropdown()
             if dropdownData._justClosed then
                 dropdownData._justClosed = false
@@ -2585,24 +2587,36 @@ function Orvion:CreateWindow(config)
                     Orvion._activeDropdownClose = nil
                     if csConn then csConn:Disconnect(); csConn = nil end
                     if tfConn then tfConn:Disconnect(); tfConn = nil end
-                    ContentScroll.Active = false
-                    TabFrame.Active = false
+                    if contentCatch then contentCatch:Destroy(); contentCatch = nil end
+                    if tabCatch then tabCatch:Destroy(); tabCatch = nil end
                 end
 
                 -- Connect ContentScroll + TabFrame: close this dropdown on any tap
-                ContentScroll.Active = true
-                TabFrame.Active = true
-                csConn = ContentScroll.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1
-                       or input.UserInputType == Enum.UserInputType.Touch then
-                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
-                    end
+                contentCatch = Instance.new("TextButton")
+                contentCatch.Name = "ContentCatch"
+                contentCatch.Text = ""
+                contentCatch.BackgroundTransparency = 1
+                contentCatch.BorderSizePixel = 0
+                contentCatch.Position = ContentFrame.Position
+                contentCatch.Size = ContentFrame.Size
+                contentCatch.ZIndex = DropdownList.ZIndex - 1
+                contentCatch.Parent = Main
+
+                tabCatch = Instance.new("TextButton")
+                tabCatch.Name = "TabCatch"
+                tabCatch.Text = ""
+                tabCatch.BackgroundTransparency = 1
+                tabCatch.BorderSizePixel = 0
+                tabCatch.Position = TabFrame.Position
+                tabCatch.Size = TabFrame.Size
+                tabCatch.ZIndex = DropdownList.ZIndex - 1
+                tabCatch.Parent = Main
+
+                csConn = contentCatch.Activated:Connect(function()
+                    if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                 end)
-                tfConn = TabFrame.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1
-                       or input.UserInputType == Enum.UserInputType.Touch then
-                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
-                    end
+                tfConn = tabCatch.Activated:Connect(function()
+                    if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                 end)
 
 
@@ -2614,8 +2628,8 @@ function Orvion:CreateWindow(config)
                 Orvion._activeDropdownClose = nil
                 if csConn then csConn:Disconnect(); csConn = nil end
                 if tfConn then tfConn:Disconnect(); tfConn = nil end
-                ContentScroll.Active = false
-                TabFrame.Active = false
+                if contentCatch then contentCatch:Destroy(); contentCatch = nil end
+                if tabCatch then tabCatch:Destroy(); tabCatch = nil end
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
                     Position = UDim2.new(0, 138 + halfCF3 + rightW3, 0, 8)
