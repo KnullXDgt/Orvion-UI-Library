@@ -766,6 +766,124 @@ local function MakeNotify(NotifyConfig)
     return NotifyFunction
 end
 
+
+-- Close confirmation modal (module-level: avoids CreateWindow local limit)
+local function setupCloseModal(closeBtn, main, screenGui)
+    local overlay = Instance.new("Frame")
+    overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    overlay.BackgroundTransparency = 0.45
+    overlay.BorderSizePixel = 0
+    overlay.Size = UDim2.new(1, 0, 1, 0)
+    overlay.ZIndex = 50
+    overlay.Visible = false
+    overlay.Parent = main
+    local dialog = Instance.new("Frame")
+    dialog.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+    dialog.BorderSizePixel = 0
+    dialog.AnchorPoint = Vector2.new(0.5, 0.5)
+    dialog.Position = UDim2.new(0.5, 0, 0.5, 0)
+    dialog.Size = UDim2.new(0, 220, 0, 148)
+    dialog.ZIndex = 51
+    dialog.Parent = overlay
+    local dc = Instance.new("UICorner")
+    dc.CornerRadius = UDim.new(0, 10)
+    dc.Parent = dialog
+    local ds = Instance.new("UIStroke")
+    ds.Color = Color3.fromRGB(150, 150, 170)
+    ds.Thickness = 1.5
+    ds.Parent = dialog
+    local dt = Instance.new("TextLabel")
+    dt.Font = Enum.Font.GothamBold
+    dt.Text = "Close Window"
+    dt.TextColor3 = Color3.fromRGB(255, 255, 255)
+    dt.TextSize = 15
+    dt.BackgroundTransparency = 1
+    dt.Size = UDim2.new(1, 0, 0, 32)
+    dt.Position = UDim2.new(0, 0, 0, 8)
+    dt.TextXAlignment = Enum.TextXAlignment.Center
+    dt.ZIndex = 52
+    dt.Parent = dialog
+    local sep = Instance.new("Frame")
+    sep.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+    sep.BorderSizePixel = 0
+    sep.Size = UDim2.new(1, -24, 0, 1)
+    sep.Position = UDim2.new(0, 12, 0, 40)
+    sep.ZIndex = 52
+    sep.Parent = dialog
+    local body = Instance.new("TextLabel")
+    body.Font = Enum.Font.Gotham
+    body.Text = "Are you sure you want to
+close this window?"
+    body.TextColor3 = Color3.fromRGB(220, 220, 220)
+    body.TextSize = 12
+    body.BackgroundTransparency = 1
+    body.Size = UDim2.new(1, -16, 0, 36)
+    body.Position = UDim2.new(0, 8, 0, 48)
+    body.TextXAlignment = Enum.TextXAlignment.Center
+    body.TextWrapped = true
+    body.ZIndex = 52
+    body.Parent = dialog
+    local sub = Instance.new("TextLabel")
+    sub.Font = Enum.Font.Gotham
+    sub.Text = "You will not be able to open it again"
+    sub.TextColor3 = Color3.fromRGB(120, 120, 130)
+    sub.TextSize = 11
+    sub.BackgroundTransparency = 1
+    sub.Size = UDim2.new(1, -16, 0, 20)
+    sub.Position = UDim2.new(0, 8, 0, 84)
+    sub.TextXAlignment = Enum.TextXAlignment.Center
+    sub.ZIndex = 52
+    sub.Parent = dialog
+    local btnNo = Instance.new("TextButton")
+    btnNo.Font = Enum.Font.GothamBold
+    btnNo.Text = "No"
+    btnNo.TextColor3 = Color3.fromRGB(220, 220, 220)
+    btnNo.TextSize = 12
+    btnNo.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+    btnNo.BorderSizePixel = 0
+    btnNo.Size = UDim2.new(0, 88, 0, 30)
+    btnNo.Position = UDim2.new(0, 14, 1, -40)
+    btnNo.ZIndex = 52
+    btnNo.AutoButtonColor = false
+    btnNo.Parent = dialog
+    local nc = Instance.new("UICorner")
+    nc.CornerRadius = UDim.new(0, 6)
+    nc.Parent = btnNo
+    local btnYes = Instance.new("TextButton")
+    btnYes.Font = Enum.Font.GothamBold
+    btnYes.Text = "Yes"
+    btnYes.TextColor3 = Color3.fromRGB(150, 150, 170)
+    btnYes.TextSize = 12
+    btnYes.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+    btnYes.BorderSizePixel = 0
+    btnYes.Size = UDim2.new(0, 88, 0, 30)
+    btnYes.Position = UDim2.new(1, -102, 1, -40)
+    btnYes.ZIndex = 52
+    btnYes.AutoButtonColor = false
+    btnYes.Parent = dialog
+    local yc = Instance.new("UICorner")
+    yc.CornerRadius = UDim.new(0, 6)
+    yc.Parent = btnYes
+    local ys = Instance.new("UIStroke")
+    ys.Color = Color3.fromRGB(150, 150, 170)
+    ys.Thickness = 1
+    ys.Parent = btnYes
+    btnNo.Activated:Connect(function() overlay.Visible = false end)
+    btnYes.Activated:Connect(function()
+        for _, toggle in pairs(ConfigSystem.ToggleElements) do
+            pcall(function()
+                if type(toggle._live) == "function" and toggle._live() then toggle.Set(false) end
+            end)
+        end
+        task.wait(0.1)
+        screenGui:Destroy()
+    end)
+    closeBtn.Activated:Connect(function()
+        CircleClick(closeBtn, Mouse.X, Mouse.Y)
+        overlay.Visible = true
+    end)
+end
+
 function Orvion:CreateWindow(config)
     config = config or {}
     local Title = config.Title or "Orvion UI"
@@ -1646,127 +1764,8 @@ function Orvion:CreateWindow(config)
     TabScroll.ChildAdded:Connect(UpdateTabSize)
     TabScroll.ChildRemoved:Connect(UpdateTabSize)
 
-    -- Close confirmation modal (do block keeps locals off CreateWindow scope)
-    local showCloseModal
-    do
-        local cdOverlay = Instance.new("Frame")
-        cdOverlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-        cdOverlay.BackgroundTransparency = 0.45
-        cdOverlay.BorderSizePixel = 0
-        cdOverlay.Size = UDim2.new(1, 0, 1, 0)
-        cdOverlay.ZIndex = 50
-        cdOverlay.Visible = false
-        cdOverlay.Parent = Main
-        local cdDialog = Instance.new("Frame")
-        cdDialog.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-        cdDialog.BorderSizePixel = 0
-        cdDialog.AnchorPoint = Vector2.new(0.5, 0.5)
-        cdDialog.Position = UDim2.new(0.5, 0, 0.5, 0)
-        cdDialog.Size = UDim2.new(0, 220, 0, 148)
-        cdDialog.ZIndex = 51
-        cdDialog.Parent = cdOverlay
-        local tmp1 = Instance.new("UICorner")
-        tmp1.CornerRadius = UDim.new(0, 10)
-        tmp1.Parent = cdDialog
-        local tmp2 = Instance.new("UIStroke")
-        tmp2.Color = Color3.fromRGB(150, 150, 170)
-        tmp2.Thickness = 1.5
-        tmp2.Parent = cdDialog
-        local tmp3 = Instance.new("TextLabel")
-        tmp3.Font = Enum.Font.GothamBold
-        tmp3.Text = "Close Window"
-        tmp3.TextColor3 = Color3.fromRGB(255, 255, 255)
-        tmp3.TextSize = 15
-        tmp3.BackgroundTransparency = 1
-        tmp3.Size = UDim2.new(1, 0, 0, 32)
-        tmp3.Position = UDim2.new(0, 0, 0, 8)
-        tmp3.TextXAlignment = Enum.TextXAlignment.Center
-        tmp3.ZIndex = 52
-        tmp3.Parent = cdDialog
-        local tmp4 = Instance.new("Frame")
-        tmp4.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
-        tmp4.BorderSizePixel = 0
-        tmp4.Size = UDim2.new(1, -24, 0, 1)
-        tmp4.Position = UDim2.new(0, 12, 0, 40)
-        tmp4.ZIndex = 52
-        tmp4.Parent = cdDialog
-        local tmp5 = Instance.new("TextLabel")
-        tmp5.Font = Enum.Font.Gotham
-        tmp5.Text = "Are you sure you want to
-close this window?"
-        tmp5.TextColor3 = Color3.fromRGB(220, 220, 220)
-        tmp5.TextSize = 12
-        tmp5.BackgroundTransparency = 1
-        tmp5.Size = UDim2.new(1, -16, 0, 36)
-        tmp5.Position = UDim2.new(0, 8, 0, 48)
-        tmp5.TextXAlignment = Enum.TextXAlignment.Center
-        tmp5.TextWrapped = true
-        tmp5.ZIndex = 52
-        tmp5.Parent = cdDialog
-        local tmp6 = Instance.new("TextLabel")
-        tmp6.Font = Enum.Font.Gotham
-        tmp6.Text = "You will not be able to open it again"
-        tmp6.TextColor3 = Color3.fromRGB(120, 120, 130)
-        tmp6.TextSize = 11
-        tmp6.BackgroundTransparency = 1
-        tmp6.Size = UDim2.new(1, -16, 0, 20)
-        tmp6.Position = UDim2.new(0, 8, 0, 84)
-        tmp6.TextXAlignment = Enum.TextXAlignment.Center
-        tmp6.ZIndex = 52
-        tmp6.Parent = cdDialog
-        local btnNo = Instance.new("TextButton")
-        btnNo.Font = Enum.Font.GothamBold
-        btnNo.Text = "No"
-        btnNo.TextColor3 = Color3.fromRGB(220, 220, 220)
-        btnNo.TextSize = 12
-        btnNo.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
-        btnNo.BorderSizePixel = 0
-        btnNo.Size = UDim2.new(0, 88, 0, 30)
-        btnNo.Position = UDim2.new(0, 14, 1, -40)
-        btnNo.ZIndex = 52
-        btnNo.AutoButtonColor = false
-        btnNo.Parent = cdDialog
-        local tmp7 = Instance.new("UICorner")
-        tmp7.CornerRadius = UDim.new(0, 6)
-        tmp7.Parent = btnNo
-        local btnYes = Instance.new("TextButton")
-        btnYes.Font = Enum.Font.GothamBold
-        btnYes.Text = "Yes"
-        btnYes.TextColor3 = Color3.fromRGB(150, 150, 170)
-        btnYes.TextSize = 12
-        btnYes.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
-        btnYes.BorderSizePixel = 0
-        btnYes.Size = UDim2.new(0, 88, 0, 30)
-        btnYes.Position = UDim2.new(1, -102, 1, -40)
-        btnYes.ZIndex = 52
-        btnYes.AutoButtonColor = false
-        btnYes.Parent = cdDialog
-        local tmp8 = Instance.new("UICorner")
-        tmp8.CornerRadius = UDim.new(0, 6)
-        tmp8.Parent = btnYes
-        local tmp9 = Instance.new("UIStroke")
-        tmp9.Color = Color3.fromRGB(150, 150, 170)
-        tmp9.Thickness = 1
-        tmp9.Parent = btnYes
-        btnNo.Activated:Connect(function() cdOverlay.Visible = false end)
-        btnYes.Activated:Connect(function()
-            for _, toggle in pairs(ConfigSystem.ToggleElements) do
-                pcall(function()
-                    if type(toggle._live) == "function" and toggle._live() then toggle.Set(false) end
-                end)
-            end
-            task.wait(0.1)
-            ScreenGui:Destroy()
-        end)
-        showCloseModal = function() cdOverlay.Visible = true end
-    end
+    setupCloseModal(Close, Main, ScreenGui)
 
-    Close.Activated:Connect(
-        function()
-            CircleClick(Close, Mouse.X, Mouse.Y)
-            if showCloseModal then showCloseModal() end
-        end
-    )
     Min.Activated:Connect(
         function()
             CircleClick(Min, Mouse.X, Mouse.Y)
