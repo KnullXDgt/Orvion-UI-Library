@@ -2601,7 +2601,7 @@ function Orvion:CreateWindow(config)
                 contentCatch.BackgroundTransparency = 1
                 contentCatch.BorderSizePixel = 0
                 contentCatch.Position = UDim2.new(0, 0, 0, 0)
-                contentCatch.Size = UDim2.new(1, 0, 1, 0)
+                contentCatch.Size = UDim2.new(1, -148, 1, 0)
                 contentCatch.ZIndex = 11
                 contentCatch.Parent = ContentFrame
 
