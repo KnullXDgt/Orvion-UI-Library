@@ -1579,6 +1579,15 @@ function Orvion:CreateWindow(config)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
+    -- Close any open dropdown when tapping anywhere in ContentScroll
+    ContentScroll.InputBegan:Connect(function(input)
+        if input.UserInputType ~= Enum.UserInputType.MouseButton1 and
+           input.UserInputType ~= Enum.UserInputType.Touch then return end
+        if Orvion._activeDropdownClose then
+            Orvion._activeDropdownClose()
+        end
+    end)
+
     local ContentLayout = Instance.new("UIListLayout")
     ContentLayout.Padding = UDim.new(0, 8)
     ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
