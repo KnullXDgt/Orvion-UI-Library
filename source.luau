@@ -812,8 +812,7 @@ local function setupCloseModal(closeBtn, main, screenGui)
     sep.Parent = dialog
     local body = Instance.new("TextLabel")
     body.Font = Enum.Font.Gotham
-    body.Text = "Are you sure you want to
-close this window?"
+    body.Text = "Are you sure you want to close this window?"
     body.TextColor3 = Color3.fromRGB(220, 220, 220)
     body.TextSize = 12
     body.BackgroundTransparency = 1
