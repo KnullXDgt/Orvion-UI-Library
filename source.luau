@@ -2572,6 +2572,9 @@ function Orvion:CreateWindow(config)
                     Size = UDim2.new(0, rightW, 0, targetH),
                     Position = UDim2.new(0, 138 + halfCF, 0, 8)
                 }):Play()
+                -- Close any other open dropdown first (instant, before opening this one)
+                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+
                 -- Stores close fn for this dropdown (instant, no anim)
                 Orvion._activeDropdownClose = function()
                     if not dropdownData.Open then return end
@@ -2583,9 +2586,6 @@ function Orvion:CreateWindow(config)
                     if csConn then csConn:Disconnect(); csConn = nil end
                     if tfConn then tfConn:Disconnect(); tfConn = nil end
                 end
-
-                -- Close any other open dropdown first (instant, before opening this one)
-                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
 
                 -- Connect ContentScroll + TabFrame: close this dropdown on any tap
                 csConn = ContentScroll.InputBegan:Connect(function(input)
