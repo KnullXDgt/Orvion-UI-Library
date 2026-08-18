@@ -2585,9 +2585,13 @@ function Orvion:CreateWindow(config)
                     Orvion._activeDropdownClose = nil
                     if csConn then csConn:Disconnect(); csConn = nil end
                     if tfConn then tfConn:Disconnect(); tfConn = nil end
+                    ContentScroll.Active = false
+                    TabFrame.Active = false
                 end
 
                 -- Connect ContentScroll + TabFrame: close this dropdown on any tap
+                ContentScroll.Active = true
+                TabFrame.Active = true
                 csConn = ContentScroll.InputBegan:Connect(function(input)
                     if input.UserInputType == Enum.UserInputType.MouseButton1
                        or input.UserInputType == Enum.UserInputType.Touch then
@@ -2610,6 +2614,8 @@ function Orvion:CreateWindow(config)
                 Orvion._activeDropdownClose = nil
                 if csConn then csConn:Disconnect(); csConn = nil end
                 if tfConn then tfConn:Disconnect(); tfConn = nil end
+                ContentScroll.Active = false
+                TabFrame.Active = false
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
                     Position = UDim2.new(0, 138 + halfCF3 + rightW3, 0, 8)
