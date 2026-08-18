@@ -1767,10 +1767,12 @@ close this window?"
 
             BtnYes.Activated:Connect(function()
                 -- Reset all active toggles to stop loops
-                for _, element in pairs(ConfigSystem.Elements) do
-                    if element.Type == "Toggle" and element._live() then
-                        pcall(function() element.Set(false) end)
-                    end
+                for _, toggle in pairs(ConfigSystem.ToggleElements) do
+                    pcall(function()
+                        if type(toggle._live) == "function" and toggle._live() then
+                            toggle.Set(false)
+                        end
+                    end)
                 end
                 task.wait(0.1)
                 ScreenGui:Destroy()
