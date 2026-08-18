@@ -2590,14 +2590,21 @@ function Orvion:CreateWindow(config)
                     if tfConn then tfConn:Disconnect(); tfConn = nil end
                 end
 
-                -- Disable scroll + close on tap (delayed to avoid same-tap close)
+                -- Disable scroll + close on tap (delayed, UserInputService for all elements)
                 ContentScroll.ScrollingEnabled = false
                 task.delay(0.15, function()
                     if not dropdownData.Open then return end
-                    csConn = ContentScroll.InputBegan:Connect(function(input)
+                    csConn = UserInputService.InputBegan:Connect(function(input)
                         if input.UserInputType ~= Enum.UserInputType.MouseButton1
                            and input.UserInputType ~= Enum.UserInputType.Touch then return end
-                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                        local px = input.Position.X
+                        local py = input.Position.Y
+                        local csPos = ContentScroll.AbsolutePosition
+                        local csSize = ContentScroll.AbsoluteSize
+                        if px >= csPos.X and px <= csPos.X + csSize.X
+                           and py >= csPos.Y and py <= csPos.Y + csSize.Y then
+                            if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                        end
                     end)
                 end)
 
