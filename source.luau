@@ -2586,33 +2586,9 @@ function Orvion:CreateWindow(config)
                     DropdownList.Visible = false
                     Orvion._activeDropdownClose = nil
                     ContentScroll.ScrollingEnabled = true
-                    if csConn then csConn:Disconnect(); csConn = nil end
-                    if tfConn then tfConn:Disconnect(); tfConn = nil end
                 end
 
-                -- Disable scroll + close on tap (delayed, UserInputService for all elements)
                 ContentScroll.ScrollingEnabled = false
-                task.delay(0.15, function()
-                    if not dropdownData.Open then return end
-                    csConn = UserInputService.InputBegan:Connect(function(input)
-                        if input.UserInputType ~= Enum.UserInputType.MouseButton1
-                           and input.UserInputType ~= Enum.UserInputType.Touch then return end
-                        local px = input.Position.X
-                        local py = input.Position.Y
-                        -- Skip if tap is on DropdownList (options, search)
-                        local dlPos = DropdownList.AbsolutePosition
-                        local dlSize = DropdownList.AbsoluteSize
-                        if px >= dlPos.X and px <= dlPos.X + dlSize.X
-                           and py >= dlPos.Y and py <= dlPos.Y + dlSize.Y then return end
-                        -- Close if tap is within ContentScroll bounds
-                        local csPos = ContentScroll.AbsolutePosition
-                        local csSize = ContentScroll.AbsoluteSize
-                        if px >= csPos.X and px <= csPos.X + csSize.X
-                           and py >= csPos.Y and py <= csPos.Y + csSize.Y then
-                            if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
-                        end
-                    end)
-                end)
 
 
             else
@@ -2622,8 +2598,6 @@ function Orvion:CreateWindow(config)
                 ResetSearch()
                 Orvion._activeDropdownClose = nil
                 ContentScroll.ScrollingEnabled = true
-                if csConn then csConn:Disconnect(); csConn = nil end
-                if tfConn then tfConn:Disconnect(); tfConn = nil end
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
                     Position = UDim2.new(0, 138 + halfCF3 + rightW3, 0, 8)
