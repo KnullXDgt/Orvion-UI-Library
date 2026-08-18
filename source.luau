@@ -2691,9 +2691,7 @@ function Orvion:CreateWindow(config)
                 end
 
                 -- Transparent overlay: blocks other UI + auto-closes on tap
-                task.delay(0.15, function()
-                    if not dropdownData.Open then return end
-                    local overlay = Instance.new("TextButton")
+                local overlay = Instance.new("TextButton")
                     overlay.Name = "DropOverlay"
                     overlay.BackgroundTransparency = 1
                     overlay.BorderSizePixel = 0
@@ -2705,7 +2703,6 @@ function Orvion:CreateWindow(config)
                     csConn = overlay.Activated:Connect(function()
                         if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                     end)
-                end)
 
 
             else
@@ -2714,14 +2711,16 @@ function Orvion:CreateWindow(config)
                 local rightW3 = cfW3 - halfCF3 - 4
                 ResetSearch()
                 Orvion._activeDropdownClose = nil
-                if csConn then csConn:Disconnect(); csConn = nil end
-                local dOvr = Main:FindFirstChild("DropOverlay")
-                if dOvr then dOvr:Destroy() end
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
                     Position = UDim2.new(0, 138 + halfCF3 + rightW3, 0, 8)
                 }):Play()
-                task.delay(0.18, function() DropdownList.Visible = false end)
+                task.delay(0.18, function()
+                    DropdownList.Visible = false
+                    if csConn then csConn:Disconnect(); csConn = nil end
+                    local dOvr = Main:FindFirstChild("DropOverlay")
+                    if dOvr then dOvr:Destroy() end
+                end)
             end
         end
 
