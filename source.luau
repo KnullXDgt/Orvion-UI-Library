@@ -1579,8 +1579,8 @@ function Orvion:CreateWindow(config)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
-    -- Close open dropdown on touch release (skip if inside DropdownList)
-    ContentScroll.InputEnded:Connect(function(input)
+        -- Close dropdown on release: fires even during scroll, defer so Activated fires first
+    UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType ~= Enum.UserInputType.MouseButton1 and
            input.UserInputType ~= Enum.UserInputType.Touch then return end
         if not Orvion._activeDropdownClose then return end
@@ -1595,14 +1595,19 @@ function Orvion:CreateWindow(config)
         end
         local dl = Orvion._activeDropdownList
         if dl and dl.Visible then
-            local px = input.Position.X
-            local py = input.Position.Y
             local dlPos = dl.AbsolutePosition
             local dlSize = dl.AbsoluteSize
             if px >= dlPos.X and px <= dlPos.X + dlSize.X and
                py >= dlPos.Y and py <= dlPos.Y + dlSize.Y then return end
         end
-        Orvion._activeDropdownClose()
+        local csPos = ContentScroll.AbsolutePosition
+        local csSize = ContentScroll.AbsoluteSize
+        if px >= csPos.X and px <= csPos.X + csSize.X and
+           py >= csPos.Y and py <= csPos.Y + csSize.Y then
+            task.defer(function()
+                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+            end)
+        end
     end)
 
     local ContentLayout = Instance.new("UIListLayout")
