@@ -1579,8 +1579,8 @@ function Orvion:CreateWindow(config)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
-    -- Close open dropdown on background tap (skip if tap is on DropdownList)
-    ContentScroll.InputBegan:Connect(function(input)
+    -- Close open dropdown on touch release (skip if inside DropdownList)
+    ContentScroll.InputEnded:Connect(function(input)
         if input.UserInputType ~= Enum.UserInputType.MouseButton1 and
            input.UserInputType ~= Enum.UserInputType.Touch then return end
         if not Orvion._activeDropdownClose then return end
@@ -2592,9 +2592,6 @@ function Orvion:CreateWindow(config)
                     Size = UDim2.new(0, rightW, 0, targetH),
                     Position = UDim2.new(0, 138 + halfCF, 0, 8)
                 }):Play()
-                -- Close any other open dropdown first (instant, before opening this one)
-                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
-
                 -- Stores close fn + active DropdownList reference
                 Orvion._activeDropdownList = DropdownList
                 Orvion._activeDropdownClose = function()
