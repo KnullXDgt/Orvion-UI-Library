@@ -1,4 +1,5 @@
 local Orvion = {}
+Orvion._resetCallbacks = {}
 
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -775,6 +776,7 @@ local function setupCloseModal(closeBtn, main, screenGui)
     overlay.BorderSizePixel = 0
     overlay.Size = UDim2.new(1, 0, 1, 0)
     overlay.ZIndex = 50
+    overlay.Active = true
     overlay.Visible = false
     overlay.Parent = main
     local dialog = Instance.new("Frame")
@@ -806,7 +808,7 @@ local function setupCloseModal(closeBtn, main, screenGui)
     local body = Instance.new("TextLabel")
     body.Font = Enum.Font.Gotham
     body.Text = "Are you sure you want to close this window?"
-    body.TextColor3 = Color3.fromRGB(220, 220, 220)
+    body.TextColor3 = Color3.fromRGB(150, 150, 170)
     body.TextSize = 15
     body.BackgroundTransparency = 1
     body.Size = UDim2.new(1, -20, 0, 28)
@@ -818,7 +820,7 @@ local function setupCloseModal(closeBtn, main, screenGui)
     local sub = Instance.new("TextLabel")
     sub.Font = Enum.Font.Gotham
     sub.Text = "You will not be able to open it again"
-    sub.TextColor3 = Color3.fromRGB(220, 220, 220)
+    sub.TextColor3 = Color3.fromRGB(150, 150, 170)
     sub.TextSize = 15
     sub.BackgroundTransparency = 1
     sub.Size = UDim2.new(1, -20, 0, 18)
@@ -858,8 +860,8 @@ local function setupCloseModal(closeBtn, main, screenGui)
     cc.Parent = btnCancel
     btnCancel.Activated:Connect(function() overlay.Visible = false end)
     btnYes.Activated:Connect(function()
-        for _, toggle in pairs(ConfigSystem.ToggleElements) do
-            pcall(function() toggle.Set(false) end)
+        for _, fn in pairs(Orvion._resetCallbacks) do
+            pcall(fn)
         end
         task.wait(0.1)
         screenGui:Destroy()
@@ -2314,6 +2316,7 @@ function Orvion:CreateWindow(config)
 
         if elementId then
             AllElements[elementId] = toggleFunc
+            table.insert(Orvion._resetCallbacks, function() toggleFunc.Set(false) end)
         end
 
         return toggleFunc
@@ -2380,6 +2383,7 @@ function Orvion:CreateWindow(config)
         FrameCorner.Parent = InputFrame
 
         local InputTextBox = Instance.new("TextBox")
+        InputTextBox.ClearTextOnFocus = false
         InputTextBox.CursorPosition = -1
         InputTextBox.Font = Enum.Font.GothamBold
         InputTextBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
