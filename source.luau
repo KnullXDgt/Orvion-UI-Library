@@ -1646,10 +1646,132 @@ function Orvion:CreateWindow(config)
     TabScroll.ChildAdded:Connect(UpdateTabSize)
     TabScroll.ChildRemoved:Connect(UpdateTabSize)
 
+    -- Pre-create close confirmation modal at init time (avoids large callback)
+    local CloseOverlay = Instance.new("Frame")
+    CloseOverlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    CloseOverlay.BackgroundTransparency = 0.45
+    CloseOverlay.BorderSizePixel = 0
+    CloseOverlay.Size = UDim2.new(1, 0, 1, 0)
+    CloseOverlay.ZIndex = 50
+    CloseOverlay.Visible = false
+    CloseOverlay.Parent = Main
+
+    local CloseDialog = Instance.new("Frame")
+    CloseDialog.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+    CloseDialog.BorderSizePixel = 0
+    CloseDialog.AnchorPoint = Vector2.new(0.5, 0.5)
+    CloseDialog.Position = UDim2.new(0.5, 0, 0.5, 0)
+    CloseDialog.Size = UDim2.new(0, 220, 0, 148)
+    CloseDialog.ZIndex = 51
+    CloseDialog.Parent = CloseOverlay
+    local CDCorner = Instance.new("UICorner")
+    CDCorner.CornerRadius = UDim.new(0, 10)
+    CDCorner.Parent = CloseDialog
+    local CDStroke = Instance.new("UIStroke")
+    CDStroke.Color = Color3.fromRGB(150, 150, 170)
+    CDStroke.Thickness = 1.5
+    CDStroke.Parent = CloseDialog
+
+    local CDTitle = Instance.new("TextLabel")
+    CDTitle.Font = Enum.Font.GothamBold
+    CDTitle.Text = "Close Window"
+    CDTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    CDTitle.TextSize = 15
+    CDTitle.BackgroundTransparency = 1
+    CDTitle.Size = UDim2.new(1, 0, 0, 32)
+    CDTitle.Position = UDim2.new(0, 0, 0, 8)
+    CDTitle.TextXAlignment = Enum.TextXAlignment.Center
+    CDTitle.ZIndex = 52
+    CDTitle.Parent = CloseDialog
+
+    local CDSep = Instance.new("Frame")
+    CDSep.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+    CDSep.BorderSizePixel = 0
+    CDSep.Size = UDim2.new(1, -24, 0, 1)
+    CDSep.Position = UDim2.new(0, 12, 0, 40)
+    CDSep.ZIndex = 52
+    CDSep.Parent = CloseDialog
+
+    local CDBody = Instance.new("TextLabel")
+    CDBody.Font = Enum.Font.Gotham
+    CDBody.Text = "Are you sure you want to
+close this window?"
+    CDBody.TextColor3 = Color3.fromRGB(220, 220, 220)
+    CDBody.TextSize = 12
+    CDBody.BackgroundTransparency = 1
+    CDBody.Size = UDim2.new(1, -16, 0, 36)
+    CDBody.Position = UDim2.new(0, 8, 0, 48)
+    CDBody.TextXAlignment = Enum.TextXAlignment.Center
+    CDBody.TextWrapped = true
+    CDBody.ZIndex = 52
+    CDBody.Parent = CloseDialog
+
+    local CDSub = Instance.new("TextLabel")
+    CDSub.Font = Enum.Font.Gotham
+    CDSub.Text = "You will not be able to open it again"
+    CDSub.TextColor3 = Color3.fromRGB(120, 120, 130)
+    CDSub.TextSize = 11
+    CDSub.BackgroundTransparency = 1
+    CDSub.Size = UDim2.new(1, -16, 0, 20)
+    CDSub.Position = UDim2.new(0, 8, 0, 84)
+    CDSub.TextXAlignment = Enum.TextXAlignment.Center
+    CDSub.ZIndex = 52
+    CDSub.Parent = CloseDialog
+
+    local CDBtnNo = Instance.new("TextButton")
+    CDBtnNo.Font = Enum.Font.GothamBold
+    CDBtnNo.Text = "No"
+    CDBtnNo.TextColor3 = Color3.fromRGB(220, 220, 220)
+    CDBtnNo.TextSize = 12
+    CDBtnNo.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+    CDBtnNo.BorderSizePixel = 0
+    CDBtnNo.Size = UDim2.new(0, 88, 0, 30)
+    CDBtnNo.Position = UDim2.new(0, 14, 1, -40)
+    CDBtnNo.ZIndex = 52
+    CDBtnNo.AutoButtonColor = false
+    CDBtnNo.Parent = CloseDialog
+    local CDNoCorner = Instance.new("UICorner")
+    CDNoCorner.CornerRadius = UDim.new(0, 6)
+    CDNoCorner.Parent = CDBtnNo
+
+    local CDBtnYes = Instance.new("TextButton")
+    CDBtnYes.Font = Enum.Font.GothamBold
+    CDBtnYes.Text = "Yes"
+    CDBtnYes.TextColor3 = Color3.fromRGB(150, 150, 170)
+    CDBtnYes.TextSize = 12
+    CDBtnYes.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+    CDBtnYes.BorderSizePixel = 0
+    CDBtnYes.Size = UDim2.new(0, 88, 0, 30)
+    CDBtnYes.Position = UDim2.new(1, -102, 1, -40)
+    CDBtnYes.ZIndex = 52
+    CDBtnYes.AutoButtonColor = false
+    CDBtnYes.Parent = CloseDialog
+    local CDYesCorner = Instance.new("UICorner")
+    CDYesCorner.CornerRadius = UDim.new(0, 6)
+    CDYesCorner.Parent = CDBtnYes
+    local CDYesStroke = Instance.new("UIStroke")
+    CDYesStroke.Color = Color3.fromRGB(150, 150, 170)
+    CDYesStroke.Thickness = 1
+    CDYesStroke.Parent = CDBtnYes
+
+    CDBtnNo.Activated:Connect(function() CloseOverlay.Visible = false end)
+
+    CDBtnYes.Activated:Connect(function()
+        for _, toggle in pairs(ConfigSystem.ToggleElements) do
+            pcall(function()
+                if type(toggle._live) == "function" and toggle._live() then
+                    toggle.Set(false)
+                end
+            end)
+        end
+        task.wait(0.1)
+        ScreenGui:Destroy()
+    end)
+
     Close.Activated:Connect(
         function()
             CircleClick(Close, Mouse.X, Mouse.Y)
-            DropShadowHolder.Visible = false
+            CloseOverlay.Visible = true
         end
     )
     Min.Activated:Connect(
