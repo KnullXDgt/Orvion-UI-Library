@@ -1943,6 +1943,7 @@ function Orvion:CreateWindow(config)
         Button.Size = UDim2.new(1, 0, 0, math.max(46, textSize.Y + 33))
 
         local ButtonButton = Instance.new("TextButton")
+        ButtonButton.ZIndex = 10
         ButtonButton.Font = Enum.Font.SourceSans
         ButtonButton.Text = ""
         ButtonButton.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -2249,6 +2250,7 @@ function Orvion:CreateWindow(config)
         FrameCorner.Parent = InputFrame
 
         local InputTextBox = Instance.new("TextBox")
+        InputTextBox.ZIndex = 10
         InputTextBox.CursorPosition = -1
         InputTextBox.Font = Enum.Font.GothamBold
         InputTextBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
@@ -2595,9 +2597,9 @@ function Orvion:CreateWindow(config)
                 end
 
                 -- Connect ContentScroll + TabFrame: close this dropdown on any tap
-                contentCatch = Instance.new("Frame")
+                contentCatch = Instance.new("TextButton")
                 contentCatch.Name = "ContentCatch"
-                contentCatch.Active = true
+                contentCatch.Text = ""
                 contentCatch.BackgroundTransparency = 1
                 contentCatch.BorderSizePixel = 0
                 contentCatch.Position = UDim2.new(0, 0, 0, 0)
@@ -2615,11 +2617,8 @@ function Orvion:CreateWindow(config)
                 tabCatch.ZIndex = DropdownList.ZIndex - 1
                 tabCatch.Parent = Main
 
-                csConn = contentCatch.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1
-                       or input.UserInputType == Enum.UserInputType.Touch then
-                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
-                    end
+                csConn = contentCatch.Activated:Connect(function()
+                    if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                 end)
                 tfConn = tabCatch.InputBegan:Connect(function(input)
                     if input.UserInputType == Enum.UserInputType.MouseButton1
@@ -3301,6 +3300,7 @@ function Orvion:CreateWindow(config)
         ImageDisplay.Parent = ImageContainer
 
         local ImageButton = Instance.new("TextButton")
+        ImageButton.ZIndex = 10
         ImageButton.Font = Enum.Font.SourceSans
         ImageButton.Text = ""
         ImageButton.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -3985,6 +3985,7 @@ function Orvion:CreateWindow(config)
         KeybindText.Parent = KeybindFrame
 
         local KeybindButton = Instance.new("TextButton")
+        KeybindButton.ZIndex = 10
         KeybindButton.Font = Enum.Font.SourceSans
         KeybindButton.Text = ""
         KeybindButton.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -4117,6 +4118,7 @@ function Orvion:CreateWindow(config)
 
         local function makeHalfBtn(cfg, order)
             local Btn = Instance.new("TextButton")
+            Btn.ZIndex = 10
             Btn.Font = Enum.Font.GothamBold
             Btn.Text = cfg.Title or "Button"
             Btn.TextColor3 = Color3.fromRGB(230, 230, 230)
@@ -4169,6 +4171,7 @@ function Orvion:CreateWindow(config)
         SectionFrame.Parent = tabContainer
 
         local HeaderBtn = Instance.new("TextButton")
+        HeaderBtn.ZIndex = 10
         HeaderBtn.BackgroundTransparency = 1
         HeaderBtn.Size = UDim2.new(1, 0, 0, 34)
         HeaderBtn.Font = Enum.Font.GothamBold
@@ -4276,6 +4279,7 @@ function Orvion:CreateWindow(config)
         TabCorner.Parent = Tab
 
         local TabButton = Instance.new("TextButton")
+        TabButton.ZIndex = 10
         TabButton.Font = Enum.Font.GothamBold
         TabButton.Text = ""
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -4375,6 +4379,7 @@ function Orvion:CreateWindow(config)
 
         TabButton.Activated:Connect(
             function()
+                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                 CircleClick(TabButton, Mouse.X, Mouse.Y)
                 SwitchToTab()
             end
