@@ -786,7 +786,7 @@ function Orvion:CreateWindow(config)
     end
 
     local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     ScreenGui.Name = "OrvionUI"
     ScreenGui.Parent = (gethui and gethui()) or CoreGui
 
@@ -1568,7 +1568,7 @@ function Orvion:CreateWindow(config)
     ContentScroll.ScrollBarImageColor3 = Color3.fromRGB(80, 80, 80)
     ContentScroll.ScrollBarThickness = 0
     ContentScroll.Active = true
-    ContentScroll.ZIndex = 8
+    ContentScroll.ZIndex = 10
     ContentScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ContentScroll.BackgroundTransparency = 0.999
     ContentScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -1943,7 +1943,6 @@ function Orvion:CreateWindow(config)
         Button.Size = UDim2.new(1, 0, 0, math.max(46, textSize.Y + 33))
 
         local ButtonButton = Instance.new("TextButton")
-        ButtonButton.ZIndex = 10
         ButtonButton.Font = Enum.Font.SourceSans
         ButtonButton.Text = ""
         ButtonButton.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -2250,7 +2249,6 @@ function Orvion:CreateWindow(config)
         FrameCorner.Parent = InputFrame
 
         local InputTextBox = Instance.new("TextBox")
-        InputTextBox.ZIndex = 10
         InputTextBox.CursorPosition = -1
         InputTextBox.Font = Enum.Font.GothamBold
         InputTextBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
@@ -2326,6 +2324,7 @@ function Orvion:CreateWindow(config)
         DropdownButton.Size = UDim2.new(1, 0, 1, 0)
         DropdownButton.ZIndex = 13
         DropdownButton.Name = "DropdownButton"
+        DropdownButton.Parent = Dropdown
 
         local DropdownTitle = Instance.new("TextLabel")
         DropdownTitle.Font = Enum.Font.GothamBold
@@ -2383,8 +2382,6 @@ function Orvion:CreateWindow(config)
         SelectOptionsFrame.Size = UDim2.new(0, 148, 0, 30)
         SelectOptionsFrame.Name = "SelectOptionsFrame"
         SelectOptionsFrame.Parent = Dropdown
-        DropdownButton.Parent = SelectOptionsFrame
-        DropdownButton.Size = UDim2.new(1, 0, 1, 0)
 
         local FrameCorner = Instance.new("UICorner")
         FrameCorner.CornerRadius = UDim.new(0, 4)
@@ -2559,7 +2556,6 @@ function Orvion:CreateWindow(config)
 
         local csConn = nil
         local tfConn = nil
-        local contentCatch = nil
         local tabCatch = nil
         local function ToggleDropdown()
             if dropdownData._justClosed then
@@ -2592,22 +2588,11 @@ function Orvion:CreateWindow(config)
                     Orvion._activeDropdownClose = nil
                     if csConn then csConn:Disconnect(); csConn = nil end
                     if tfConn then tfConn:Disconnect(); tfConn = nil end
-                    if contentCatch then contentCatch:Destroy(); contentCatch = nil end
                     if tabCatch then tabCatch:Destroy(); tabCatch = nil end
                 end
 
                 -- Connect ContentScroll + TabFrame: close this dropdown on any tap
-                contentCatch = Instance.new("TextButton")
-                contentCatch.Name = "ContentCatch"
-                contentCatch.Text = ""
-                contentCatch.BackgroundTransparency = 1
-                contentCatch.BorderSizePixel = 0
-                contentCatch.Position = UDim2.new(0, 0, 0, 0)
-                contentCatch.Size = UDim2.new(1, -148, 1, 0)
-                contentCatch.ZIndex = 9
-                contentCatch.Parent = ContentFrame
-
-                tabCatch = Instance.new("Frame")
+tabCatch = Instance.new("Frame")
                 tabCatch.Name = "TabCatch"
                 tabCatch.Active = true
                 tabCatch.BackgroundTransparency = 1
@@ -2617,10 +2602,7 @@ function Orvion:CreateWindow(config)
                 tabCatch.ZIndex = DropdownList.ZIndex - 1
                 tabCatch.Parent = Main
 
-                csConn = contentCatch.Activated:Connect(function()
-                    if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
-                end)
-                tfConn = tabCatch.InputBegan:Connect(function(input)
+tfConn = tabCatch.InputBegan:Connect(function(input)
                     if input.UserInputType == Enum.UserInputType.MouseButton1
                        or input.UserInputType == Enum.UserInputType.Touch then
                         if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
@@ -2636,7 +2618,6 @@ function Orvion:CreateWindow(config)
                 Orvion._activeDropdownClose = nil
                 if csConn then csConn:Disconnect(); csConn = nil end
                 if tfConn then tfConn:Disconnect(); tfConn = nil end
-                if contentCatch then contentCatch:Destroy(); contentCatch = nil end
                 if tabCatch then tabCatch:Destroy(); tabCatch = nil end
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
@@ -3300,7 +3281,6 @@ function Orvion:CreateWindow(config)
         ImageDisplay.Parent = ImageContainer
 
         local ImageButton = Instance.new("TextButton")
-        ImageButton.ZIndex = 10
         ImageButton.Font = Enum.Font.SourceSans
         ImageButton.Text = ""
         ImageButton.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -3985,7 +3965,6 @@ function Orvion:CreateWindow(config)
         KeybindText.Parent = KeybindFrame
 
         local KeybindButton = Instance.new("TextButton")
-        KeybindButton.ZIndex = 10
         KeybindButton.Font = Enum.Font.SourceSans
         KeybindButton.Text = ""
         KeybindButton.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -4118,7 +4097,6 @@ function Orvion:CreateWindow(config)
 
         local function makeHalfBtn(cfg, order)
             local Btn = Instance.new("TextButton")
-            Btn.ZIndex = 10
             Btn.Font = Enum.Font.GothamBold
             Btn.Text = cfg.Title or "Button"
             Btn.TextColor3 = Color3.fromRGB(230, 230, 230)
@@ -4171,7 +4149,6 @@ function Orvion:CreateWindow(config)
         SectionFrame.Parent = tabContainer
 
         local HeaderBtn = Instance.new("TextButton")
-        HeaderBtn.ZIndex = 10
         HeaderBtn.BackgroundTransparency = 1
         HeaderBtn.Size = UDim2.new(1, 0, 0, 34)
         HeaderBtn.Font = Enum.Font.GothamBold
@@ -4279,7 +4256,6 @@ function Orvion:CreateWindow(config)
         TabCorner.Parent = Tab
 
         local TabButton = Instance.new("TextButton")
-        TabButton.ZIndex = 10
         TabButton.Font = Enum.Font.GothamBold
         TabButton.Text = ""
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
