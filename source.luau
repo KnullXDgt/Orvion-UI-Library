@@ -2324,7 +2324,6 @@ function Orvion:CreateWindow(config)
         DropdownButton.Size = UDim2.new(1, 0, 1, 0)
         DropdownButton.ZIndex = 13
         DropdownButton.Name = "DropdownButton"
-        DropdownButton.Parent = Dropdown
 
         local DropdownTitle = Instance.new("TextLabel")
         DropdownTitle.Font = Enum.Font.GothamBold
@@ -2382,6 +2381,8 @@ function Orvion:CreateWindow(config)
         SelectOptionsFrame.Size = UDim2.new(0, 148, 0, 30)
         SelectOptionsFrame.Name = "SelectOptionsFrame"
         SelectOptionsFrame.Parent = Dropdown
+        DropdownButton.Parent = SelectOptionsFrame
+        DropdownButton.Size = UDim2.new(1, 0, 1, 0)
 
         local FrameCorner = Instance.new("UICorner")
         FrameCorner.CornerRadius = UDim.new(0, 4)
@@ -2601,7 +2602,7 @@ function Orvion:CreateWindow(config)
                 contentCatch.BorderSizePixel = 0
                 contentCatch.Position = UDim2.new(0, 0, 0, 0)
                 contentCatch.Size = UDim2.new(1, 0, 1, 0)
-                contentCatch.ZIndex = 9
+                contentCatch.ZIndex = 11
                 contentCatch.Parent = ContentFrame
 
                 tabCatch = Instance.new("TextButton")
