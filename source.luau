@@ -2566,6 +2566,20 @@ function Orvion:CreateWindow(config)
                     Size = UDim2.new(0, rightW, 0, targetH),
                     Position = UDim2.new(0, 138 + halfCF, 0, 8)
                 }):Play()
+                Orvion._activeDropdownClose = function()
+                    if not dropdownData.Open then return end
+                    dropdownData.Open = false
+                    ResetSearch()
+                    local cW = ContentFrame.AbsoluteSize.X
+                    local hC = math.floor(cW / 2)
+                    local rW = cW - hC - 4
+                    TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
+                        Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
+                        Position = UDim2.new(0, 138 + hC + rW, 0, 8)
+                    }):Play()
+                    task.delay(0.18, function() DropdownList.Visible = false end)
+                    Orvion._activeDropdownClose = nil
+                end
 
 
             else
@@ -2573,6 +2587,7 @@ function Orvion:CreateWindow(config)
                 local halfCF3 = math.floor(cfW3 / 2)
                 local rightW3 = cfW3 - halfCF3 - 4
                 ResetSearch()
+                Orvion._activeDropdownClose = nil
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
                     Position = UDim2.new(0, 138 + halfCF3 + rightW3, 0, 8)
@@ -4145,8 +4160,7 @@ function Orvion:CreateWindow(config)
 
         local function updateSize()
             -- close any open dropdown when collapsing
-            local dl = Main:FindFirstChild("DropdownList")
-            if dl then dl.Visible = false end
+            if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
 
             local contentH = InnerLayout.AbsoluteContentSize.Y + 8
             if isOpen then
@@ -4309,6 +4323,7 @@ function Orvion:CreateWindow(config)
 
         TabButton.Activated:Connect(
             function()
+                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                 CircleClick(TabButton, Mouse.X, Mouse.Y)
                 SwitchToTab()
             end
