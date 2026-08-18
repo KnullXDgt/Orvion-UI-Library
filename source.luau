@@ -1579,21 +1579,6 @@ function Orvion:CreateWindow(config)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
-    -- Close any open dropdown on tap (not scroll) in ContentScroll
-    ContentScroll.InputBegan:Connect(function(input)
-        if input.UserInputType ~= Enum.UserInputType.MouseButton1 and
-           input.UserInputType ~= Enum.UserInputType.Touch then return end
-        local startPos = Vector2.new(input.Position.X, input.Position.Y)
-        local endConn
-        endConn = UserInputService.InputEnded:Connect(function(endInput)
-            if endInput ~= input then return end
-            endConn:Disconnect()
-            if (Vector2.new(endInput.Position.X, endInput.Position.Y) - startPos).Magnitude < 10 then
-                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
-            end
-        end)
-    end)
-
     local ContentLayout = Instance.new("UIListLayout")
     ContentLayout.Padding = UDim.new(0, 8)
     ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -2569,6 +2554,7 @@ function Orvion:CreateWindow(config)
         end
 
 
+        local csConn = nil
         local tfConn = nil
         local function ToggleDropdown()
             if dropdownData._justClosed then
@@ -2599,11 +2585,18 @@ function Orvion:CreateWindow(config)
                     ResetSearch()
                     DropdownList.Visible = false
                     Orvion._activeDropdownClose = nil
+                    ContentScroll.ScrollingEnabled = true
                     if csConn then csConn:Disconnect(); csConn = nil end
                     if tfConn then tfConn:Disconnect(); tfConn = nil end
                 end
 
-                -- Connect ContentScroll + TabFrame: close this dropdown on any tap
+                -- Disable scroll + close on tap
+                ContentScroll.ScrollingEnabled = false
+                csConn = ContentScroll.InputBegan:Connect(function(input)
+                    if input.UserInputType ~= Enum.UserInputType.MouseButton1
+                       and input.UserInputType ~= Enum.UserInputType.Touch then return end
+                    if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                end)
 
 
             else
@@ -2612,6 +2605,7 @@ function Orvion:CreateWindow(config)
                 local rightW3 = cfW3 - halfCF3 - 4
                 ResetSearch()
                 Orvion._activeDropdownClose = nil
+                ContentScroll.ScrollingEnabled = true
                 if csConn then csConn:Disconnect(); csConn = nil end
                 if tfConn then tfConn:Disconnect(); tfConn = nil end
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
