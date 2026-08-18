@@ -1584,6 +1584,15 @@ function Orvion:CreateWindow(config)
         if input.UserInputType ~= Enum.UserInputType.MouseButton1 and
            input.UserInputType ~= Enum.UserInputType.Touch then return end
         if not Orvion._activeDropdownClose then return end
+        local px = input.Position.X
+        local py = input.Position.Y
+        local sf = Orvion._activeSelectFrame
+        if sf then
+            local sfPos = sf.AbsolutePosition
+            local sfSize = sf.AbsoluteSize
+            if px >= sfPos.X and px <= sfPos.X + sfSize.X and
+               py >= sfPos.Y and py <= sfPos.Y + sfSize.Y then return end
+        end
         local dl = Orvion._activeDropdownList
         if dl and dl.Visible then
             local px = input.Position.X
@@ -2594,14 +2603,15 @@ function Orvion:CreateWindow(config)
                 }):Play()
                 -- Stores close fn + active DropdownList reference
                 Orvion._activeDropdownList = DropdownList
+                Orvion._activeSelectFrame = SelectOptionsFrame
                 Orvion._activeDropdownClose = function()
                     if not dropdownData.Open then return end
-                    dropdownData._justClosed = true
                     dropdownData.Open = false
                     ResetSearch()
                     DropdownList.Visible = false
                     Orvion._activeDropdownClose = nil
                     Orvion._activeDropdownList = nil
+                    Orvion._activeSelectFrame = nil
                     ContentScroll.ScrollingEnabled = true
                 end
 
@@ -2615,6 +2625,7 @@ function Orvion:CreateWindow(config)
                 ResetSearch()
                 Orvion._activeDropdownClose = nil
                 Orvion._activeDropdownList = nil
+                Orvion._activeSelectFrame = nil
                 ContentScroll.ScrollingEnabled = true
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
