@@ -2599,6 +2599,12 @@ function Orvion:CreateWindow(config)
                            and input.UserInputType ~= Enum.UserInputType.Touch then return end
                         local px = input.Position.X
                         local py = input.Position.Y
+                        -- Skip if tap is on DropdownList (options, search)
+                        local dlPos = DropdownList.AbsolutePosition
+                        local dlSize = DropdownList.AbsoluteSize
+                        if px >= dlPos.X and px <= dlPos.X + dlSize.X
+                           and py >= dlPos.Y and py <= dlPos.Y + dlSize.Y then return end
+                        -- Close if tap is within ContentScroll bounds
                         local csPos = ContentScroll.AbsolutePosition
                         local csSize = ContentScroll.AbsoluteSize
                         if px >= csPos.X and px <= csPos.X + csSize.X
