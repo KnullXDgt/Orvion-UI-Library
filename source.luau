@@ -796,7 +796,7 @@ local function setupCloseModal(closeBtn, main, screenGui)
     dt.Font = Enum.Font.GothamBold
     dt.Text = "Close Window"
     dt.TextColor3 = Color3.fromRGB(255, 255, 255)
-    dt.TextSize = 22
+    dt.TextSize = 24
     dt.BackgroundTransparency = 1
     dt.Size = UDim2.new(1, 0, 0, 36)
     dt.Position = UDim2.new(0, 0, 0, 10)
@@ -806,8 +806,8 @@ local function setupCloseModal(closeBtn, main, screenGui)
     local body = Instance.new("TextLabel")
     body.Font = Enum.Font.Gotham
     body.Text = "Are you sure you want to close this window?"
-    body.TextColor3 = Color3.fromRGB(210, 210, 210)
-    body.TextSize = 14
+    body.TextColor3 = Color3.fromRGB(220, 220, 220)
+    body.TextSize = 15
     body.BackgroundTransparency = 1
     body.Size = UDim2.new(1, -20, 0, 28)
     body.Position = UDim2.new(0, 10, 0, 52)
@@ -818,8 +818,8 @@ local function setupCloseModal(closeBtn, main, screenGui)
     local sub = Instance.new("TextLabel")
     sub.Font = Enum.Font.Gotham
     sub.Text = "You will not be able to open it again"
-    sub.TextColor3 = Color3.fromRGB(110, 110, 120)
-    sub.TextSize = 13
+    sub.TextColor3 = Color3.fromRGB(220, 220, 220)
+    sub.TextSize = 15
     sub.BackgroundTransparency = 1
     sub.Size = UDim2.new(1, -20, 0, 18)
     sub.Position = UDim2.new(0, 10, 0, 82)
@@ -830,7 +830,7 @@ local function setupCloseModal(closeBtn, main, screenGui)
     btnYes.Font = Enum.Font.GothamBold
     btnYes.Text = "Yes"
     btnYes.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btnYes.TextSize = 13
+    btnYes.TextSize = 14
     btnYes.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
     btnYes.BorderSizePixel = 0
     btnYes.Size = UDim2.new(0, 120, 0, 32)
@@ -845,7 +845,7 @@ local function setupCloseModal(closeBtn, main, screenGui)
     btnCancel.Font = Enum.Font.GothamBold
     btnCancel.Text = "Cancel"
     btnCancel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btnCancel.TextSize = 13
+    btnCancel.TextSize = 14
     btnCancel.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
     btnCancel.BorderSizePixel = 0
     btnCancel.Size = UDim2.new(0, 120, 0, 32)
@@ -859,11 +859,7 @@ local function setupCloseModal(closeBtn, main, screenGui)
     btnCancel.Activated:Connect(function() overlay.Visible = false end)
     btnYes.Activated:Connect(function()
         for _, toggle in pairs(ConfigSystem.ToggleElements) do
-            pcall(function()
-                if type(toggle._live) == "function" and toggle._live() then
-                    toggle.Set(false)
-                end
-            end)
+            pcall(function() toggle.Set(false) end)
         end
         task.wait(0.1)
         screenGui:Destroy()
