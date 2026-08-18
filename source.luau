@@ -1579,6 +1579,13 @@ function Orvion:CreateWindow(config)
     ContentScroll.Name = "ContentScroll"
     ContentScroll.Parent = ContentFrame
 
+    -- Close open dropdown on background tap in ContentScroll
+    ContentScroll.InputBegan:Connect(function(input)
+        if input.UserInputType ~= Enum.UserInputType.MouseButton1 and
+           input.UserInputType ~= Enum.UserInputType.Touch then return end
+        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+    end)
+
     local ContentLayout = Instance.new("UIListLayout")
     ContentLayout.Padding = UDim.new(0, 8)
     ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -1980,6 +1987,7 @@ function Orvion:CreateWindow(config)
 
         ButtonButton.Activated:Connect(
             function()
+                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                 CircleClick(ButtonButton, Mouse.X, Mouse.Y)
                 if callback then
                     callback()
@@ -2589,24 +2597,6 @@ function Orvion:CreateWindow(config)
                 end
 
                 ContentScroll.ScrollingEnabled = false
-                task.delay(0.15, function()
-                    if not dropdownData.Open then return end
-                    csConn = UserInputService.InputEnded:Connect(function(input)
-                        if not dropdownData.Open then
-                            if csConn then csConn:Disconnect(); csConn = nil end
-                            return
-                        end
-                        if input.UserInputType ~= Enum.UserInputType.MouseButton1 and
-                           input.UserInputType ~= Enum.UserInputType.Touch then return end
-                        local px = input.Position.X
-                        local py = input.Position.Y
-                        local dlPos = DropdownList.AbsolutePosition
-                        local dlSize = DropdownList.AbsoluteSize
-                        if px >= dlPos.X and px <= dlPos.X + dlSize.X and
-                           py >= dlPos.Y and py <= dlPos.Y + dlSize.Y then return end
-                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
-                    end)
-                end)
 
 
             else
@@ -2616,7 +2606,6 @@ function Orvion:CreateWindow(config)
                 ResetSearch()
                 Orvion._activeDropdownClose = nil
                 ContentScroll.ScrollingEnabled = true
-                if csConn then csConn:Disconnect(); csConn = nil end
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
                     Position = UDim2.new(0, 138 + halfCF3 + rightW3, 0, 8)
@@ -4006,6 +3995,7 @@ function Orvion:CreateWindow(config)
 
         KeybindButton.Activated:Connect(
             function()
+                if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                 CircleClick(KeybindButton, Mouse.X, Mouse.Y)
 
                 if keybindData.Listening then
@@ -4120,6 +4110,7 @@ function Orvion:CreateWindow(config)
 
             if cfg.Callback then
                 Btn.Activated:Connect(function()
+                    if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
                     CircleClick(Btn, Mouse.X, Mouse.Y)
                     cfg.Callback()
                 end)
@@ -4209,6 +4200,7 @@ function Orvion:CreateWindow(config)
         end)
 
         HeaderBtn.Activated:Connect(function()
+            if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
             isOpen = not isOpen
             updateSize()
         end)
