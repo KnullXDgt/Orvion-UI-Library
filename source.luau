@@ -1058,7 +1058,7 @@ function Orvion:CreateWindow(config)
         Badge.Font = Enum.Font.GothamBold
         Badge.Text = badgeText
         Badge.TextColor3 = Color3.fromRGB(255, 255, 255)
-        Badge.TextSize = 12
+        Badge.TextSize = 13
         Badge.BackgroundColor3 = ConfigSystem.ThemeColors[ConfigSystem.CurrentTheme]
         Badge.BackgroundTransparency = 0.3
         Badge.BorderSizePixel = 0
@@ -1378,7 +1378,7 @@ function Orvion:CreateWindow(config)
                                 MainLabel.Font = Enum.Font.GothamBold
                                 MainLabel.Text = displayText
                                 MainLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
-                                MainLabel.TextSize = 12
+                                MainLabel.TextSize = 13
                                 MainLabel.TextXAlignment = Enum.TextXAlignment.Left
                                 MainLabel.TextTruncate = Enum.TextTruncate.AtEnd
                                 MainLabel.BackgroundTransparency = 1
@@ -1463,7 +1463,7 @@ function Orvion:CreateWindow(config)
                                 ML2.Font = Enum.Font.GothamBold
                                 ML2.Text = displayText
                                 ML2.TextColor3 = Color3.fromRGB(220, 220, 220)
-                                ML2.TextSize = 12
+                                ML2.TextSize = 13
                                 ML2.TextXAlignment = Enum.TextXAlignment.Left
                                 ML2.TextTruncate = Enum.TextTruncate.AtEnd
                                 ML2.BackgroundTransparency = 1
@@ -1963,7 +1963,7 @@ function Orvion:CreateWindow(config)
         ParagraphTitle.Font = Enum.Font.GothamBold
         ParagraphTitle.Text = title
         ParagraphTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
-        ParagraphTitle.TextSize = 13
+        ParagraphTitle.TextSize = 14
         ParagraphTitle.TextXAlignment = Enum.TextXAlignment.Left
         ParagraphTitle.TextYAlignment = Enum.TextYAlignment.Top
         ParagraphTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -1979,7 +1979,7 @@ function Orvion:CreateWindow(config)
         ParagraphContent.Font = Enum.Font.GothamBold
         ParagraphContent.Text = content
         ParagraphContent.TextColor3 = Color3.fromRGB(255, 255, 255)
-        ParagraphContent.TextSize = 12
+        ParagraphContent.TextSize = 13
         ParagraphContent.TextTransparency = 0.6
         ParagraphContent.TextXAlignment = Enum.TextXAlignment.Left
         ParagraphContent.TextYAlignment = Enum.TextYAlignment.Bottom
@@ -2034,7 +2034,7 @@ function Orvion:CreateWindow(config)
         ButtonTitle.Font = Enum.Font.GothamBold
         ButtonTitle.Text = title
         ButtonTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
-        ButtonTitle.TextSize = 13
+        ButtonTitle.TextSize = 14
         ButtonTitle.TextXAlignment = Enum.TextXAlignment.Left
         ButtonTitle.TextYAlignment = Enum.TextYAlignment.Top
         ButtonTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -2050,7 +2050,7 @@ function Orvion:CreateWindow(config)
         ButtonContent.Font = Enum.Font.GothamBold
         ButtonContent.Text = content
         ButtonContent.TextColor3 = Color3.fromRGB(255, 255, 255)
-        ButtonContent.TextSize = 12
+        ButtonContent.TextSize = 13
         ButtonContent.TextTransparency = 0.6
         ButtonContent.TextXAlignment = Enum.TextXAlignment.Left
         ButtonContent.TextYAlignment = Enum.TextYAlignment.Bottom
@@ -2147,7 +2147,7 @@ function Orvion:CreateWindow(config)
         local ToggleTitle = Instance.new("TextLabel")
         ToggleTitle.Font = Enum.Font.GothamBold
         ToggleTitle.Text = title
-        ToggleTitle.TextSize = 13
+        ToggleTitle.TextSize = 14
         ToggleTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
         ToggleTitle.TextXAlignment = Enum.TextXAlignment.Left
         ToggleTitle.TextYAlignment = Enum.TextYAlignment.Top
@@ -2164,7 +2164,7 @@ function Orvion:CreateWindow(config)
         ToggleContent.Font = Enum.Font.GothamBold
         ToggleContent.Text = content
         ToggleContent.TextColor3 = Color3.fromRGB(255, 255, 255)
-        ToggleContent.TextSize = 12
+        ToggleContent.TextSize = 13
         ToggleContent.TextTransparency = 0.6
         ToggleContent.TextXAlignment = Enum.TextXAlignment.Left
         ToggleContent.TextYAlignment = Enum.TextYAlignment.Bottom
@@ -2344,7 +2344,7 @@ function Orvion:CreateWindow(config)
         InputTitle.Font = Enum.Font.GothamBold
         InputTitle.Text = title
         InputTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
-        InputTitle.TextSize = 13
+        InputTitle.TextSize = 14
         InputTitle.TextXAlignment = Enum.TextXAlignment.Left
         InputTitle.BackgroundTransparency = 0.999
         InputTitle.BorderSizePixel = 0
@@ -2390,7 +2390,7 @@ function Orvion:CreateWindow(config)
         InputTextBox.PlaceholderText = placeholder or "Write your input there"
         InputTextBox.Text = ""
         InputTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        InputTextBox.TextSize = 12
+        InputTextBox.TextSize = 13
         InputTextBox.TextXAlignment = Enum.TextXAlignment.Left
         InputTextBox.AnchorPoint = Vector2.new(0, 0.5)
         InputTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -2465,7 +2465,7 @@ function Orvion:CreateWindow(config)
         DropdownTitle.Font = Enum.Font.GothamBold
         DropdownTitle.Text = title
         DropdownTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
-        DropdownTitle.TextSize = 13
+        DropdownTitle.TextSize = 14
         DropdownTitle.TextXAlignment = Enum.TextXAlignment.Left
         DropdownTitle.TextYAlignment = Enum.TextYAlignment.Top
         DropdownTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -2481,7 +2481,7 @@ function Orvion:CreateWindow(config)
         DropdownContent.Font = Enum.Font.GothamBold
         DropdownContent.Text = content
         DropdownContent.TextColor3 = Color3.fromRGB(255, 255, 255)
-        DropdownContent.TextSize = 12
+        DropdownContent.TextSize = 13
         DropdownContent.TextTransparency = 0.6
         DropdownContent.TextWrapped = true
         DropdownContent.TextXAlignment = Enum.TextXAlignment.Left
@@ -2526,7 +2526,7 @@ function Orvion:CreateWindow(config)
         OptionSelecting.Font = Enum.Font.GothamBold
         OptionSelecting.Text = "Select Option"
         OptionSelecting.TextColor3 = Color3.fromRGB(255, 255, 255)
-        OptionSelecting.TextSize = 12
+        OptionSelecting.TextSize = 13
         OptionSelecting.TextTransparency = 0.6
         OptionSelecting.TextWrapped = true
         OptionSelecting.TextXAlignment = Enum.TextXAlignment.Left
@@ -3064,7 +3064,7 @@ function Orvion:CreateWindow(config)
         SliderTitle.Font = Enum.Font.GothamBold
         SliderTitle.Text = title
         SliderTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
-        SliderTitle.TextSize = 13
+        SliderTitle.TextSize = 14
         SliderTitle.TextXAlignment = Enum.TextXAlignment.Left
         SliderTitle.TextYAlignment = Enum.TextYAlignment.Top
         SliderTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -3080,7 +3080,7 @@ function Orvion:CreateWindow(config)
         SliderContent.Font = Enum.Font.GothamBold
         SliderContent.Text = content
         SliderContent.TextColor3 = Color3.fromRGB(255, 255, 255)
-        SliderContent.TextSize = 12
+        SliderContent.TextSize = 13
         SliderContent.TextTransparency = 0.6
         SliderContent.TextXAlignment = Enum.TextXAlignment.Left
         SliderContent.TextYAlignment = Enum.TextYAlignment.Bottom
@@ -3108,7 +3108,7 @@ function Orvion:CreateWindow(config)
         ValueDisplay.Font = Enum.Font.GothamBold
         ValueDisplay.Text = tostring(defaultValue or minValue)
         ValueDisplay.TextColor3 = Color3.fromRGB(255, 255, 255)
-        ValueDisplay.TextSize = 13
+        ValueDisplay.TextSize = 14
         ValueDisplay.TextXAlignment = Enum.TextXAlignment.Right
         ValueDisplay.AnchorPoint = Vector2.new(1, 0)
         ValueDisplay.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -3327,7 +3327,7 @@ function Orvion:CreateWindow(config)
         ImageBoxTitle.Font = Enum.Font.GothamBold
         ImageBoxTitle.Text = title
         ImageBoxTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
-        ImageBoxTitle.TextSize = 13
+        ImageBoxTitle.TextSize = 14
         ImageBoxTitle.TextXAlignment = Enum.TextXAlignment.Left
         ImageBoxTitle.TextYAlignment = Enum.TextYAlignment.Top
         ImageBoxTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -3343,7 +3343,7 @@ function Orvion:CreateWindow(config)
         ImageBoxContent.Font = Enum.Font.GothamBold
         ImageBoxContent.Text = content
         ImageBoxContent.TextColor3 = Color3.fromRGB(255, 255, 255)
-        ImageBoxContent.TextSize = 12
+        ImageBoxContent.TextSize = 13
         ImageBoxContent.TextTransparency = 0.6
         ImageBoxContent.TextXAlignment = Enum.TextXAlignment.Left
         ImageBoxContent.TextYAlignment = Enum.TextYAlignment.Bottom
@@ -3528,7 +3528,7 @@ function Orvion:CreateWindow(config)
         ColorPickerTitle.Font = Enum.Font.GothamBold
         ColorPickerTitle.Text = title
         ColorPickerTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
-        ColorPickerTitle.TextSize = 13
+        ColorPickerTitle.TextSize = 14
         ColorPickerTitle.TextXAlignment = Enum.TextXAlignment.Left
         ColorPickerTitle.TextYAlignment = Enum.TextYAlignment.Top
         ColorPickerTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -3544,7 +3544,7 @@ function Orvion:CreateWindow(config)
         ColorPickerContent.Font = Enum.Font.GothamBold
         ColorPickerContent.Text = content
         ColorPickerContent.TextColor3 = Color3.fromRGB(255, 255, 255)
-        ColorPickerContent.TextSize = 12
+        ColorPickerContent.TextSize = 13
         ColorPickerContent.TextTransparency = 0.6
         ColorPickerContent.TextXAlignment = Enum.TextXAlignment.Left
         ColorPickerContent.TextYAlignment = Enum.TextYAlignment.Bottom
@@ -4005,7 +4005,7 @@ function Orvion:CreateWindow(config)
         KeybindTitle.Font = Enum.Font.GothamBold
         KeybindTitle.Text = title
         KeybindTitle.TextColor3 = Color3.fromRGB(230, 230, 230)
-        KeybindTitle.TextSize = 13
+        KeybindTitle.TextSize = 14
         KeybindTitle.TextXAlignment = Enum.TextXAlignment.Left
         KeybindTitle.TextYAlignment = Enum.TextYAlignment.Top
         KeybindTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -4021,7 +4021,7 @@ function Orvion:CreateWindow(config)
         KeybindContent.Font = Enum.Font.GothamBold
         KeybindContent.Text = content
         KeybindContent.TextColor3 = Color3.fromRGB(255, 255, 255)
-        KeybindContent.TextSize = 12
+        KeybindContent.TextSize = 13
         KeybindContent.TextTransparency = 0.6
         KeybindContent.TextXAlignment = Enum.TextXAlignment.Left
         KeybindContent.TextYAlignment = Enum.TextYAlignment.Bottom
@@ -4066,7 +4066,7 @@ function Orvion:CreateWindow(config)
         KeybindText.Font = Enum.Font.GothamBold
         KeybindText.Text = defaultKey and defaultKey.Name or "None"
         KeybindText.TextColor3 = Color3.fromRGB(255, 255, 255)
-        KeybindText.TextSize = 12
+        KeybindText.TextSize = 13
         KeybindText.TextTransparency = 0.6
         KeybindText.TextXAlignment = Enum.TextXAlignment.Center
         KeybindText.TextYAlignment = Enum.TextYAlignment.Center
@@ -4378,7 +4378,7 @@ function Orvion:CreateWindow(config)
         TabButton.Font = Enum.Font.GothamBold
         TabButton.Text = ""
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TabButton.TextSize = 13
+        TabButton.TextSize = 14
         TabButton.TextXAlignment = Enum.TextXAlignment.Left
         TabButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         TabButton.BackgroundTransparency = 0.999
