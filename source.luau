@@ -2594,9 +2594,9 @@ function Orvion:CreateWindow(config)
                 end
 
                 -- Connect ContentScroll + TabFrame: close this dropdown on any tap
-                contentCatch = Instance.new("TextButton")
+                contentCatch = Instance.new("Frame")
                 contentCatch.Name = "ContentCatch"
-                contentCatch.Text = ""
+                contentCatch.Active = true
                 contentCatch.BackgroundTransparency = 1
                 contentCatch.BorderSizePixel = 0
                 contentCatch.Position = UDim2.new(0, 0, 0, 0)
@@ -2614,8 +2614,11 @@ function Orvion:CreateWindow(config)
                 tabCatch.ZIndex = DropdownList.ZIndex - 1
                 tabCatch.Parent = Main
 
-                csConn = contentCatch.Activated:Connect(function()
-                    if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                csConn = contentCatch.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1
+                       or input.UserInputType == Enum.UserInputType.Touch then
+                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                    end
                 end)
                 tfConn = tabCatch.Activated:Connect(function()
                     if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
