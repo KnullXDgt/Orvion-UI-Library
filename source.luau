@@ -2589,6 +2589,24 @@ function Orvion:CreateWindow(config)
                 end
 
                 ContentScroll.ScrollingEnabled = false
+                task.delay(0.15, function()
+                    if not dropdownData.Open then return end
+                    csConn = UserInputService.InputEnded:Connect(function(input)
+                        if not dropdownData.Open then
+                            if csConn then csConn:Disconnect(); csConn = nil end
+                            return
+                        end
+                        if input.UserInputType ~= Enum.UserInputType.MouseButton1 and
+                           input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        local px = input.Position.X
+                        local py = input.Position.Y
+                        local dlPos = DropdownList.AbsolutePosition
+                        local dlSize = DropdownList.AbsoluteSize
+                        if px >= dlPos.X and px <= dlPos.X + dlSize.X and
+                           py >= dlPos.Y and py <= dlPos.Y + dlSize.Y then return end
+                        if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
+                    end)
+                end)
 
 
             else
@@ -2598,6 +2616,7 @@ function Orvion:CreateWindow(config)
                 ResetSearch()
                 Orvion._activeDropdownClose = nil
                 ContentScroll.ScrollingEnabled = true
+                if csConn then csConn:Disconnect(); csConn = nil end
                 TweenService:Create(DropdownList, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
                     Size = UDim2.new(0, 0, 0, DropdownList.Size.Y.Offset),
                     Position = UDim2.new(0, 138 + halfCF3 + rightW3, 0, 8)
