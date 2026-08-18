@@ -1674,7 +1674,6 @@ function Orvion:CreateWindow(config)
     ContentScroll.ScrollBarImageColor3 = Color3.fromRGB(80, 80, 80)
     ContentScroll.ScrollBarThickness = 0
     ContentScroll.Active = true
-    ContentScroll.ZIndex = 10
     ContentScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ContentScroll.BackgroundTransparency = 0.999
     ContentScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
