@@ -885,6 +885,8 @@ function Orvion:CreateWindow(config)
     local MinimizeButton = config.MinimizeButton or false
     local MinimizeButtonImage = config.MinimizeButton_Image or "rbxassetid://16932740082"
     local Badges = config.Badges or {}
+    local Icon = config.Icon or ""
+    local TitleImage = config.TitleImage or ""
     local ConfigData = config.Config or {}
 
     if ConfigSystem.ThemeColors[Theme] then
@@ -1000,7 +1002,8 @@ function Orvion:CreateWindow(config)
 
     local TitleWrapper = Instance.new("Frame")
     TitleWrapper.BackgroundTransparency = 1
-    TitleWrapper.Size = UDim2.new(0, 190, 1, 0)
+    TitleWrapper.AutomaticSize = Enum.AutomaticSize.X
+    TitleWrapper.Size = UDim2.new(0, 0, 1, 0)
     TitleWrapper.Position = UDim2.new(0, 10, 0, 0)
     TitleWrapper.Parent = Top
 
@@ -1009,6 +1012,39 @@ function Orvion:CreateWindow(config)
     TitleWrapLayout.VerticalAlignment = Enum.VerticalAlignment.Center
     TitleWrapLayout.Padding = UDim.new(0, 6)
     TitleWrapLayout.Parent = TitleWrapper
+
+    -- Icon (optional)
+    if Icon ~= "" then
+        local IconImg = Instance.new("ImageLabel")
+        IconImg.Image = Icon
+        IconImg.BackgroundTransparency = 1
+        IconImg.Size = UDim2.new(0, 22, 0, 22)
+        IconImg.LayoutOrder = 0
+        IconImg.Parent = TitleWrapper
+    end
+
+    -- TitleImage (optional, replaces text title)
+    if TitleImage ~= "" then
+        local TitleImg = Instance.new("ImageLabel")
+        TitleImg.Image = TitleImage
+        TitleImg.BackgroundTransparency = 1
+        -- FishIT is ~3:1 ratio, height matches top bar (~24px inner)
+        TitleImg.Size = UDim2.new(0, 60, 0, 20)
+        TitleImg.LayoutOrder = 1
+        TitleImg.Parent = TitleWrapper
+
+        local Sep = Instance.new("TextLabel")
+        Sep.Font = Enum.Font.GothamBold
+        Sep.Text = " | "
+        Sep.TextColor3 = Color3.fromRGB(120, 120, 140)
+        Sep.TextSize = 14
+        Sep.AutomaticSize = Enum.AutomaticSize.X
+        Sep.BackgroundTransparency = 1
+        Sep.BorderSizePixel = 0
+        Sep.Size = UDim2.new(0, 0, 1, 0)
+        Sep.LayoutOrder = 2
+        Sep.Parent = TitleWrapper
+    end
 
     local TitleLabel = Instance.new("TextLabel")
     TitleLabel.Font = Enum.Font.GothamBold
@@ -1019,7 +1055,7 @@ function Orvion:CreateWindow(config)
     TitleLabel.BackgroundTransparency = 0.999
     TitleLabel.BorderSizePixel = 0
     TitleLabel.Size = UDim2.new(0, 0, 1, 0)
-    TitleLabel.LayoutOrder = 1
+    TitleLabel.LayoutOrder = TitleImage ~= "" and 3 or 1
     TitleLabel.Parent = TitleWrapper
 
     local Subtitle = config.Subtitle or ""
