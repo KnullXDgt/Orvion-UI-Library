@@ -1011,7 +1011,7 @@ function Orvion:CreateWindow(config)
     TitleWrapLayout.FillDirection = Enum.FillDirection.Horizontal
     TitleWrapLayout.VerticalAlignment = Enum.VerticalAlignment.Center
     TitleWrapLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    TitleWrapLayout.Padding = UDim.new(0, 4)
+    TitleWrapLayout.Padding = UDim.new(0, 8)
     TitleWrapLayout.Parent = TitleWrapper
 
     -- Icon (optional)
@@ -1019,7 +1019,7 @@ function Orvion:CreateWindow(config)
         local IconImg = Instance.new("ImageLabel")
         IconImg.Image = Icon
         IconImg.BackgroundTransparency = 1
-        IconImg.Size = UDim2.new(0, 16, 0, 16)
+        IconImg.Size = UDim2.new(0, 15, 0, 15)
         IconImg.LayoutOrder = 0
         IconImg.Parent = TitleWrapper
     end
@@ -1038,7 +1038,7 @@ function Orvion:CreateWindow(config)
         Sep.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
         Sep.BackgroundTransparency = 0.2
         Sep.BorderSizePixel = 0
-        Sep.Size = UDim2.new(0, 1, 0, 20)
+        Sep.Size = UDim2.new(0, 1, 1, -8)
         Sep.LayoutOrder = 2
         Sep.Parent = TitleWrapper
     end
