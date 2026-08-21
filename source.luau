@@ -1018,7 +1018,7 @@ function Orvion:CreateWindow(config)
         local IconImg = Instance.new("ImageLabel")
         IconImg.Image = Icon
         IconImg.BackgroundTransparency = 1
-        IconImg.Size = UDim2.new(0, 20, 0, 20)
+        IconImg.Size = UDim2.new(0, 16, 0, 16)
         IconImg.LayoutOrder = 0
         IconImg.Parent = TitleWrapper
     end
@@ -1033,23 +1033,19 @@ function Orvion:CreateWindow(config)
         TitleImg.LayoutOrder = 1
         TitleImg.Parent = TitleWrapper
 
-        local Sep = Instance.new("TextLabel")
-        Sep.Font = Enum.Font.GothamBold
-        Sep.Text = " | "
-        Sep.TextColor3 = Color3.fromRGB(120, 120, 140)
-        Sep.TextSize = 14
-        Sep.AutomaticSize = Enum.AutomaticSize.X
-        Sep.BackgroundTransparency = 1
+        local Sep = Instance.new("Frame")
+        Sep.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
+        Sep.BackgroundTransparency = 0.2
         Sep.BorderSizePixel = 0
-        Sep.Size = UDim2.new(0, 0, 1, 0)
+        Sep.Size = UDim2.new(0, 1, 0, 20)
         Sep.LayoutOrder = 2
         Sep.Parent = TitleWrapper
     end
 
     local TitleLabel = Instance.new("TextLabel")
-    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.Font = Enum.Font.Gotham
     TitleLabel.Text = Title
-    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TitleLabel.TextColor3 = Color3.fromRGB(180, 180, 200)
     TitleLabel.TextSize = 14
     TitleLabel.AutomaticSize = Enum.AutomaticSize.X
     TitleLabel.BackgroundTransparency = 0.999
@@ -1094,7 +1090,7 @@ function Orvion:CreateWindow(config)
         Badge.Font = Enum.Font.GothamBold
         Badge.Text = badgeText
         Badge.TextColor3 = Color3.fromRGB(255, 255, 255)
-        Badge.TextSize = 13
+        Badge.TextSize = 14
         Badge.BackgroundColor3 = ConfigSystem.ThemeColors[ConfigSystem.CurrentTheme]
         Badge.BackgroundTransparency = 0.3
         Badge.BorderSizePixel = 0
