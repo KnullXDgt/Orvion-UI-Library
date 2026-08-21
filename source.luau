@@ -4417,9 +4417,19 @@ function Orvion:CreateWindow(config)
         TabNameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
         TabNameLabel.BorderSizePixel = 0
         TabNameLabel.Size = UDim2.new(1, 0, 1, 0)
-        TabNameLabel.Position = UDim2.new(0, 10, 0, 0)
+        TabNameLabel.Position = UDim2.new(0, iconId and iconId ~= "" and 30 or 10, 0, 0)
         TabNameLabel.Name = "TabName"
         TabNameLabel.Parent = Tab
+
+        local FeatureImg = Instance.new("ImageLabel")
+        FeatureImg.Image = iconId or ""
+        FeatureImg.BackgroundTransparency = 1
+        FeatureImg.BorderSizePixel = 0
+        FeatureImg.Position = UDim2.new(0, 9, 0, 7)
+        FeatureImg.Size = UDim2.new(0, 16, 0, 16)
+        FeatureImg.Visible = iconId ~= nil and iconId ~= ""
+        FeatureImg.Name = "FeatureImg"
+        FeatureImg.Parent = Tab
 
 
 
