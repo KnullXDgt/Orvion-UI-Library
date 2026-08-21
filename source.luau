@@ -1010,6 +1010,7 @@ function Orvion:CreateWindow(config)
     local TitleWrapLayout = Instance.new("UIListLayout")
     TitleWrapLayout.FillDirection = Enum.FillDirection.Horizontal
     TitleWrapLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+    TitleWrapLayout.SortOrder = Enum.SortOrder.LayoutOrder
     TitleWrapLayout.Padding = UDim.new(0, 4)
     TitleWrapLayout.Parent = TitleWrapper
 
@@ -1097,9 +1098,9 @@ function Orvion:CreateWindow(config)
         Badge.Size =
             UDim2.new(
             0,
-            TextService:GetTextSize(badgeText, 12, Enum.Font.GothamBold, Vector2.new(999, 999)).X + 16,
+            TextService:GetTextSize(badgeText, 14, Enum.Font.GothamBold, Vector2.new(999, 999)).X + 18,
             0,
-            22
+            24
         )
 
         local BadgeCorner = Instance.new("UICorner")
