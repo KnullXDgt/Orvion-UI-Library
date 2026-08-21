@@ -1004,13 +1004,13 @@ function Orvion:CreateWindow(config)
     TitleWrapper.BackgroundTransparency = 1
     TitleWrapper.AutomaticSize = Enum.AutomaticSize.X
     TitleWrapper.Size = UDim2.new(0, 0, 1, 0)
-    TitleWrapper.Position = UDim2.new(0, 10, 0, 0)
+    TitleWrapper.Position = UDim2.new(0, 6, 0, 0)
     TitleWrapper.Parent = Top
 
     local TitleWrapLayout = Instance.new("UIListLayout")
     TitleWrapLayout.FillDirection = Enum.FillDirection.Horizontal
     TitleWrapLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-    TitleWrapLayout.Padding = UDim.new(0, 6)
+    TitleWrapLayout.Padding = UDim.new(0, 4)
     TitleWrapLayout.Parent = TitleWrapper
 
     -- Icon (optional)
@@ -1018,7 +1018,7 @@ function Orvion:CreateWindow(config)
         local IconImg = Instance.new("ImageLabel")
         IconImg.Image = Icon
         IconImg.BackgroundTransparency = 1
-        IconImg.Size = UDim2.new(0, 22, 0, 22)
+        IconImg.Size = UDim2.new(0, 20, 0, 20)
         IconImg.LayoutOrder = 0
         IconImg.Parent = TitleWrapper
     end
@@ -1107,7 +1107,7 @@ function Orvion:CreateWindow(config)
         )
 
         local BadgeCorner = Instance.new("UICorner")
-        BadgeCorner.CornerRadius = UDim.new(0, 6)
+        BadgeCorner.CornerRadius = UDim.new(1, 0)
         BadgeCorner.Parent = Badge
 
         Badge.Parent = BadgeContainer
