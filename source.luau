@@ -2698,10 +2698,6 @@ function Orvion:CreateWindow(config)
 
         local csConn = nil
         local function ToggleDropdown()
-            if dropdownData._justClosed then
-                dropdownData._justClosed = false
-                return
-            end
             dropdownData.Open = not dropdownData.Open
             if dropdownData.Open then
                 local cfW    = ContentFrame.AbsoluteSize.X
@@ -2717,7 +2713,6 @@ function Orvion:CreateWindow(config)
                 }):Play()
                 -- Close any other open dropdown first
                 if Orvion._activeDropdownClose then Orvion._activeDropdownClose() end
-                ContentScroll.ScrollingEnabled = false
 
                 -- Stores close fn for this dropdown
                 Orvion._activeDropdownClose = function()
@@ -2726,7 +2721,6 @@ function Orvion:CreateWindow(config)
                     ResetSearch()
                     DropdownList.Visible = false
                     Orvion._activeDropdownClose = nil
-                    ContentScroll.ScrollingEnabled = true
                     if csConn then csConn:Disconnect(); csConn = nil end
                     local dOvr = Main:FindFirstChild("DropOverlay")
                     if dOvr then dOvr:Destroy() end
@@ -2759,7 +2753,6 @@ function Orvion:CreateWindow(config)
                 }):Play()
                 task.delay(0.18, function()
                     DropdownList.Visible = false
-                    ContentScroll.ScrollingEnabled = true
                     if csConn then csConn:Disconnect(); csConn = nil end
                     local dOvr = Main:FindFirstChild("DropOverlay")
                     if dOvr then dOvr:Destroy() end
