@@ -1034,11 +1034,15 @@ function Orvion:CreateWindow(config)
         TitleImg.LayoutOrder = 1
         TitleImg.Parent = TitleWrapper
 
-        local Sep = Instance.new("Frame")
-        Sep.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
-        Sep.BackgroundTransparency = 0.2
+        local Sep = Instance.new("TextLabel")
+        Sep.Font = Enum.Font.GothamBold
+        Sep.Text = "|"
+        Sep.TextColor3 = Color3.fromRGB(80, 80, 100)
+        Sep.TextSize = 12
+        Sep.AutomaticSize = Enum.AutomaticSize.X
+        Sep.BackgroundTransparency = 1
         Sep.BorderSizePixel = 0
-        Sep.Size = UDim2.new(0, 1, 0, 14)
+        Sep.Size = UDim2.new(0, 0, 0, 20)
         Sep.LayoutOrder = 2
         Sep.Parent = TitleWrapper
     end
