@@ -1038,7 +1038,7 @@ function Orvion:CreateWindow(config)
         Sep.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
         Sep.BackgroundTransparency = 0.2
         Sep.BorderSizePixel = 0
-        Sep.Size = UDim2.new(0, 1, 1, -8)
+        Sep.Size = UDim2.new(0, 1, 0, 14)
         Sep.LayoutOrder = 2
         Sep.Parent = TitleWrapper
     end
