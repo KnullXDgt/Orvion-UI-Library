@@ -4511,7 +4511,7 @@ function Orvion:CreateWindow(config)
         return TabContentContainer, SwitchToTab
     end
     
-    local ConfigTabContainer, SwitchToConfigTab = CreateTabButton("Configs", "rbxassetid://140704441124047", true)
+    local ConfigTabContainer, SwitchToConfigTab = CreateTabButton("Configuration", "rbxassetid://140704441124047", true)
     
     -- Config tab setup
     local CurrentConfigName = ""
